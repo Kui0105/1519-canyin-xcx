@@ -40,8 +40,8 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
   background: #e8ecf1;
-  display: flex; justify-content: center; align-items: flex-start;
-  min-height: 100vh; padding: 40px 0;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; padding: 0; margin: 0;
   color: var(--text);
   font-size: var(--fs-body);
   line-height: 1.5;
@@ -51,14 +51,16 @@ body {
 .phone-frame {
   width: 750px; height: 1624px;
   background: var(--bg);
-  border-radius: 72px;
+  border-radius: 36px;
   overflow: hidden;
   position: relative;
   box-shadow:
-    0 0 0 6px #1a1a1a,
-    0 0 0 12px #2d2d2d,
-    0 40px 120px rgba(0,0,0,0.4);
+    0 0 0 3px #1a1a1a,
+    0 0 0 6px #2d2d2d,
+    0 20px 60px rgba(0,0,0,0.4);
   display: flex; flex-direction: column;
+  transform-origin: top center;
+  flex-shrink: 0;
 }
 
 /* Status Bar */
@@ -949,6 +951,33 @@ body {
 </div>
 
 <script>
+// ============ Auto Scale ============
+(function() {
+  var frame = document.querySelector('.phone-frame');
+  var body = document.body;
+
+  function updateScale() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var padX = 20;
+    var padY = 20;
+    var scaleX = (vw - padX * 2) / 750;
+    var scaleY = (vh - padY * 2) / 1624;
+    var scale = Math.min(scaleX, scaleY, 1);
+    if (scale < 0.3) scale = 0.3;
+    frame.style.transform = 'scale(' + scale + ')';
+    // Adjust body height to accommodate scaled frame
+    body.style.minHeight = (1624 * scale + padY * 2) + 'px';
+    body.style.padding = padY + 'px 0';
+  }
+
+  updateScale();
+  window.addEventListener('resize', updateScale);
+  window.addEventListener('orientationchange', function() {
+    setTimeout(updateScale, 100);
+  });
+})();
+
 // ============ Data ============
 const mockData = [
   { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
