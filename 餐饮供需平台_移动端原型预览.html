@@ -459,10 +459,12 @@ body {
 
 /* Publish Limit Toast */
 .toast {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.8); color: #fff; padding: 24px 48px;
-  border-radius: 16px; font-size: var(--fs-body); z-index: 300;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75); color: #fff; padding: 28px 56px;
+  border-radius: 20px; font-size: var(--fs-body); z-index: 300;
   opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; white-space: nowrap;
+  letter-spacing: 1px;
 }
 .toast.show { opacity: 1; }
 
@@ -602,11 +604,10 @@ body {
 </head>
 <body>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
 <!-- Phone Frame -->
 <div class="phone-frame" id="app">
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
   <!-- Status Bar -->
   <div class="status-bar">
     <span class="time">9:41</span>
