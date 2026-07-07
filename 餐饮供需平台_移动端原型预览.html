@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>餐饮供需平台小程序 - 移动端原型预览</title>
+<title>万铺优选 - 移动端原型预览</title>
 <style>
 /* ===== Reset & Base ===== */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -864,7 +864,7 @@ body {
   <!-- Nav Bar -->
   <div class="nav-bar">
     <button class="nav-back" id="navBack" onclick="goBack()">‹</button>
-    <span class="nav-title" id="navTitle">餐饮供需平台</span>
+    <span class="nav-title" id="navTitle">万铺优选</span>
   </div>
 
   <!-- Pages Container -->
@@ -1455,8 +1455,8 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表' };
-  document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表' };
+  document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
   if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list') {
     document.getElementById('navBack').style.display = 'block';
   } else {
