@@ -1052,9 +1052,10 @@ function switchTab(page) {
 var previousTab = 'home';
 
 function goBack() {
-  document.getElementById('navBack').style.display = 'none';
-  document.getElementById('navTitle').textContent = '餐饮供需平台';
-  switchTab(previousTab);
+  var target = previousTab;
+  // Safety: never go back to search or detail itself
+  if (target === 'search' || target === 'detail') target = 'home';
+  switchTab(target);
 }
 
 // ============ Home Page ============
@@ -1593,6 +1594,7 @@ var hotSearchData = [
 var searchHistory = JSON.parse(localStorage.getItem('whs_search_history') || '[]');
 
 function openSearch() {
+  previousTab = currentTab;
   currentTab = 'search';
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('page-search').classList.add('active');
