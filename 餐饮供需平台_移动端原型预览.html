@@ -218,8 +218,8 @@ body {
   border-top: 2px solid var(--border); padding-top: 20px;
 }
 .info-card .card-actions span { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.info-card .card-actions span.liked { color: var(--danger); }
-.info-card .card-actions span.favorited { color: var(--warning); }
+.info-card .card-actions span.liked { color: #ef4444; font-weight: 600; }
+.info-card .card-actions span.favorited { color: #f59e0b; font-weight: 600; }
 
 /* Pinned Badge */
 .pin-badge {
@@ -980,16 +980,16 @@ body {
 
 // ============ Data ============
 const mockData = [
-  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
-  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
-  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
-  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520 },
-  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
-  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
-  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
-  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
-  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
-  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
+  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
+  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520 },
+  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
+  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
+  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
+  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
+  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
+  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
 ];
 
 const idleData = [
@@ -1114,8 +1114,8 @@ function renderInfoCard(item, idx) {
         <span class="unlock-btn">查看完整号码 ¥2</span>
       </div>
       <div class="card-actions">
-        <span onclick="event.stopPropagation();toggleLike(this,${item.id})">👍 ${item.likes}</span>
-        <span onclick="event.stopPropagation();toggleFav(this,${item.id})">⭐ ${item.favorites}</span>
+        <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
+        <span class="${item.userFaved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${item.userFaved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
         <span onclick="event.stopPropagation();showToast('已复制分享链接')">📤 转发</span>
       </div>
@@ -1226,8 +1226,8 @@ function renderDetailPage(item) {
       <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已收藏')">⭐ 收藏</span>
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已点赞')">👍 点赞(${item.likes})</span>
+      <span id="detailLikeBtn" class="${item.userLiked ? 'liked' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userLiked ? 'color:#ef4444;font-weight:600;' : ''}" onclick="toggleDetailLike(${item.id})">${item.userLiked ? '❤' : '♡'} 点赞 ${item.likes}</span>
+      <span id="detailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">📤 分享</span>
     </div>`;
 
@@ -1414,21 +1414,74 @@ function submitFeedback() {
 function toggleLike(el, id) {
   if (el.classList.contains('liked')) {
     el.classList.remove('liked');
-    el.textContent = '👍 ' + (mockData.find(d=>d.id===id).likes - 1);
+    var item = mockData.find(d=>d.id===id);
+    item.userLiked = false;
+    el.innerHTML = '♡ ' + item.likes;
   } else {
     el.classList.add('liked');
-    el.textContent = '👍 ' + (mockData.find(d=>d.id===id).likes + 1);
+    var item = mockData.find(d=>d.id===id);
+    item.userLiked = true;
+    el.innerHTML = '❤ ' + (item.likes + 1);
   }
 }
 
 function toggleFav(el, id) {
   if (el.classList.contains('favorited')) {
     el.classList.remove('favorited');
+    var item = mockData.find(d=>d.id===id);
+    item.userFaved = false;
+    el.innerHTML = '☆ ' + item.favorites;
     showToast('已取消收藏');
   } else {
     el.classList.add('favorited');
+    var item = mockData.find(d=>d.id===id);
+    item.userFaved = true;
+    el.innerHTML = '★ ' + (item.favorites + 1);
     showToast('已收藏');
   }
+}
+
+// Detail page toggle
+function toggleDetailLike(id) {
+  var el = document.getElementById('detailLikeBtn');
+  var item = mockData.find(d=>d.id===id);
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    item.userLiked = false;
+    el.style.color = ''; el.style.fontWeight = '';
+    el.innerHTML = '♡ 点赞 ' + item.likes;
+    // Also update the card list
+    updateCardActions(id);
+  } else {
+    el.classList.add('liked');
+    item.userLiked = true;
+    el.style.color = '#ef4444'; el.style.fontWeight = '600';
+    el.innerHTML = '❤ 点赞 ' + (item.likes + 1);
+    updateCardActions(id);
+  }
+}
+
+function toggleDetailFav(id) {
+  var el = document.getElementById('detailFavBtn');
+  var item = mockData.find(d=>d.id===id);
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    item.userFaved = false;
+    el.style.color = ''; el.style.fontWeight = '';
+    el.innerHTML = '☆ 收藏 ' + item.favorites;
+    updateCardActions(id);
+  } else {
+    el.classList.add('favorited');
+    item.userFaved = true;
+    el.style.color = '#f59e0b'; el.style.fontWeight = '600';
+    el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
+    updateCardActions(id);
+  }
+}
+
+function updateCardActions(id) {
+  // Refresh the card list to sync state
+  renderCards();
 }
 
 // ============ CS Menu ============
