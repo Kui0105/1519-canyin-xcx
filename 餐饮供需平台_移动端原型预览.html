@@ -1721,8 +1721,6 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
   html += '<button class="search-filter-btn' + (searchSortBy === 'time' ? ' active' : '') + '" onclick="changeSearchSort(\'time\')">最新</button>';
   html += '</div>';
 
-  html += '<div class="search-result-count">找到 <strong>' + totalCount + '</strong> 个相关结果</div>';
-
   if (totalCount === 0) {
     html += '<div class="no-result"><div class="icon">🔍</div><div class="text">没有找到「' + keyword + '」相关信息</div><div class="sub">换个关键词试试</div></div>';
   } else {
