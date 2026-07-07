@@ -91,7 +91,7 @@ body {
 
 /* ===== Page Container ===== */
 .page-container {
-  flex: 1; overflow-y: auto; overflow-x: hidden;
+  flex: 1; overflow-y: auto; overflow-x: clip;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
 }
@@ -156,13 +156,15 @@ body {
   display: flex; gap: 0; background: #fff; overflow-x: auto;
   padding: 0 32px; border-bottom: 2px solid var(--border);
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scroll-snap-type: x mandatory;
 }
 .cat-scroll::-webkit-scrollbar { display: none; }
 .cat-tab {
   flex-shrink: 0; padding: 20px 28px; font-size: var(--fs-body-sm);
   color: var(--text-secondary); cursor: pointer; white-space: nowrap;
   border-bottom: 4px solid transparent; transition: all 0.2s;
-  user-select: none;
+  user-select: none; scroll-snap-align: start;
 }
 .cat-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
 
