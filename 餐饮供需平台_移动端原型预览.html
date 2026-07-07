@@ -160,7 +160,7 @@ body {
   font-size: var(--fs-body); font-weight: 500; color: var(--text);
   white-space: nowrap; user-select: none;
 }
-.city-locator .loc-icon { font-size: 32px; }
+.city-locator .loc-icon { display: flex; align-items: center; }
 .city-locator .loc-arrow { font-size: 20px; color: var(--text-muted); margin-left: -2px; }
 
 /* City list page */
@@ -923,12 +923,12 @@ body {
       <div class="search-bar">
         <div class="search-input-wrap">
           <span class="city-locator" onclick="openCityList()" id="cityLocator">
-            <span class="loc-icon">📍</span>
+            <span class="loc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
             <span id="currentCityName">长沙</span>
             <span class="loc-arrow">▾</span>
           </span>
           <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-          <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
+          <input type="text" placeholder="请输入关键词进行搜索" id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
         </div>
       </div>
 
