@@ -332,11 +332,9 @@ body {
   border-color: #f59e0b; background: #fffbeb;
   box-shadow: 0 0 0 2px rgba(245,158,11,0.15);
 }
-.pub-pin-card .pin-icon { font-size: 40px; margin-bottom: 8px; }
 .pub-pin-card .pin-days { font-size: var(--fs-body-sm); font-weight: 700; color: var(--text); }
 .pub-pin-card .pin-price { font-size: var(--fs-caption-sm); color: var(--danger); margin-top: 4px; }
 .pub-pin-card .pin-unit { font-size: var(--fs-mini); color: var(--text-muted); }
-.pub-pin-card.selected .pin-icon,
 .pub-pin-card.selected .pin-days,
 .pub-pin-card.selected .pin-price { color: #f59e0b; }
 
@@ -1071,11 +1069,11 @@ body {
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>照片上传（最多9张）</div>
           <div class="photo-upload">
+            <div id="photoPreview"></div>
             <div class="upload-box" onclick="addPhoto()">
               <span class="icon">📷</span>
               <span>添加图片</span>
             </div>
-            <div id="photoPreview"></div>
           </div>
         </div>
 
@@ -1117,25 +1115,21 @@ body {
           <div class="form-label">置顶推广（按周期付费）</div>
           <div class="pub-pin-grid" id="pubPinGrid">
             <div class="pub-pin-card selected" data-pin="" onclick="selectPubPin(this, '')">
-              <div class="pin-icon">📌</div>
               <div class="pin-days">不置顶</div>
               <div class="pin-price">¥0</div>
               <div class="pin-unit">免费发布</div>
             </div>
             <div class="pub-pin-card" data-pin="7" onclick="selectPubPin(this, '7')">
-              <div class="pin-icon">📌</div>
               <div class="pin-days">7天置顶</div>
               <div class="pin-price">¥9.9</div>
               <div class="pin-unit">¥1.4/天</div>
             </div>
             <div class="pub-pin-card" data-pin="15" onclick="selectPubPin(this, '15')">
-              <div class="pin-icon">📌</div>
               <div class="pin-days">15天置顶</div>
               <div class="pin-price">¥18.8</div>
               <div class="pin-unit">¥1.25/天</div>
             </div>
             <div class="pub-pin-card" data-pin="30" onclick="selectPubPin(this, '30')">
-              <div class="pin-icon">📌</div>
               <div class="pin-days">30天置顶</div>
               <div class="pin-price">¥29.9</div>
               <div class="pin-unit">¥1.0/天</div>
