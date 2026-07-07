@@ -1367,7 +1367,7 @@ body {
   </div>
 
   <!-- Bottom Tab Bar -->
-  <div class="tab-bar">
+  <div class="tab-bar" id="tabBar">
     <div class="tab-item active" data-page="home" onclick="switchTab('home')">
       <span class="tab-icon">🏠</span>
       <span class="tab-label">首页</span>
@@ -1514,8 +1514,10 @@ function switchTab(page) {
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
   if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city') {
     document.getElementById('navBack').style.display = 'block';
+    document.getElementById('tabBar').style.display = 'none';
   } else {
     document.getElementById('navBack').style.display = 'none';
+    document.getElementById('tabBar').style.display = 'flex';
   }
   document.getElementById('pageContainer').scrollTop = 0;
 
