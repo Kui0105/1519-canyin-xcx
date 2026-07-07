@@ -481,6 +481,48 @@ body {
   font-weight: 500; text-align: center; line-height: 1.3;
 }
 
+/* Category List Filter Bar */
+.filter-bar {
+  display: flex; gap: 12px; padding: 20px 24px; background: #fff;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0;
+  z-index: 10; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.filter-item {
+  flex-shrink: 0; position: relative;
+}
+.filter-trigger {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 24px; background: #f3f4f6; border-radius: 12px;
+  font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; white-space: nowrap; user-select: none;
+  transition: all 0.2s; border: 2px solid transparent;
+}
+.filter-trigger.active {
+  background: #eff6ff; border-color: #3b82f6; color: #3b82f6;
+}
+.filter-trigger .arrow { font-size: 18px; transition: transform 0.2s; }
+.filter-trigger .arrow.up { transform: rotate(180deg); }
+
+.filter-dropdown {
+  position: absolute; top: calc(100% + 8px); left: 0;
+  min-width: 220px; background: #fff; border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100;
+  overflow: hidden; display: none;
+}
+.filter-dropdown.show { display: block; }
+.filter-option {
+  padding: 18px 28px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.filter-option:hover, .filter-option:active { background: #f3f4f6; }
+.filter-option.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
+
+.filter-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 99; display: none;
+}
+.filter-overlay.show { display: block; }
+
 /* Publish Limit Toast */
 .toast {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -892,6 +934,65 @@ body {
       <div class="detail-body" id="detailPageBody"></div>
     </div>
 
+    <!-- ==================== 分类列表 ==================== -->
+    <div class="page" id="page-cat-list">
+      <div class="filter-bar" id="catFilterBar">
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="region" onclick="toggleFilterDropdown('region')">
+            区域 <span class="arrow">▾</span>
+          </div>
+          <div class="filter-dropdown" id="dropdown-region">
+            <div class="filter-option selected" data-value="all" onclick="selectFilter('region','all','不限')">不限</div>
+            <div class="filter-option" data-value="长沙" onclick="selectFilter('region','长沙','长沙')">长沙</div>
+            <div class="filter-option" data-value="株洲" onclick="selectFilter('region','株洲','株洲')">株洲</div>
+            <div class="filter-option" data-value="湘潭" onclick="selectFilter('region','湘潭','湘潭')">湘潭</div>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="category" onclick="toggleFilterDropdown('category')">
+            类目 <span class="arrow">▾</span>
+          </div>
+          <div class="filter-dropdown" id="dropdown-category">
+            <div class="filter-option selected" data-value="all" onclick="selectFilter('category','all','不限')">不限</div>
+            <div class="filter-option" data-value="canteen" onclick="selectFilter('category','canteen','校园食堂')">校园食堂</div>
+            <div class="filter-option" data-value="street" onclick="selectFilter('category','street','校园商业街')">校园商业街</div>
+            <div class="filter-option" data-value="hospital" onclick="selectFilter('category','hospital','医院餐厅')">医院餐厅</div>
+            <div class="filter-option" data-value="park" onclick="selectFilter('category','park','企业园区')">企业园区</div>
+            <div class="filter-option" data-value="transfer" onclick="selectFilter('category','transfer','档口转让')">档口转让</div>
+            <div class="filter-option" data-value="recruit" onclick="selectFilter('category','recruit','人才招聘')">人才招聘</div>
+            <div class="filter-option" data-value="biz" onclick="selectFilter('category','biz','生意转让')">生意转让</div>
+            <div class="filter-option" data-value="shop" onclick="selectFilter('category','shop','校外旺铺')">校外旺铺</div>
+            <div class="filter-option" data-value="brand" onclick="selectFilter('category','brand','品牌加盟')">品牌加盟</div>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="type" onclick="toggleFilterDropdown('type')">
+            分类 <span class="arrow">▾</span>
+          </div>
+          <div class="filter-dropdown" id="dropdown-type">
+            <div class="filter-option selected" data-value="all" onclick="selectFilter('type','all','不限')">不限</div>
+            <div class="filter-option" data-value="canteen" onclick="selectFilter('type','canteen','校园食堂/档口')">校园食堂/档口</div>
+            <div class="filter-option" data-value="transfer" onclick="selectFilter('type','transfer','档口转让')">档口转让</div>
+            <div class="filter-option" data-value="recruit" onclick="selectFilter('type','recruit','人才招聘')">人才招聘</div>
+            <div class="filter-option" data-value="biz_shop" onclick="selectFilter('type','biz_shop','门店/旺铺')">门店/旺铺</div>
+            <div class="filter-option" data-value="brand" onclick="selectFilter('type','brand','品牌加盟')">品牌加盟</div>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="sort" onclick="toggleFilterDropdown('sort')">
+            排序 <span class="arrow">▾</span>
+          </div>
+          <div class="filter-dropdown" id="dropdown-sort">
+            <div class="filter-option selected" data-value="newest" onclick="selectFilter('sort','newest','最新')">最新发布</div>
+            <div class="filter-option" data-value="hot" onclick="selectFilter('sort','hot','最热')">浏览量最高</div>
+            <div class="filter-option" data-value="likes" onclick="selectFilter('sort','likes','最多赞')">点赞最多</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-overlay" id="filterOverlay" onclick="closeAllDropdowns()"></div>
+      <div id="catListCards" style="padding: 0 24px 160px;"></div>
+    </div>
+
     <!-- ==================== 闲置详情 ==================== -->
     <div class="page" id="page-idle-detail">
       <div class="detail-body" id="idleDetailBody"></div>
@@ -1089,6 +1190,8 @@ let currentTab = 'home';
 let currentHomeCat = 'all';
 let currentIdleCat = 'all';
 let currentNewsCat = 'all';
+let currentCatListCat = 'all';   // which nav entry opened the cat-list
+let catListFilters = { region:'all', category:'all', type:'all', sort:'newest' };
 let pubTodayCount = 0; // simulated daily publish count
 let photoCount = 0;
 
@@ -1101,9 +1204,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情' };
+  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表' };
   document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list') {
     document.getElementById('navBack').style.display = 'block';
   } else {
     document.getElementById('navBack').style.display = 'none';
@@ -1115,6 +1218,7 @@ function switchTab(page) {
   if (page === 'news') renderNewsCards();
   if (page === 'publish') updatePublishRemain();
   if (page === 'search') initSearchPage();
+  if (page === 'cat-list') renderCatListCards();
 }
 
 var previousTab = 'home';
@@ -1137,23 +1241,153 @@ function switchHomeCat(el, cat) {
 }
 
 function switchHomeCatByNav(cat) {
-  currentHomeCat = cat;
-  // sync cat-tab if matching tab exists
-  document.querySelectorAll('#homeCats .cat-tab').forEach(t => t.classList.remove('active'));
-  var matchTab = document.querySelector('#homeCats .cat-tab[data-cat="' + cat + '"]');
-  if (matchTab) {
-    matchTab.classList.add('active');
-    // scroll the cat-scroll to show the active tab
-    matchTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }
-  renderHomeCards();
-  // scroll to show results
-  document.getElementById('pageContainer').scrollTop = document.getElementById('homeCards').offsetTop - 100;
+  previousTab = 'home';
+  currentCatListCat = cat;
+  // reset filters: category pre-select to the nav cat, others reset
+  catListFilters = { region:'all', category:cat, type:'all', sort:'newest' };
+  // update dropdown display labels
+  resetFilterLabels();
+  // pre-select category dropdown and update trigger text
+  selectFilterUI('category', cat);
+  var catLabels = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
+  var catTrigger = document.querySelector('.filter-trigger[data-filter="category"]');
+  if (catTrigger) catTrigger.childNodes[0].nodeValue = catLabels[cat] + ' ';
+  currentTab = 'cat-list';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-cat-list').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('navTitle').textContent = catLabels[cat] || '分类列表';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderCatListCards();
 }
 
 function filterHomeCards() {
   renderHomeCards();
 }
+
+// ============ Category List Page ============
+function openCatList(cat) {
+  switchHomeCatByNav(cat);
+}
+
+function renderCatListCards() {
+  var data = mockData.slice();
+  var f = catListFilters;
+
+  // Filter by category
+  if (f.category !== 'all') {
+    data = data.filter(function(d) { return d.cat === f.category; });
+  }
+
+  // Filter by region
+  if (f.region !== 'all') {
+    data = data.filter(function(d) { return d.location.indexOf(f.region) === 0; });
+  }
+
+  // Filter by type
+  if (f.type !== 'all') {
+    if (f.type === 'biz_shop') {
+      data = data.filter(function(d) { return d.cat === 'biz' || d.cat === 'shop'; });
+    } else {
+      data = data.filter(function(d) { return d.cat === f.type; });
+    }
+  }
+
+  // Sort
+  if (f.sort === 'hot') {
+    data.sort(function(a, b) { return b.views - a.views; });
+  } else if (f.sort === 'likes') {
+    data.sort(function(a, b) { return b.likes - a.likes; });
+  } else {
+    // newest: keep original order (reverse by id as proxy)
+    data.sort(function(a, b) { return b.id - a.id; });
+  }
+
+  // Reset all filter trigger active states and close dropdowns
+  closeAllDropdowns();
+
+  if (data.length === 0) {
+    document.getElementById('catListCards').innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div class="text">没有找到相关信息</div></div>';
+    return;
+  }
+
+  var html = '';
+  data.forEach(function(item, idx) {
+    html += renderInfoCard(item, idx);
+  });
+  document.getElementById('catListCards').innerHTML = html;
+}
+
+function toggleFilterDropdown(filterName) {
+  var dropdown = document.getElementById('dropdown-' + filterName);
+  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
+  var overlay = document.getElementById('filterOverlay');
+  var isOpen = dropdown.classList.contains('show');
+
+  // Close all first
+  closeAllDropdowns();
+
+  if (!isOpen) {
+    dropdown.classList.add('show');
+    trigger.classList.add('active');
+    trigger.querySelector('.arrow').classList.add('up');
+    overlay.classList.add('show');
+  }
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.filter-dropdown').forEach(function(d) { d.classList.remove('show'); });
+  document.querySelectorAll('.filter-trigger').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.filter-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+  document.getElementById('filterOverlay').classList.remove('show');
+}
+
+function selectFilter(filterName, value, label) {
+  catListFilters[filterName] = value;
+  // Update trigger text to show selected value
+  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
+  var map = { region:'区域', category:'类目', type:'分类', sort:'排序' };
+  trigger.childNodes[0].nodeValue = value === 'all' || value === 'newest' ? map[filterName] + ' ' : label + ' ';
+  // Update selected state in dropdown
+  selectFilterUI(filterName, value);
+  closeAllDropdowns();
+  renderCatListCards();
+}
+
+function selectFilterUI(filterName, value) {
+  var dropdown = document.getElementById('dropdown-' + filterName);
+  if (!dropdown) return;
+  var options = dropdown.querySelectorAll('.filter-option');
+  options.forEach(function(opt) {
+    if (opt.getAttribute('data-value') === value) {
+      opt.classList.add('selected');
+    } else {
+      opt.classList.remove('selected');
+    }
+  });
+}
+
+function resetFilterLabels() {
+  // Reset all trigger labels to default
+  var triggers = [
+    { filter:'region', label:'区域' },
+    { filter:'category', label:'类目' },
+    { filter:'type', label:'分类' },
+    { filter:'sort', label:'排序' }
+  ];
+  triggers.forEach(function(t) {
+    var trigger = document.querySelector('.filter-trigger[data-filter="' + t.filter + '"]');
+    if (trigger) trigger.childNodes[0].nodeValue = t.label + ' ';
+  });
+  // Reset dropdown selections to all except category
+  selectFilterUI('region', 'all');
+  selectFilterUI('category', 'all');
+  selectFilterUI('type', 'all');
+  selectFilterUI('sort', 'newest');
+}
+
+// ============ Info Cards Render ============
 
 function renderHomeCards() {
   var data = mockData;
