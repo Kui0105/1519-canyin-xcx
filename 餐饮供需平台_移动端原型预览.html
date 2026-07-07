@@ -1282,12 +1282,13 @@ function switchHomeCatByNav(cat) {
   resetFilterLabels();
   // pre-select category trigger text
   var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9' };
+  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
   updateTriggerLabel('category', catLabels[cat] || cat);
   currentTab = 'cat-list';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-cat-list').classList.add('active');
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-  document.getElementById('navTitle').textContent = catLabels[cat] || '分类列表';
+  document.getElementById('navTitle').textContent = catTitles[cat] || '分类列表';
   document.getElementById('navBack').style.display = 'block';
   document.getElementById('pageContainer').scrollTop = 0;
   renderCatListCards();
