@@ -985,7 +985,7 @@ function switchTab(page) {
   var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索' };
   document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
   if (page === 'search') {
-    document.getElementById('navBack').style.display = 'none';
+    document.getElementById('navBack').style.display = 'block';
   } else {
     document.getElementById('navBack').style.display = 'none';
   }
@@ -1490,6 +1490,7 @@ function openSearch() {
   var homeTab = document.querySelector('.tab-item[data-page="home"]');
   if (homeTab) homeTab.classList.add('active');
   document.getElementById('navTitle').textContent = '搜索';
+  document.getElementById('navBack').style.display = 'block';
   document.getElementById('pageContainer').scrollTop = 0;
   initSearchPage();
   // Focus input
