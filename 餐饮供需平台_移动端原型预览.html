@@ -143,7 +143,8 @@ body {
   display: flex; align-items: center; background: #f3f4f6;
   border-radius: 40px; padding: 16px 28px; gap: 12px;
 }
-.search-input-wrap .search-icon { font-size: var(--fs-body); color: var(--text-muted); }
+.search-input-wrap .search-icon { display: flex; align-items: center; flex-shrink: 0; }
+.search-input-wrap .search-icon svg { display: block; }
 .search-input-wrap input {
   flex: 1; border: none; background: transparent; outline: none;
   font-size: var(--fs-body); color: var(--text);
@@ -504,7 +505,8 @@ body {
 .search-page-input-wrap.focused {
   background: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.2);
 }
-.search-page-input-wrap .search-icon { font-size: var(--fs-body); color: var(--text-muted); }
+.search-page-input-wrap .search-icon { display: flex; align-items: center; flex-shrink: 0; }
+.search-page-input-wrap .search-icon svg { display: block; }
 .search-page-input-wrap input {
   flex: 1; border: none; background: transparent; outline: none;
   font-size: var(--fs-body); color: var(--text); padding: 8px 0;
@@ -629,7 +631,7 @@ body {
       <!-- Search -->
       <div class="search-bar">
         <div class="search-input-wrap" onclick="openSearch()" style="cursor:pointer">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
         </div>
       </div>
@@ -675,7 +677,7 @@ body {
       <!-- Search Header -->
       <div class="search-page-header" id="searchPageHeader">
         <div class="search-page-input-wrap" id="searchInputWrap">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="searchInput" oninput="onSearchInput()" onfocus="onSearchFocus()" onblur="onSearchBlur()">
           <button class="clear-input" id="clearSearchBtn" onclick="clearSearchInput()">✕</button>
         </div>
@@ -1108,7 +1110,7 @@ function renderInfoCard(item, idx) {
       <div class="card-title">${item.title}${pinHtml}</div>
       <div class="card-desc">${item.desc}</div>
       <div class="card-tags">${tagsHtml}</div>
-      <div class="card-location">📍 ${item.location}</div>
+      <div class="card-location">📌 ${item.location}</div>
       ${imagesHtml}
       <div class="card-phone" onclick="event.stopPropagation();handleUnlockPhone(${item.id}, this)">
         📱 <span class="phone-num">${item.phone}</span>
@@ -1118,7 +1120,7 @@ function renderInfoCard(item, idx) {
         <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
         <span class="${item.userFaved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${item.userFaved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
-        <span onclick="event.stopPropagation();showToast('已复制分享链接')">📤 转发</span>
+        <span onclick="event.stopPropagation();showToast('已复制分享链接')">↗ 转发</span>
       </div>
     </div>`;
 }
@@ -1153,7 +1155,7 @@ function renderIdleCards() {
         </div>
         <div>
           <div class="idle-price">¥${item.price}</div>
-          <div class="idle-location">📍 ${item.location} · ${item.time}</div>
+          <div class="idle-location">📌 ${item.location} · ${item.time}</div>
         </div>
       </div>
     </div>`;
@@ -1219,7 +1221,7 @@ function renderDetailPage(item) {
     <h3 style="font-size:var(--fs-title-lg);margin-bottom:20px;line-height:1.5">${item.title}</h3>
     <p style="color:var(--text-secondary);font-size:var(--fs-body);line-height:1.8;margin-bottom:24px">${item.desc}</p>
     <div class="card-tags">${item.tags.map(function(t){ return '<span class="tag tag-blue">'+t+'</span>'; }).join('')}</div>
-    <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">📍 ${item.location}</div></div>
+    <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">📌 ${item.location}</div></div>
     ${imagesHtml}
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系电话</div>
@@ -1229,7 +1231,7 @@ function renderDetailPage(item) {
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
       <span id="detailLikeBtn" class="${item.userLiked ? 'liked' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userLiked ? 'color:#ef4444;font-weight:600;' : ''}" onclick="toggleDetailLike(${item.id})">${item.userLiked ? '❤' : '♡'} 点赞 ${item.likes}</span>
       <span id="detailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">📤 分享</span>
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
     </div>`;
 
   document.getElementById('detailPageBody').innerHTML = html;
@@ -1829,7 +1831,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
           '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
           '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
           '<div><div class="idle-price">¥' + item.price + '</div>' +
-          '<div class="idle-location">📍 ' + item.location + ' · ' + item.time + '</div></div></div></div>';
+          '<div class="idle-location">📌 ' + item.location + ' · ' + item.time + '</div></div></div></div>';
       });
     }
     if (newsResults.length > 0) {
