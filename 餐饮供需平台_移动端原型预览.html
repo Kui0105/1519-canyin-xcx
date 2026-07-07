@@ -484,16 +484,15 @@ body {
 /* Category List Filter Bar */
 .filter-bar {
   display: flex; gap: 12px; padding: 20px 24px; background: #fff;
-  border-bottom: 2px solid var(--border); position: sticky; top: 0;
-  z-index: 20; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 20;
 }
-.filter-item { flex-shrink: 0; }
+.filter-item { flex: 1; min-width: 0; }
 .filter-trigger {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 24px; background: #f3f4f6; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 8px; background: #f3f4f6; border-radius: 12px;
   font-size: var(--fs-caption); color: var(--text-primary);
   cursor: pointer; white-space: nowrap; user-select: none;
-  transition: all 0.2s; border: 2px solid transparent;
+  transition: all 0.2s; border: 2px solid transparent; width: 100%;
 }
 .filter-trigger.active {
   background: #eff6ff; border-color: #3b82f6; color: #3b82f6;
