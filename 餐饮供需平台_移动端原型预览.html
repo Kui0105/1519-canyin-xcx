@@ -459,6 +459,28 @@ body {
 
 .home-top-wrap { background: #fff; padding-bottom: 24px; }
 
+/* Category Nav Grid */
+.cat-nav-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; padding: 16px 24px 24px; background: #fff;
+}
+.cat-nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 20px 12px; border-radius: 16px;
+  background: #f9fafb; cursor: pointer; transition: all 0.2s;
+  user-select: none; border: 2px solid transparent;
+}
+.cat-nav-item:active { transform: scale(0.96); background: #eff6ff; border-color: #bfdbfe; }
+.cat-nav-item .cat-nav-icon {
+  width: 72px; height: 72px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.cat-nav-item .cat-nav-label {
+  font-size: var(--fs-caption); color: var(--text-secondary);
+  font-weight: 500; text-align: center; line-height: 1.3;
+}
+
 /* Publish Limit Toast */
 .toast {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -656,6 +678,42 @@ body {
           <button class="banner-dot" data-idx="2" onclick="goBanner(2)"></button>
         </div>
       </div>
+      </div>
+
+      <!-- Category Nav Grid -->
+      <div class="cat-nav-grid">
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('canteen')">
+          <div class="cat-nav-icon" style="background:#eff6ff">🍽️</div>
+          <div class="cat-nav-label">校园食堂</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('street')">
+          <div class="cat-nav-icon" style="background:#fef3c7">🏪</div>
+          <div class="cat-nav-label">校园商业街</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('hospital')">
+          <div class="cat-nav-icon" style="background:#fce7f3">🏥</div>
+          <div class="cat-nav-label">医院餐厅</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('park')">
+          <div class="cat-nav-icon" style="background:#dcfce7">🏢</div>
+          <div class="cat-nav-label">企业园区</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('recruit')">
+          <div class="cat-nav-icon" style="background:#f3e8ff">👥</div>
+          <div class="cat-nav-label">人才招聘</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('biz')">
+          <div class="cat-nav-icon" style="background:#ffe4e6">📋</div>
+          <div class="cat-nav-label">生意转让</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('shop')">
+          <div class="cat-nav-icon" style="background:#fff7ed">🏠</div>
+          <div class="cat-nav-label">校外旺铺</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('brand')">
+          <div class="cat-nav-icon" style="background:#f0f9ff">🏷️</div>
+          <div class="cat-nav-label">品牌加盟</div>
+        </div>
       </div>
 
       <!-- Category Tabs -->
@@ -1001,6 +1059,9 @@ const mockData = [
   { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
   { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
   { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
+  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', likes:45, favorites:15, views:980 },
+  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', likes:88, favorites:32, views:1670 },
+  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', likes:56, favorites:24, views:1120 },
 ];
 
 const idleData = [
@@ -1071,6 +1132,23 @@ function switchHomeCat(el, cat) {
   document.querySelectorAll('#homeCats .cat-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderHomeCards();
+  // scroll to cards area
+  document.getElementById('pageContainer').scrollTop = document.getElementById('homeCards').offsetTop - 100;
+}
+
+function switchHomeCatByNav(cat) {
+  currentHomeCat = cat;
+  // sync cat-tab if matching tab exists
+  document.querySelectorAll('#homeCats .cat-tab').forEach(t => t.classList.remove('active'));
+  var matchTab = document.querySelector('#homeCats .cat-tab[data-cat="' + cat + '"]');
+  if (matchTab) {
+    matchTab.classList.add('active');
+    // scroll the cat-scroll to show the active tab
+    matchTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+  renderHomeCards();
+  // scroll to show results
+  document.getElementById('pageContainer').scrollTop = document.getElementById('homeCards').offsetTop - 100;
 }
 
 function filterHomeCards() {
