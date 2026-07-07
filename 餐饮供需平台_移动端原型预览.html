@@ -1282,7 +1282,7 @@ function switchHomeCatByNav(cat) {
   // reset trigger labels
   resetFilterLabels();
   // pre-select category trigger text
-  var catLabels = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
+  var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9' };
   updateTriggerLabel('category', catLabels[cat] || cat);
   currentTab = 'cat-list';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1372,24 +1372,24 @@ const regionData = {
 
 const categoryOptions = [
   { value:'all', label:'不限' },
-  { value:'canteen', label:'校园食堂' },
-  { value:'street', label:'校园商业街' },
-  { value:'hospital', label:'医院餐厅' },
-  { value:'park', label:'企业园区' },
-  { value:'transfer', label:'档口转让' },
-  { value:'recruit', label:'人才招聘' },
-  { value:'biz', label:'生意转让' },
-  { value:'shop', label:'校外旺铺' },
-  { value:'brand', label:'品牌加盟' }
+  { value:'canteen', label:'类目1' },
+  { value:'street', label:'类目2' },
+  { value:'hospital', label:'类目3' },
+  { value:'park', label:'类目4' },
+  { value:'transfer', label:'类目5' },
+  { value:'recruit', label:'类目6' },
+  { value:'biz', label:'类目7' },
+  { value:'shop', label:'类目8' },
+  { value:'brand', label:'类目9' }
 ];
 
 const typeOptions = [
   { value:'all', label:'不限' },
-  { value:'canteen', label:'校园食堂/档口' },
-  { value:'transfer', label:'档口转让' },
-  { value:'recruit', label:'人才招聘' },
-  { value:'biz_shop', label:'门店/旺铺' },
-  { value:'brand', label:'品牌加盟' }
+  { value:'canteen', label:'分类1' },
+  { value:'transfer', label:'分类2' },
+  { value:'recruit', label:'分类3' },
+  { value:'biz_shop', label:'分类4' },
+  { value:'brand', label:'分类5' }
 ];
 
 const sortOptions = [
