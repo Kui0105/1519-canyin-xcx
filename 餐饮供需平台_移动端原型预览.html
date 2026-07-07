@@ -485,11 +485,9 @@ body {
 .filter-bar {
   display: flex; gap: 12px; padding: 20px 24px; background: #fff;
   border-bottom: 2px solid var(--border); position: sticky; top: 0;
-  z-index: 10; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  z-index: 20; overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
-.filter-item {
-  flex-shrink: 0; position: relative;
-}
+.filter-item { flex-shrink: 0; }
 .filter-trigger {
   display: flex; align-items: center; gap: 8px;
   padding: 12px 24px; background: #f3f4f6; border-radius: 12px;
@@ -503,25 +501,73 @@ body {
 .filter-trigger .arrow { font-size: 18px; transition: transform 0.2s; }
 .filter-trigger .arrow.up { transform: rotate(180deg); }
 
-.filter-dropdown {
-  position: absolute; top: calc(100% + 8px); left: 0;
-  min-width: 220px; background: #fff; border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100;
-  overflow: hidden; display: none;
-}
-.filter-dropdown.show { display: block; }
-.filter-option {
-  padding: 18px 28px; font-size: var(--fs-caption); color: var(--text-primary);
-  cursor: pointer; transition: background 0.15s; white-space: nowrap;
-}
-.filter-option:hover, .filter-option:active { background: #f3f4f6; }
-.filter-option.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
-
-.filter-overlay {
+/* Filter Panel Overlay */
+.filter-panel-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 99; display: none;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
 }
-.filter-overlay.show { display: block; }
+.filter-panel-overlay.show { display: block; }
+
+/* Filter Panel (generic popup) */
+.filter-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  max-height: 560px; overflow: hidden;
+}
+.filter-panel.show { display: block; }
+
+/* Region Picker Panel */
+.region-panel {
+  border-radius: 0 0 24px 24px;
+}
+.region-columns {
+  display: flex; height: 400px;
+}
+.region-col {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  border-right: 2px solid #f3f4f6;
+}
+.region-col:last-child { border-right: none; }
+.region-col-title {
+  padding: 20px 24px; font-size: var(--fs-caption);
+  color: var(--text-muted); font-weight: 600; position: sticky; top: 0;
+  background: #fff; z-index: 1;
+}
+.region-option {
+  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.region-option:active { background: #f3f4f6; }
+.region-option.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
+
+.panel-footer {
+  display: flex; gap: 16px; padding: 16px 24px; border-top: 2px solid #f3f4f6;
+}
+.panel-btn {
+  flex: 1; padding: 18px; border-radius: 14px; font-size: var(--fs-body-sm);
+  font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
+}
+.panel-btn.reset { background: #f3f4f6; color: var(--text-secondary); }
+.panel-btn.reset:active { background: #e5e7eb; }
+.panel-btn.confirm { background: #3b82f6; color: #fff; }
+.panel-btn.confirm:active { background: #2563eb; }
+
+/* Option Panel (category/type/sort) */
+.option-panel {
+  border-radius: 0 0 24px 24px;
+}
+.option-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 32px; font-size: var(--fs-body-sm); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; border-bottom: 2px solid #f9fafb;
+}
+.option-item:last-child { border-bottom: none; }
+.option-item:active { background: #f3f4f6; }
+.option-item.selected { color: #3b82f6; font-weight: 600; }
+.option-item .check { color: #3b82f6; font-size: 28px; display: none; }
+.option-item.selected .check { display: inline; }
 
 /* Publish Limit Toast */
 .toast {
@@ -938,59 +984,45 @@ body {
     <div class="page" id="page-cat-list">
       <div class="filter-bar" id="catFilterBar">
         <div class="filter-item">
-          <div class="filter-trigger" data-filter="region" onclick="toggleFilterDropdown('region')">
+          <div class="filter-trigger" data-filter="region" onclick="openFilterPanel('region')">
             区域 <span class="arrow">▾</span>
           </div>
-          <div class="filter-dropdown" id="dropdown-region">
-            <div class="filter-option selected" data-value="all" onclick="selectFilter('region','all','不限')">不限</div>
-            <div class="filter-option" data-value="长沙" onclick="selectFilter('region','长沙','长沙')">长沙</div>
-            <div class="filter-option" data-value="株洲" onclick="selectFilter('region','株洲','株洲')">株洲</div>
-            <div class="filter-option" data-value="湘潭" onclick="selectFilter('region','湘潭','湘潭')">湘潭</div>
-          </div>
         </div>
         <div class="filter-item">
-          <div class="filter-trigger" data-filter="category" onclick="toggleFilterDropdown('category')">
+          <div class="filter-trigger" data-filter="category" onclick="openFilterPanel('category')">
             类目 <span class="arrow">▾</span>
           </div>
-          <div class="filter-dropdown" id="dropdown-category">
-            <div class="filter-option selected" data-value="all" onclick="selectFilter('category','all','不限')">不限</div>
-            <div class="filter-option" data-value="canteen" onclick="selectFilter('category','canteen','校园食堂')">校园食堂</div>
-            <div class="filter-option" data-value="street" onclick="selectFilter('category','street','校园商业街')">校园商业街</div>
-            <div class="filter-option" data-value="hospital" onclick="selectFilter('category','hospital','医院餐厅')">医院餐厅</div>
-            <div class="filter-option" data-value="park" onclick="selectFilter('category','park','企业园区')">企业园区</div>
-            <div class="filter-option" data-value="transfer" onclick="selectFilter('category','transfer','档口转让')">档口转让</div>
-            <div class="filter-option" data-value="recruit" onclick="selectFilter('category','recruit','人才招聘')">人才招聘</div>
-            <div class="filter-option" data-value="biz" onclick="selectFilter('category','biz','生意转让')">生意转让</div>
-            <div class="filter-option" data-value="shop" onclick="selectFilter('category','shop','校外旺铺')">校外旺铺</div>
-            <div class="filter-option" data-value="brand" onclick="selectFilter('category','brand','品牌加盟')">品牌加盟</div>
-          </div>
         </div>
         <div class="filter-item">
-          <div class="filter-trigger" data-filter="type" onclick="toggleFilterDropdown('type')">
+          <div class="filter-trigger" data-filter="type" onclick="openFilterPanel('type')">
             分类 <span class="arrow">▾</span>
           </div>
-          <div class="filter-dropdown" id="dropdown-type">
-            <div class="filter-option selected" data-value="all" onclick="selectFilter('type','all','不限')">不限</div>
-            <div class="filter-option" data-value="canteen" onclick="selectFilter('type','canteen','校园食堂/档口')">校园食堂/档口</div>
-            <div class="filter-option" data-value="transfer" onclick="selectFilter('type','transfer','档口转让')">档口转让</div>
-            <div class="filter-option" data-value="recruit" onclick="selectFilter('type','recruit','人才招聘')">人才招聘</div>
-            <div class="filter-option" data-value="biz_shop" onclick="selectFilter('type','biz_shop','门店/旺铺')">门店/旺铺</div>
-            <div class="filter-option" data-value="brand" onclick="selectFilter('type','brand','品牌加盟')">品牌加盟</div>
-          </div>
         </div>
         <div class="filter-item">
-          <div class="filter-trigger" data-filter="sort" onclick="toggleFilterDropdown('sort')">
+          <div class="filter-trigger" data-filter="sort" onclick="openFilterPanel('sort')">
             排序 <span class="arrow">▾</span>
-          </div>
-          <div class="filter-dropdown" id="dropdown-sort">
-            <div class="filter-option selected" data-value="newest" onclick="selectFilter('sort','newest','最新')">最新发布</div>
-            <div class="filter-option" data-value="hot" onclick="selectFilter('sort','hot','最热')">浏览量最高</div>
-            <div class="filter-option" data-value="likes" onclick="selectFilter('sort','likes','最多赞')">点赞最多</div>
           </div>
         </div>
       </div>
-      <div class="filter-overlay" id="filterOverlay" onclick="closeAllDropdowns()"></div>
-      <div id="catListCards" style="padding: 0 24px 160px;"></div>
+
+      <!-- Filter Panel Overlay -->
+      <div class="filter-panel-overlay" id="filterPanelOverlay" onclick="closeFilterPanel()"></div>
+
+      <!-- Region Picker (cascading province/city/district) -->
+      <div class="filter-panel region-panel" id="panel-region">
+        <div class="region-columns" id="regionColumns"></div>
+        <div class="panel-footer">
+          <button class="panel-btn reset" onclick="resetRegionFilter()">重置</button>
+          <button class="panel-btn confirm" onclick="confirmRegionFilter()">确定</button>
+        </div>
+      </div>
+
+      <!-- Simple option panels (category/type/sort) -->
+      <div class="filter-panel option-panel" id="panel-category"></div>
+      <div class="filter-panel option-panel" id="panel-type"></div>
+      <div class="filter-panel option-panel" id="panel-sort"></div>
+
+      <div id="catListCards" style="padding: 0 0 160px;"></div>
     </div>
 
     <!-- ==================== 闲置详情 ==================== -->
@@ -1245,13 +1277,13 @@ function switchHomeCatByNav(cat) {
   currentCatListCat = cat;
   // reset filters: category pre-select to the nav cat, others reset
   catListFilters = { region:'all', category:cat, type:'all', sort:'newest' };
-  // update dropdown display labels
+  regionPick = { province: '', city: '', district: '' };
+  regionPickWorking = { province: '', city: '', district: '' };
+  // reset trigger labels
   resetFilterLabels();
-  // pre-select category dropdown and update trigger text
-  selectFilterUI('category', cat);
+  // pre-select category trigger text
   var catLabels = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
-  var catTrigger = document.querySelector('.filter-trigger[data-filter="category"]');
-  if (catTrigger) catTrigger.childNodes[0].nodeValue = catLabels[cat] + ' ';
+  updateTriggerLabel('category', catLabels[cat] || cat);
   currentTab = 'cat-list';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-cat-list').classList.add('active');
@@ -1280,9 +1312,19 @@ function renderCatListCards() {
     data = data.filter(function(d) { return d.cat === f.category; });
   }
 
-  // Filter by region
+  // Filter by region: match city name (with or without 市 suffix)
   if (f.region !== 'all') {
-    data = data.filter(function(d) { return d.location.indexOf(f.region) === 0; });
+    var regionParts = f.region.split(' · ');
+    var regionCity = regionParts[0].replace('市', '');
+    var regionDistrict = regionParts[1] || '';
+    data = data.filter(function(d) {
+      var locCity = d.location.split(' · ')[0];
+      if (locCity !== regionCity) return false;
+      if (regionDistrict && regionDistrict !== '不限') {
+        return d.location.indexOf(regionDistrict) !== -1;
+      }
+      return true;
+    });
   }
 
   // Filter by type
@@ -1304,8 +1346,8 @@ function renderCatListCards() {
     data.sort(function(a, b) { return b.id - a.id; });
   }
 
-  // Reset all filter trigger active states and close dropdowns
-  closeAllDropdowns();
+  // Reset all filter trigger active states and close panels
+  closeFilterPanel();
 
   if (data.length === 0) {
     document.getElementById('catListCards').innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div class="text">没有找到相关信息</div></div>';
@@ -1319,72 +1361,241 @@ function renderCatListCards() {
   document.getElementById('catListCards').innerHTML = html;
 }
 
-function toggleFilterDropdown(filterName) {
-  var dropdown = document.getElementById('dropdown-' + filterName);
+// ============ Filter Panel System ============
+const regionData = {
+  '湖南省': {
+    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '全市'],
+    '株洲市': ['不限', '芦淞区', '天元区'],
+    '湘潭市': ['不限', '雨湖区', '岳塘区']
+  }
+};
+
+const categoryOptions = [
+  { value:'all', label:'不限' },
+  { value:'canteen', label:'校园食堂' },
+  { value:'street', label:'校园商业街' },
+  { value:'hospital', label:'医院餐厅' },
+  { value:'park', label:'企业园区' },
+  { value:'transfer', label:'档口转让' },
+  { value:'recruit', label:'人才招聘' },
+  { value:'biz', label:'生意转让' },
+  { value:'shop', label:'校外旺铺' },
+  { value:'brand', label:'品牌加盟' }
+];
+
+const typeOptions = [
+  { value:'all', label:'不限' },
+  { value:'canteen', label:'校园食堂/档口' },
+  { value:'transfer', label:'档口转让' },
+  { value:'recruit', label:'人才招聘' },
+  { value:'biz_shop', label:'门店/旺铺' },
+  { value:'brand', label:'品牌加盟' }
+];
+
+const sortOptions = [
+  { value:'newest', label:'最新发布' },
+  { value:'hot', label:'浏览量最高' },
+  { value:'likes', label:'点赞最多' }
+];
+
+// Region picker state
+let regionPick = { province: '', city: '', district: '' };
+let regionPickWorking = { province: '', city: '', district: '' };
+
+function openFilterPanel(filterName) {
+  closeFilterPanel();
+  var overlay = document.getElementById('filterPanelOverlay');
+  overlay.classList.add('show');
   var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
-  var overlay = document.getElementById('filterOverlay');
-  var isOpen = dropdown.classList.contains('show');
+  trigger.classList.add('active');
+  trigger.querySelector('.arrow').classList.add('up');
 
-  // Close all first
-  closeAllDropdowns();
-
-  if (!isOpen) {
-    dropdown.classList.add('show');
-    trigger.classList.add('active');
-    trigger.querySelector('.arrow').classList.add('up');
-    overlay.classList.add('show');
+  if (filterName === 'region') {
+    buildRegionPicker();
+    document.getElementById('panel-region').classList.add('show');
+  } else {
+    buildOptionPanel(filterName);
+    document.getElementById('panel-' + filterName).classList.add('show');
   }
 }
 
-function closeAllDropdowns() {
-  document.querySelectorAll('.filter-dropdown').forEach(function(d) { d.classList.remove('show'); });
+function closeFilterPanel() {
+  document.getElementById('filterPanelOverlay').classList.remove('show');
+  document.querySelectorAll('.filter-panel').forEach(function(p) { p.classList.remove('show'); });
   document.querySelectorAll('.filter-trigger').forEach(function(t) { t.classList.remove('active'); });
   document.querySelectorAll('.filter-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
-  document.getElementById('filterOverlay').classList.remove('show');
 }
 
-function selectFilter(filterName, value, label) {
-  catListFilters[filterName] = value;
-  // Update trigger text to show selected value
-  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
-  var map = { region:'区域', category:'类目', type:'分类', sort:'排序' };
-  trigger.childNodes[0].nodeValue = value === 'all' || value === 'newest' ? map[filterName] + ' ' : label + ' ';
-  // Update selected state in dropdown
-  selectFilterUI(filterName, value);
-  closeAllDropdowns();
+// Build region cascading picker
+function buildRegionPicker() {
+  var container = document.getElementById('regionColumns');
+  // Initialize pick state from current filter
+  var current = catListFilters.region;
+  if (current !== 'all') {
+    // Try to parse: "长沙 · 岳麓区" style
+    var parts = current.split(' · ');
+    if (parts.length === 2) {
+      var city = parts[0];
+      var district = parts[1];
+      // Find matching province
+      for (var prov in regionData) {
+        if (regionData[prov][city]) {
+          regionPickWorking.province = prov;
+          regionPickWorking.city = city;
+          regionPickWorking.district = district;
+          break;
+        }
+      }
+    } else if (current.indexOf('市') !== -1) {
+      // Just city
+      for (var prov2 in regionData) {
+        if (regionData[prov2][current]) {
+          regionPickWorking.province = prov2;
+          regionPickWorking.city = current;
+          regionPickWorking.district = '不限';
+          break;
+        }
+      }
+    }
+  } else {
+    regionPickWorking = { province: '', city: '', district: '' };
+  }
+
+  renderRegionColumns();
+}
+
+function renderRegionColumns() {
+  var container = document.getElementById('regionColumns');
+  var html = '';
+
+  // Column 1: Provinces
+  html += '<div class="region-col"><div class="region-col-title">省份</div>';
+  for (var prov in regionData) {
+    var sel = regionPickWorking.province === prov ? ' selected' : '';
+    html += '<div class="region-option' + sel + '" onclick="selectRegionProvince(\'' + prov + '\')">' + prov + '</div>';
+  }
+  html += '</div>';
+
+  // Column 2: Cities
+  html += '<div class="region-col"><div class="region-col-title">城市</div>';
+  if (regionPickWorking.province && regionData[regionPickWorking.province]) {
+    for (var city in regionData[regionPickWorking.province]) {
+      var sel2 = regionPickWorking.city === city ? ' selected' : '';
+      html += '<div class="region-option' + sel2 + '" onclick="selectRegionCity(\'' + city + '\')">' + city + '</div>';
+    }
+  } else {
+    html += '<div class="region-option" style="color:#9ca3af">请先选择省份</div>';
+  }
+  html += '</div>';
+
+  // Column 3: Districts
+  html += '<div class="region-col"><div class="region-col-title">区县</div>';
+  if (regionPickWorking.province && regionPickWorking.city && regionData[regionPickWorking.province][regionPickWorking.city]) {
+    var districts = regionData[regionPickWorking.province][regionPickWorking.city];
+    for (var i = 0; i < districts.length; i++) {
+      var d = districts[i];
+      var sel3 = regionPickWorking.district === d ? ' selected' : '';
+      html += '<div class="region-option' + sel3 + '" onclick="selectRegionDistrict(\'' + d + '\')">' + d + '</div>';
+    }
+  } else {
+    html += '<div class="region-option" style="color:#9ca3af">请先选择城市</div>';
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function selectRegionProvince(prov) {
+  if (regionPickWorking.province === prov) return;
+  regionPickWorking.province = prov;
+  regionPickWorking.city = '';
+  regionPickWorking.district = '';
+  renderRegionColumns();
+}
+
+function selectRegionCity(city) {
+  if (regionPickWorking.city === city) return;
+  regionPickWorking.city = city;
+  regionPickWorking.district = '不限';
+  renderRegionColumns();
+}
+
+function selectRegionDistrict(district) {
+  regionPickWorking.district = district;
+  renderRegionColumns();
+}
+
+function confirmRegionFilter() {
+  regionPick = {
+    province: regionPickWorking.province,
+    city: regionPickWorking.city,
+    district: regionPickWorking.district
+  };
+
+  // Build filter value
+  if (!regionPick.province || !regionPick.city) {
+    catListFilters.region = 'all';
+    updateTriggerLabel('region', '区域');
+  } else {
+    if (regionPick.district && regionPick.district !== '不限') {
+      catListFilters.region = regionPick.city + ' · ' + regionPick.district;
+      updateTriggerLabel('region', regionPick.city + ' · ' + regionPick.district);
+    } else {
+      catListFilters.region = regionPick.city;
+      updateTriggerLabel('region', regionPick.city);
+    }
+  }
+  closeFilterPanel();
   renderCatListCards();
 }
 
-function selectFilterUI(filterName, value) {
-  var dropdown = document.getElementById('dropdown-' + filterName);
-  if (!dropdown) return;
-  var options = dropdown.querySelectorAll('.filter-option');
-  options.forEach(function(opt) {
-    if (opt.getAttribute('data-value') === value) {
-      opt.classList.add('selected');
-    } else {
-      opt.classList.remove('selected');
-    }
-  });
+function resetRegionFilter() {
+  regionPickWorking = { province: '', city: '', district: '' };
+  renderRegionColumns();
 }
 
-function resetFilterLabels() {
-  // Reset all trigger labels to default
-  var triggers = [
-    { filter:'region', label:'区域' },
-    { filter:'category', label:'类目' },
-    { filter:'type', label:'分类' },
-    { filter:'sort', label:'排序' }
-  ];
-  triggers.forEach(function(t) {
-    var trigger = document.querySelector('.filter-trigger[data-filter="' + t.filter + '"]');
-    if (trigger) trigger.childNodes[0].nodeValue = t.label + ' ';
+// Build simple option panel
+function buildOptionPanel(filterName) {
+  var panel = document.getElementById('panel-' + filterName);
+  var options;
+  if (filterName === 'category') options = categoryOptions;
+  else if (filterName === 'type') options = typeOptions;
+  else if (filterName === 'sort') options = sortOptions;
+  else return;
+
+  var current = catListFilters[filterName];
+  var html = '';
+  options.forEach(function(opt) {
+    var sel = current === opt.value ? ' selected' : '';
+    html += '<div class="option-item' + sel + '" onclick="selectPanelOption(\'' + filterName + '\',\'' + opt.value + '\',\'' + opt.label + '\')"><span>' + opt.label + '</span><span class="check">✓</span></div>';
   });
-  // Reset dropdown selections to all except category
-  selectFilterUI('region', 'all');
-  selectFilterUI('category', 'all');
-  selectFilterUI('type', 'all');
-  selectFilterUI('sort', 'newest');
+  panel.innerHTML = html;
+}
+
+function selectPanelOption(filterName, value, label) {
+  catListFilters[filterName] = value;
+  var defaultVal = (filterName === 'sort') ? 'newest' : 'all';
+  updateTriggerLabel(filterName, value === defaultVal ? getFilterLabel(filterName) : label);
+  closeFilterPanel();
+  renderCatListCards();
+}
+
+function getFilterLabel(filterName) {
+  var map = { region:'区域', category:'类目', type:'分类', sort:'排序' };
+  return map[filterName] || '';
+}
+
+function updateTriggerLabel(filterName, label) {
+  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
+  if (trigger) trigger.childNodes[0].nodeValue = label + ' ';
+}
+
+// Reset filter labels when entering cat-list page
+function resetFilterLabels() {
+  updateTriggerLabel('region', '区域');
+  updateTriggerLabel('category', '类目');
+  updateTriggerLabel('type', '分类');
+  updateTriggerLabel('sort', '排序');
 }
 
 // ============ Info Cards Render ============
