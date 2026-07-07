@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>餐饮供需平台小程序 - 移动端原型预览</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --primary-dark: #1e40af;
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #ea580c;
+  --warning-light: #fff7ed;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --red: #dc2626;
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --text: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --tab-height: 56px;
+  --top-bar-height: 44px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  background: #e8ecf1;
+  display: flex; justify-content: center; align-items: flex-start;
+  min-height: 100vh; padding: 20px 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ===== Phone Frame ===== */
+.phone-frame {
+  width: 390px; height: 844px;
+  background: var(--bg);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 3px #1a1a1a,
+    0 0 0 6px #2d2d2d,
+    0 20px 60px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 44px; background: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; font-size: 12px; font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.status-bar .time { font-size: 14px; font-weight: 700; }
+.status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+
+/* Nav Bar */
+.nav-bar {
+  height: 44px; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid var(--border);
+  position: relative; flex-shrink: 0;
+}
+.nav-bar .nav-back {
+  position: absolute; left: 16px; font-size: 16px;
+  color: var(--text); background: none; border: none;
+  cursor: pointer; display: none; padding: 4px;
+}
+.nav-bar .nav-title { text-align: center; }
+
+/* ===== Page Container ===== */
+.page-container {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.page-container::-webkit-scrollbar { display: none; }
+
+.page { display: none; padding-bottom: 16px; min-height: 100%; }
+.page.active { display: block; }
+
+/* ===== Bottom Tab Bar ===== */
+.tab-bar {
+  height: var(--tab-height); background: #fff;
+  display: flex; align-items: center; border-top: 1px solid var(--border);
+  flex-shrink: 0; z-index: 100;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; cursor: pointer; padding: 4px 0;
+  color: var(--text-muted); font-size: 10px; gap: 2px;
+  transition: color 0.2s; position: relative; user-select: none;
+}
+.tab-item.active { color: var(--primary); }
+.tab-item .tab-icon { font-size: 20px; line-height: 1; }
+.tab-item .tab-label { font-size: 10px; }
+
+/* Center Publish Button */
+.tab-publish {
+  position: relative; margin-top: -20px;
+}
+.tab-publish .publish-circle {
+  width: 50px; height: 50px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 28px; font-weight: 300;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.4); margin-bottom: 4px;
+}
+.tab-publish .tab-label { color: var(--text-secondary); font-weight: 500; }
+
+/* ===== Common Components ===== */
+.section-title {
+  font-size: 15px; font-weight: 600; color: var(--text);
+  padding: 12px 16px 8px;
+}
+.section-more { color: var(--text-muted); font-size: 12px; }
+
+/* Search Bar */
+.search-bar {
+  padding: 8px 16px; background: #fff; position: sticky; top: 0; z-index: 10;
+}
+.search-input-wrap {
+  display: flex; align-items: center; background: #f3f4f6;
+  border-radius: 20px; padding: 8px 14px; gap: 6px;
+}
+.search-input-wrap .search-icon { font-size: 15px; color: var(--text-muted); }
+.search-input-wrap input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 14px; color: var(--text);
+}
+.search-input-wrap input::placeholder { color: var(--text-muted); }
+
+/* Category Tabs - horizontal scroll */
+.cat-scroll {
+  display: flex; gap: 0; background: #fff; overflow-x: auto;
+  padding: 0 16px; border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex-shrink: 0; padding: 10px 14px; font-size: 13px;
+  color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+  user-select: none;
+}
+.cat-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+
+/* Info Card */
+.info-card {
+  background: #fff; margin: 8px 12px; border-radius: 10px;
+  padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  cursor: pointer; transition: transform 0.1s;
+  position: relative;
+}
+.info-card:active { transform: scale(0.99); }
+.info-card .card-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.info-card .user-avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 600; flex-shrink: 0;
+}
+.info-card .user-info { flex: 1; min-width: 0; }
+.info-card .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.info-card .post-time { font-size: 11px; color: var(--text-muted); }
+.info-card .card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.info-card .card-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.info-card .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.info-card .tag { font-size: 11px; padding: 3px 8px; border-radius: 4px; }
+.tag-blue { background: #dbeafe; color: #1d4ed8; }
+.tag-green { background: #dcfce7; color: #166534; }
+.tag-orange { background: #fff7ed; color: #c2410c; }
+.tag-purple { background: #f3e8ff; color: #7c3aed; }
+.info-card .card-location { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+.info-card .card-phone {
+  font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
+  margin-bottom: 8px; background: #f9fafb; padding: 6px 10px; border-radius: 6px;
+}
+.info-card .card-phone .phone-num { letter-spacing: 1px; }
+.info-card .card-phone .unlock-btn {
+  font-size: 11px; color: var(--primary); font-weight: 500; cursor: pointer;
+  margin-left: auto; padding: 2px 8px; border-radius: 12px;
+  background: var(--primary-light);
+}
+.info-card .card-images {
+  display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px;
+}
+.info-card .card-images::-webkit-scrollbar { display: none; }
+.info-card .card-img {
+  width: 100px; height: 80px; border-radius: 6px; flex-shrink: 0;
+  background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 12px; overflow: hidden;
+}
+.info-card .card-img img { width: 100%; height: 100%; object-fit: cover; }
+.info-card .card-actions {
+  display: flex; gap: 16px; font-size: 12px; color: var(--text-muted);
+  border-top: 1px solid var(--border); padding-top: 10px;
+}
+.info-card .card-actions span { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.info-card .card-actions span.liked { color: var(--danger); }
+.info-card .card-actions span.favorited { color: var(--warning); }
+
+/* Pinned Badge */
+.pin-badge {
+  position: absolute; top: 0; right: 8px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; font-size: 10px; padding: 2px 8px;
+  border-radius: 0 0 4px 4px; font-weight: 600;
+}
+
+/* Detail Overlay */
+.detail-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 200;
+  display: none; justify-content: center; align-items: flex-end;
+}
+.detail-overlay.show { display: flex; }
+.detail-panel {
+  width: 390px; max-height: 85vh; background: #fff;
+  border-radius: 16px 16px 0 0; overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.detail-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.detail-header .close-btn { font-size: 20px; background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 4px; }
+.detail-header .title { font-size: 15px; font-weight: 600; }
+.detail-body { padding: 16px; }
+.detail-body .detail-img-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+  margin: 12px 0;
+}
+.detail-body .detail-img-grid img {
+  width: 100%; height: 100px; object-fit: cover; border-radius: 4px; background: #f3f4f6;
+}
+.detail-body .detail-field { margin-bottom: 12px; }
+.detail-body .detail-field .field-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.detail-body .detail-field .field-value { font-size: 14px; color: var(--text); }
+
+/* Publish Form */
+.publish-form { padding: 12px 16px; }
+.form-group { margin-bottom: 14px; }
+.form-group .form-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.form-group .form-label .required { color: var(--danger); font-size: 12px; }
+.form-input {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; background: #fff; color: var(--text);
+  outline: none;
+}
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.form-textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; resize: none; min-height: 100px;
+  outline: none; font-family: inherit;
+}
+.form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.form-select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; background: #fff; color: var(--text);
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  cursor: pointer; outline: none;
+}
+.form-select:focus { border-color: var(--primary); }
+.photo-upload {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.photo-upload .upload-box {
+  width: 80px; height: 80px; border: 1.5px dashed var(--border);
+  border-radius: 8px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; color: var(--text-muted);
+  font-size: 11px; cursor: pointer; gap: 4px; transition: all 0.2s;
+}
+.photo-upload .upload-box:hover { border-color: var(--primary); color: var(--primary); }
+.photo-upload .upload-box .icon { font-size: 24px; }
+.publish-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.publish-tag {
+  padding: 5px 12px; border-radius: 16px; font-size: 12px;
+  border: 1px solid var(--border); cursor: pointer; user-select: none;
+  transition: all 0.2s;
+}
+.publish-tag.selected { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+.submit-btn {
+  width: 100%; padding: 13px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; font-size: 16px; font-weight: 600; border: none;
+  border-radius: 10px; cursor: pointer; margin-top: 8px;
+}
+.submit-btn:active { transform: scale(0.98); }
+
+/* Idle Card */
+.idle-card {
+  background: #fff; margin: 8px 12px; border-radius: 10px;
+  padding: 12px; display: flex; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04); cursor: pointer;
+}
+.idle-card:active { transform: scale(0.99); }
+.idle-card .idle-img {
+  width: 100px; height: 100px; border-radius: 8px; flex-shrink: 0;
+  background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.idle-card .idle-img img { width: 100%; height: 100%; object-fit: cover; }
+.idle-card .idle-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.idle-card .idle-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.idle-card .idle-condition { font-size: 12px; color: var(--text-muted); }
+.idle-card .idle-price { font-size: 18px; font-weight: 700; color: var(--danger); }
+.idle-card .idle-location { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+/* News Card */
+.news-card {
+  background: #fff; margin: 8px 12px; border-radius: 10px;
+  padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  cursor: pointer; display: flex; gap: 12px;
+}
+.news-card:active { transform: scale(0.99); }
+.news-card .news-cover {
+  width: 100px; height: 70px; border-radius: 6px; flex-shrink: 0;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+}
+.news-card .news-cover.c2 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.news-card .news-cover.c3 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+.news-card .news-info { flex: 1; min-width: 0; }
+.news-card .news-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.news-card .news-desc { font-size: 12px; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.news-card .news-meta { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; justify-content: space-between; }
+
+/* Profile Page */
+.profile-header {
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 24px 16px 20px; text-align: center; color: #fff;
+}
+.profile-header .profile-avatar {
+  width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;
+  font-size: 28px;
+}
+.profile-header .profile-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.profile-header .profile-phone { font-size: 13px; opacity: 0.8; }
+.wallet-row {
+  display: flex; gap: 0; margin: -30px 16px 0;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.wallet-item {
+  flex: 1; padding: 14px 10px; text-align: center; cursor: pointer;
+}
+.wallet-item .val { font-size: 22px; font-weight: 700; color: var(--text); }
+.wallet-item .label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.wallet-item.divider { border-right: 1px solid var(--border); }
+.menu-section { margin: 12px 16px; background: #fff; border-radius: 10px; overflow: hidden; }
+.menu-item {
+  display: flex; align-items: center; padding: 14px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--border); gap: 12px;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: #f9fafb; }
+.menu-item .menu-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.menu-item .menu-text { flex: 1; font-size: 14px; color: var(--text); }
+.menu-item .menu-badge {
+  font-size: 11px; background: var(--danger); color: #fff;
+  padding: 2px 8px; border-radius: 10px;
+}
+.menu-item .menu-right { font-size: 14px; color: var(--text-muted); }
+.menu-item .menu-arrow { color: #d1d5db; font-size: 14px; }
+
+/* Floating Button */
+.floating-cs {
+  position: absolute; right: 16px; bottom: 100px; z-index: 50;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.floating-btn {
+  width: 42px; height: 42px; border-radius: 50%; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 20px; cursor: pointer;
+  transition: all 0.2s;
+}
+.floating-btn:active { transform: scale(0.92); }
+.cs-menu {
+  display: flex; flex-direction: column; gap: 6px;
+  background: #fff; border-radius: 12px; padding: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.cs-item {
+  padding: 8px 12px; font-size: 12px; color: var(--text);
+  cursor: pointer; border-radius: 8px; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.cs-item:active { background: var(--primary-light); color: var(--primary); }
+.hidden { display: none !important; }
+
+/* Back to Top */
+.back-to-top {
+  position: absolute; right: 16px; bottom: 160px; z-index: 49;
+  width: 42px; height: 42px; border-radius: 50%; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 18px; cursor: pointer;
+  transition: all 0.3s ease; opacity: 0; pointer-events: none;
+  border: none;
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+.back-to-top:active { transform: scale(0.92); background: var(--primary-light); }
+
+/* Banner Carousel */
+.banner-wrap {
+  margin: 0 12px 8px; border-radius: 12px; overflow: hidden;
+  position: relative; height: 140px; background: #e5e7eb;
+}
+.banner-slides {
+  display: flex; height: 100%; transition: transform 0.4s ease;
+}
+.banner-slide {
+  min-width: 100%; height: 100%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  background-size: cover; background-position: center; cursor: pointer;
+}
+.banner-dots {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px;
+}
+.banner-dot {
+  width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.5);
+  transition: all 0.3s; border: none; padding: 0; cursor: pointer;
+}
+.banner-dot.active { width: 18px; background: #fff; }
+
+/* Publish Limit Toast */
+.toast {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px;
+  border-radius: 8px; font-size: 14px; z-index: 300;
+  opacity: 0; transition: opacity 0.3s;
+}
+.toast.show { opacity: 1; }
+
+/* Empty State */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state .text { font-size: 14px; }
+
+/* Card slider */
+.card-slider { display: flex; gap: 12px; overflow-x: auto; padding: 4px 16px 12px; }
+.card-slider::-webkit-scrollbar { display: none; }
+.stat-card {
+  flex-shrink: 0; width: 160px; background: #fff; border-radius: 10px;
+  padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.stat-card .stat-icon { font-size: 28px; margin-bottom: 6px; }
+.stat-card .stat-val { font-size: 22px; font-weight: 700; color: var(--text); }
+.stat-card .stat-label { font-size: 12px; color: var(--text-muted); }
+
+/* ===== Search Page ===== */
+.search-page-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; background: #fff; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+.search-page-header .search-back {
+  font-size: 20px; color: var(--text); background: none; border: none;
+  cursor: pointer; padding: 4px 0; flex-shrink: 0; line-height: 1;
+}
+.search-page-input-wrap {
+  flex: 1; display: flex; align-items: center;
+  background: #f3f4f6; border-radius: 20px; padding: 6px 12px;
+  gap: 6px; transition: all 0.2s;
+}
+.search-page-input-wrap.focused {
+  background: #fff; box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+.search-page-input-wrap .search-icon { font-size: 15px; color: var(--text-muted); }
+.search-page-input-wrap input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 14px; color: var(--text); padding: 4px 0;
+}
+.search-page-input-wrap input::placeholder { color: var(--text-muted); }
+.search-page-input-wrap .clear-input {
+  font-size: 14px; color: var(--text-muted); background: #d1d5db;
+  width: 18px; height: 18px; border-radius: 50%; display: none;
+  align-items: center; justify-content: center; cursor: pointer; border: none;
+}
+.search-page-input-wrap .clear-input.show { display: flex; }
+.search-btn {
+  font-size: 14px; color: var(--primary); font-weight: 600;
+  background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 4px 0;
+}
+/* Hot Search */
+.hot-search-section {
+  padding: 16px 16px 4px;
+}
+.hot-search-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 6px; margin-bottom: 12px;
+}
+.hot-search-title .fire-icon { font-size: 16px; }
+.hot-search-title .update-time { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: auto; }
+.hot-search-list { display: flex; flex-direction: column; }
+.hot-search-item {
+  display: flex; align-items: center; padding: 10px 0; cursor: pointer;
+  border-bottom: 1px solid #f3f4f6; gap: 10px;
+}
+.hot-search-item:last-child { border-bottom: none; }
+.hot-search-item .rank {
+  width: 20px; text-align: center; font-size: 14px; font-weight: 700;
+  color: var(--text-muted); flex-shrink: 0;
+}
+.hot-search-item .rank.top3 { color: #f97316; }
+.hot-search-item .rank.top1 { color: #ef4444; }
+.hot-search-item .keyword { flex: 1; font-size: 14px; color: var(--text); }
+.hot-search-item .hot-badge {
+  font-size: 10px; padding: 2px 6px; border-radius: 4px;
+  font-weight: 500; flex-shrink: 0;
+}
+.hot-badge-hot { background: #fef2f2; color: #ef4444; }
+.hot-badge-new { background: #dcfce7; color: #16a34a; }
+.hot-badge-rising { background: #fff7ed; color: #ea580c; }
+/* Search History */
+.history-section {
+  padding: 12px 16px 4px;
+}
+.history-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.history-title .clear-history {
+  font-size: 12px; color: var(--text-muted); cursor: pointer;
+  background: none; border: none; padding: 4px;
+}
+.history-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.history-tag {
+  padding: 6px 14px; background: #f3f4f6; border-radius: 16px;
+  font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.history-tag:active { background: var(--primary-light); color: var(--primary); }
+/* Search Results */
+.search-result-count {
+  font-size: 12px; color: var(--text-muted); padding: 8px 16px 4px;
+}
+.no-result {
+  text-align: center; padding: 40px 20px; color: var(--text-muted);
+}
+.no-result .icon { font-size: 48px; margin-bottom: 8px; }
+.no-result .text { font-size: 14px; margin-bottom: 4px; }
+.no-result .sub { font-size: 12px; color: var(--text-muted); }
+/* Search filter bar */
+.search-filter-bar {
+  display: flex; gap: 8px; padding: 10px 16px; background: #fff;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 52px; z-index: 19; overflow-x: auto;
+}
+.search-filter-bar::-webkit-scrollbar { display: none; }
+.search-filter-btn {
+  flex-shrink: 0; padding: 6px 14px; border-radius: 16px;
+  border: 1px solid var(--border); background: #fff;
+  font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  white-space: nowrap; transition: all 0.2s;
+}
+.search-filter-btn.active {
+  background: var(--primary-light); color: var(--primary);
+  border-color: var(--primary); font-weight: 600;
+}
+.search-filter-btn .sort-arrow {
+  font-size: 10px; margin-left: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Phone Frame -->
+<div class="phone-frame" id="app">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <span class="status-icons">5G ▮▮▮▮ 🔋</span>
+  </div>
+
+  <!-- Nav Bar -->
+  <div class="nav-bar">
+    <button class="nav-back" id="navBack" onclick="goBack()">‹ 返回</button>
+    <span class="nav-title" id="navTitle">餐饮供需平台</span>
+  </div>
+
+  <!-- Pages Container -->
+  <div class="page-container" id="pageContainer">
+
+    <!-- ==================== 首页 ==================== -->
+    <div class="page active" id="page-home">
+      <!-- Search -->
+      <div class="search-bar">
+        <div class="search-input-wrap" onclick="openSearch()" style="cursor:pointer">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
+        </div>
+      </div>
+
+      <!-- Banner Carousel -->
+      <div class="banner-wrap" id="homeBanner">
+        <div class="banner-slides" id="bannerSlides">
+          <div class="banner-slide" style="background:linear-gradient(135deg, #2563eb, #7c3aed);" onclick="showToast('查看详情：高校食堂招商专场')">
+            <span>🔥 高校食堂招商专场</span>
+          </div>
+          <div class="banner-slide" style="background:linear-gradient(135deg, #ea580c, #f97316);" onclick="showToast('查看详情：闲置设备限时秒杀')">
+            <span>⚡ 闲置设备限时秒杀</span>
+          </div>
+          <div class="banner-slide" style="background:linear-gradient(135deg, #16a34a, #22c55e);" onclick="showToast('查看详情：品牌加盟季·0元审核')">
+            <span>🏪 品牌加盟季 · 0元审核</span>
+          </div>
+        </div>
+        <div class="banner-dots" id="bannerDots">
+          <button class="banner-dot active" data-idx="0" onclick="goBanner(0)"></button>
+          <button class="banner-dot" data-idx="1" onclick="goBanner(1)"></button>
+          <button class="banner-dot" data-idx="2" onclick="goBanner(2)"></button>
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="cat-scroll" id="homeCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchHomeCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="canteen" onclick="switchHomeCat(this, 'canteen')">校园食堂</div>
+        <div class="cat-tab" data-cat="transfer" onclick="switchHomeCat(this, 'transfer')">档口转让</div>
+        <div class="cat-tab" data-cat="recruit" onclick="switchHomeCat(this, 'recruit')">人才招聘</div>
+        <div class="cat-tab" data-cat="biz" onclick="switchHomeCat(this, 'biz')">生意转让</div>
+        <div class="cat-tab" data-cat="shop" onclick="switchHomeCat(this, 'shop')">校外旺铺</div>
+        <div class="cat-tab" data-cat="brand" onclick="switchHomeCat(this, 'brand')">品牌加盟</div>
+      </div>
+
+      <!-- Info Cards -->
+      <div id="homeCards"></div>
+    </div>
+
+    <!-- ==================== 搜索页 ==================== -->
+    <div class="page" id="page-search">
+      <!-- Search Header -->
+      <div class="search-page-header" id="searchPageHeader">
+        <button class="search-back" onclick="closeSearch()">‹</button>
+        <div class="search-page-input-wrap" id="searchInputWrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="searchInput" oninput="onSearchInput()" onfocus="onSearchFocus()" onblur="onSearchBlur()">
+          <button class="clear-input" id="clearSearchBtn" onclick="clearSearchInput()">✕</button>
+        </div>
+        <button class="search-btn" onclick="doSearch()">搜索</button>
+      </div>
+
+      <!-- Search Content Area -->
+      <div id="searchContent">
+        <!-- Search History -->
+        <div class="history-section" id="historySection">
+          <div class="history-title">
+            <span>🕐 搜索历史</span>
+            <button class="clear-history" onclick="clearHistory()">🗑 清空</button>
+          </div>
+          <div class="history-tags" id="historyTags"></div>
+        </div>
+
+        <!-- Hot Search -->
+        <div class="hot-search-section">
+          <div class="hot-search-title">
+            <span class="fire-icon">🔥</span>热搜榜
+            <span class="update-time">实时更新</span>
+          </div>
+          <div class="hot-search-list" id="hotSearchList"></div>
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div id="searchResults" style="display:none"></div>
+    </div>
+
+    <!-- ==================== 闲置社区 ==================== -->
+    <div class="page" id="page-idle">
+      <div class="cat-scroll" id="idleCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchIdleCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="equip" onclick="switchIdleCat(this, 'equip')">餐饮设备</div>
+        <div class="cat-tab" data-cat="material" onclick="switchIdleCat(this, 'material')">物料耗材</div>
+        <div class="cat-tab" data-cat="resource" onclick="switchIdleCat(this, 'resource')">经营资源</div>
+        <div class="cat-tab" data-cat="other" onclick="switchIdleCat(this, 'other')">其他闲置</div>
+      </div>
+      <div id="idleCards"></div>
+    </div>
+
+    <!-- ==================== 发布中心 ==================== -->
+    <div class="page" id="page-publish">
+      <div class="publish-form">
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>发布分类</div>
+          <select class="form-select" id="pubCategory" onchange="onPubCatChange()">
+            <option value="">请选择分类</option>
+            <option value="canteen">校园食堂招租</option>
+            <option value="bizstreet">校园商圈招租</option>
+            <option value="hospital">医院餐厅招租</option>
+            <option value="transfer">档口转让</option>
+            <option value="park">企业园区招租</option>
+            <option value="recruit">人才招聘</option>
+            <option value="shop">校外旺铺发布</option>
+            <option value="bizsell">生意转让</option>
+            <option value="equipment">闲置物品转让</option>
+            <option value="brand">品牌信息发布</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="pubSubCatWrap" style="display:none">
+          <div class="form-label">二级分类</div>
+          <select class="form-select" id="pubSubCat">
+            <option value="">请选择</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>信息标题</div>
+          <input class="form-input" type="text" placeholder="简要概括信息内容" id="pubTitle">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>照片上传（最多9张）</div>
+          <div class="photo-upload">
+            <div class="upload-box" onclick="addPhoto()">
+              <span class="icon">📷</span>
+              <span>添加图片</span>
+            </div>
+            <div id="photoPreview"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>描述信息</div>
+          <textarea class="form-textarea" placeholder="详细描述信息内容..." id="pubDesc"></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">帖子标签</div>
+          <div class="publish-tags" id="pubTags">
+            <span class="publish-tag" onclick="toggleTag(this)">餐厅一楼</span>
+            <span class="publish-tag" onclick="toggleTag(this)">公司直招</span>
+            <span class="publish-tag" onclick="toggleTag(this)">全封闭式</span>
+            <span class="publish-tag" onclick="toggleTag(this)">人流密集</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>所属区域（湖南省内）</div>
+          <select class="form-select" id="pubRegion1">
+            <option value="">选择城市</option>
+            <option>长沙</option><option>株洲</option><option>湘潭</option>
+            <option>衡阳</option><option>岳阳</option><option>常德</option>
+            <option>益阳</option><option>娄底</option><option>邵阳</option>
+            <option>郴州</option><option>永州</option><option>怀化</option>
+            <option>湘西州</option><option>张家界</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>详细地址</div>
+          <input class="form-input" type="text" placeholder="填写具体地址" id="pubAddress">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>联系电话</div>
+          <input class="form-input" type="tel" placeholder="138****5678" value="138****5678" id="pubPhone">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">置顶推广（按周期付费）</div>
+          <select class="form-select" id="pubPin">
+            <option value="">不置顶（免费）</option>
+            <option value="7">7天置顶 - ¥9.9</option>
+            <option value="15">15天置顶 - ¥18.8</option>
+            <option value="30">30天置顶 - ¥29.9</option>
+          </select>
+        </div>
+
+        <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:8px;">
+          每日免费发布 1 条，今日剩余：<strong style="color:var(--success)" id="pubRemain">1</strong> 条
+        </p>
+        <button class="submit-btn" onclick="submitPublish()">确认发布</button>
+      </div>
+    </div>
+
+    <!-- ==================== 行业资讯 ==================== -->
+    <div class="page" id="page-news">
+      <div class="cat-scroll" id="newsCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchNewsCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="policy" onclick="switchNewsCat(this, 'policy')">行业政策</div>
+        <div class="cat-tab" data-cat="skill" onclick="switchNewsCat(this, 'skill')">创业干货</div>
+      </div>
+      <div id="newsCards"></div>
+    </div>
+
+    <!-- ==================== 个人中心 ==================== -->
+    <div class="page" id="page-me">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">餐饮创业者小王</div>
+        <div class="profile-phone">138****5678</div>
+      </div>
+
+      <div class="wallet-row">
+        <div class="wallet-item divider" onclick="showToast('积分获取：新用户注册赠送500积分')">
+          <div class="val">500</div>
+          <div class="label">我的积分</div>
+        </div>
+        <div class="wallet-item divider" onclick="showToast('余额可充值使用，点击进入充值')">
+          <div class="val">¥28.50</div>
+          <div class="label">我的余额</div>
+        </div>
+        <div class="wallet-item" onclick="showToast('共发布 3 条信息，2条已上架')">
+          <div class="val">3</div>
+          <div class="label">发布数量</div>
+        </div>
+      </div>
+
+      <div class="menu-section" style="margin-top:20px">
+        <div class="menu-item" onclick="showMyPosts()">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">我的发布</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('暂无未读消息')">
+          <span class="menu-icon">🔔</span>
+          <span class="menu-text">消息通知</span>
+          <span class="menu-badge" style="display:none">0</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('查看我的收藏列表')">
+          <span class="menu-icon">⭐</span>
+          <span class="menu-text">我的收藏</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('查看浏览记录')">
+          <span class="menu-icon">👁</span>
+          <span class="menu-text">浏览足迹</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-item" onclick="showToast('查看所有付费订单')">
+          <span class="menu-icon">💳</span>
+          <span class="menu-text">付费订单中心</span>
+          <span class="menu-right">查看详情</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showFeedback()">
+          <span class="menu-icon">💬</span>
+          <span class="menu-text">意见反馈</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('联系在线客服')">
+          <span class="menu-icon">🎧</span>
+          <span class="menu-text">在线客服</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">首页</span>
+    </div>
+    <div class="tab-item" data-page="idle" onclick="switchTab('idle')">
+      <span class="tab-icon">🔄</span>
+      <span class="tab-label">闲置社区</span>
+    </div>
+    <div class="tab-item tab-publish" data-page="publish" onclick="switchTab('publish')">
+      <div class="publish-circle">+</div>
+      <span class="tab-label">发布</span>
+    </div>
+    <div class="tab-item" data-page="news" onclick="switchTab('news')">
+      <span class="tab-icon">📰</span>
+      <span class="tab-label">资讯</span>
+    </div>
+    <div class="tab-item" data-page="me" onclick="switchTab('me')">
+      <span class="tab-icon">👤</span>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+
+  <!-- Floating CS Button -->
+  <div class="floating-cs" id="floatingCs">
+    <div class="floating-btn" id="csToggle" onclick="toggleCsMenu()" style="font-size:16px">💬</div>
+    <div class="cs-menu hidden" id="csMenu">
+      <div class="cs-item" onclick="showToast('正在拨打客服电话：400-XXX-XXXX')">📞 客服电话</div>
+      <div class="cs-item" onclick="showToast('请添加客服微信：wanyue_cs')">💚 客服微信</div>
+      <div class="cs-item" onclick="showToast('正在连接在线客服...')">🎧 在线客服</div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">⬆</button>
+</div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- My Posts Overlay -->
+<div class="detail-overlay" id="mypostsOverlay" onclick="if(event.target===this)closeMyPosts()">
+  <div class="detail-panel" id="mypostsPanel"></div>
+</div>
+
+<!-- Feedback Overlay -->
+<div class="detail-overlay" id="feedbackOverlay" onclick="if(event.target===this)closeFeedback()">
+  <div class="detail-panel" id="feedbackPanel"></div>
+</div>
+
+<script>
+// ============ Data ============
+const mockData = [
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
+  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
+  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520 },
+  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
+  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
+  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
+  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
+  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
+  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
+];
+
+const idleData = [
+  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前' },
+  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前' },
+  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前' },
+  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前' },
+  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前' },
+  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前' },
+  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前' },
+  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前' },
+];
+
+const newsData = [
+  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1' },
+  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2' },
+  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3' },
+  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1' },
+  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2' },
+  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3' },
+];
+
+// ============ State ============
+let currentTab = 'home';
+let currentHomeCat = 'all';
+let currentIdleCat = 'all';
+let currentNewsCat = 'all';
+let pubTodayCount = 0; // simulated daily publish count
+let photoCount = 0;
+
+// ============ Navigation ============
+function switchTab(page) {
+  currentTab = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
+  if (tabEl) tabEl.classList.add('active');
+
+  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索' };
+  document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
+  if (page === 'search') {
+    document.getElementById('navBack').style.display = 'none';
+  } else {
+    document.getElementById('navBack').style.display = 'none';
+  }
+  document.getElementById('pageContainer').scrollTop = 0;
+
+  if (page === 'home') renderHomeCards();
+  if (page === 'idle') renderIdleCards();
+  if (page === 'news') renderNewsCards();
+  if (page === 'publish') updatePublishRemain();
+  if (page === 'search') initSearchPage();
+}
+
+function goBack() {
+  document.getElementById('navBack').style.display = 'none';
+  document.getElementById('navTitle').textContent = '餐饮供需平台';
+  switchTab('home');
+}
+
+// ============ Home Page ============
+function switchHomeCat(el, cat) {
+  currentHomeCat = cat;
+  document.querySelectorAll('#homeCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderHomeCards();
+}
+
+function filterHomeCards() {
+  renderHomeCards();
+}
+
+function renderHomeCards() {
+  var data = mockData;
+
+  if (currentHomeCat !== 'all') {
+    data = data.filter(function(d) { return d.cat === currentHomeCat; });
+  }
+
+  // Sort pinned first
+  data.sort(function(a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0); });
+
+  if (data.length === 0) {
+    document.getElementById('homeCards').innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div class="text">没有找到相关信息</div></div>';
+    return;
+  }
+
+  let html = '';
+  data.forEach((item, idx) => {
+    html += renderInfoCard(item, idx);
+  });
+  document.getElementById('homeCards').innerHTML = html;
+}
+
+function renderInfoCard(item, idx) {
+  const imagesHtml = item.images.length ? `
+    <div class="card-images">
+      ${item.images.map((img,i) => `<div class="card-img"><img src="data:image/svg+xml,${encodeSVG(img, i)}" alt="图片"></div>`).join('')}
+    </div>` : '';
+  const pinHtml = item.pinned ? '<div class="pin-badge">🔥 置顶</div>' : '';
+  const tagsHtml = item.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('');
+  return `
+    <div class="info-card" onclick="openDetail(${item.id})">
+      ${pinHtml}
+      <div class="card-header">
+        <div class="user-avatar">${item.avatar}</div>
+        <div class="user-info">
+          <div class="user-name">${item.username}</div>
+          <div class="post-time">${item.time}</div>
+        </div>
+        <span style="font-size:12px;color:var(--text-muted);background:#f3f4f6;padding:3px 8px;border-radius:4px">${item.catLabel}</span>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-desc">${item.desc}</div>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-location">📍 ${item.location}</div>
+      ${imagesHtml}
+      <div class="card-phone" onclick="event.stopPropagation();handleUnlockPhone(${item.id}, this)">
+        📱 <span class="phone-num">${item.phone}</span>
+        <span class="unlock-btn">查看完整号码 ¥2</span>
+      </div>
+      <div class="card-actions">
+        <span onclick="event.stopPropagation();toggleLike(this,${item.id})">👍 ${item.likes}</span>
+        <span onclick="event.stopPropagation();toggleFav(this,${item.id})">⭐ ${item.favorites}</span>
+        <span>👁 ${item.views}</span>
+        <span onclick="event.stopPropagation();showToast('已复制分享链接')">📤 转发</span>
+      </div>
+    </div>`;
+}
+
+// ============ Idle Page ============
+function switchIdleCat(el, cat) {
+  currentIdleCat = cat;
+  document.querySelectorAll('#idleCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderIdleCards();
+}
+
+function renderIdleCards() {
+  let data = idleData;
+  if (currentIdleCat !== 'all') data = data.filter(d => d.cat === currentIdleCat);
+
+  if (data.length === 0) {
+    document.getElementById('idleCards').innerHTML = '<div class="empty-state"><div class="icon">📦</div><div class="text">暂无闲置物品</div></div>';
+    return;
+  }
+
+  let html = '';
+  data.forEach(item => {
+    const imgSvg = getImgSvg(item.img);
+    html += `
+    <div class="idle-card" onclick="showToast('查看闲置物品详情: ${item.title}')">
+      <div class="idle-img"><img src="data:image/svg+xml,${imgSvg}" alt="${item.title}"></div>
+      <div class="idle-info">
+        <div>
+          <div class="idle-title">${item.title}</div>
+          <div class="idle-condition">${item.condition} · ${item.used}</div>
+        </div>
+        <div>
+          <div class="idle-price">¥${item.price}</div>
+          <div class="idle-location">📍 ${item.location} · ${item.time}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('idleCards').innerHTML = html;
+}
+
+// ============ News Page ============
+function switchNewsCat(el, cat) {
+  currentNewsCat = cat;
+  document.querySelectorAll('#newsCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderNewsCards();
+}
+
+function renderNewsCards() {
+  let data = newsData;
+  if (currentNewsCat !== 'all') data = data.filter(d => d.cat === currentNewsCat);
+
+  let html = '';
+  data.forEach(item => {
+    html += `
+    <div class="news-card" onclick="showToast('查看资讯详情: ${item.title}')">
+      <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':'💡'}</div>
+      <div class="news-info">
+        <div class="news-title">${item.title}</div>
+        <div class="news-desc">${item.desc}</div>
+        <div class="news-meta">
+          <span>👁 ${item.views}次阅读</span>
+          <span>${item.time}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('newsCards').innerHTML = html;
+}
+
+// ============ Detail View ============
+function openDetail(id) {
+  const item = mockData.find(d => d.id === id);
+  if (!item) return;
+
+  const imagesHtml = item.images.length ? `
+    <div class="detail-img-grid">
+      ${item.images.map((img,i) => `<img src="data:image/svg+xml,${encodeSVG(img, i)}" alt="图片" onclick="showToast('查看大图')">`).join('')}
+    </div>` : '<p style="color:var(--text-muted);font-size:13px">暂无图片</p>';
+
+  const html = `
+    <div class="detail-header">
+      <button class="close-btn" onclick="closeDetail()">✕</button>
+      <span class="title">信息详情</span>
+      <span style="width:24px"></span>
+    </div>
+    <div class="detail-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="user-avatar" style="width:40px;height:40px;font-size:16px">${item.avatar}</div>
+        <div>
+          <div style="font-weight:600;font-size:15px">${item.username}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${item.time} · ${item.catLabel}</div>
+        </div>
+        ${item.pinned ? '<span style="color:#f59e0b;font-size:12px;font-weight:600;margin-left:auto">🔥 置顶信息</span>' : ''}
+      </div>
+      <h3 style="font-size:17px;margin-bottom:10px">${item.title}</h3>
+      <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:12px">${item.desc}</p>
+      <div class="card-tags">${item.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('')}</div>
+      <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">📍 ${item.location}</div></div>
+      ${imagesHtml}
+      <div class="detail-field" style="background:#f9fafb;padding:12px;border-radius:8px;margin-top:12px">
+        <div class="field-label">联系电话</div>
+        <div class="field-value" style="font-size:16px;letter-spacing:1px">📱 ${item.phone}</div>
+        <button style="margin-top:8px;width:100%;padding:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
+      </div>
+      <div style="display:flex;justify-content:space-around;padding:12px 0;margin-top:12px;border-top:1px solid var(--border)">
+        <span style="cursor:pointer" onclick="showToast('已收藏')">⭐ 收藏</span>
+        <span style="cursor:pointer" onclick="showToast('已点赞')">👍 点赞(${item.likes})</span>
+        <span style="cursor:pointer" onclick="showToast('已复制分享链接')">📤 分享</span>
+      </div>
+    </div>`;
+
+  document.getElementById('detailPanel').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('show');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('show');
+}
+
+// ============ Phone Unlock ============
+function handleUnlockPhone(id, el) {
+  showToast('支付 ¥2.00 即可查看完整手机号\n（模拟：13912345678）');
+  if (el) {
+    el.querySelector('.phone-num').textContent = '13912345678';
+    el.querySelector('.unlock-btn').textContent = '✓ 已解锁';
+    el.querySelector('.unlock-btn').style.background = '#dcfce7';
+    el.querySelector('.unlock-btn').style.color = '#166534';
+  }
+}
+
+function handleUnlockDetail(id) {
+  showToast('支付成功！完整手机号：13912345678（24小时内有效）');
+}
+
+// ============ Publish ============
+function onPubCatChange() {
+  const val = document.getElementById('pubCategory').value;
+  const subWrap = document.getElementById('pubSubCatWrap');
+  const sub = document.getElementById('pubSubCat');
+  if (['canteen','transfer','recruit'].includes(val)) {
+    subWrap.style.display = 'block';
+    if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>本科食堂</option><option>专科食堂</option>';
+    else if (val === 'transfer') sub.innerHTML = '<option value="">请选择</option><option>档口整体转让</option><option>设备转让</option>';
+    else if (val === 'recruit') sub.innerHTML = '<option value="">请选择</option><option>管理岗位</option><option>技术岗位</option><option>服务岗位</option>';
+  } else {
+    subWrap.style.display = 'none';
+  }
+}
+
+function addPhoto() {
+  if (photoCount >= 9) { showToast('最多上传9张图片'); return; }
+  photoCount++;
+  const preview = document.getElementById('photoPreview');
+  const div = document.createElement('div');
+  div.style.cssText = 'width:80px;height:80px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#ede9fe);display:flex;align-items:center;justify-content:center;font-size:24px;position:relative';
+  div.innerHTML = '📷<span style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer" onclick="removePhoto(this)">×</span>';
+  preview.appendChild(div);
+}
+
+function removePhoto(el) {
+  el.parentElement.remove();
+  photoCount--;
+}
+
+function toggleTag(el) {
+  el.classList.toggle('selected');
+}
+
+function updatePublishRemain() {
+  document.getElementById('pubRemain').textContent = Math.max(0, 1 - pubTodayCount);
+}
+
+function submitPublish() {
+  const cat = document.getElementById('pubCategory').value;
+  const title = document.getElementById('pubTitle').value;
+  const desc = document.getElementById('pubDesc').value;
+  const region = document.getElementById('pubRegion1').value;
+
+  if (!cat || !title || !desc || !region) {
+    showToast('请填写必填信息');
+    return;
+  }
+
+  if (pubTodayCount >= 1) {
+    showToast('今日免费发布额度已用完\n（模拟：支付¥2发布）');
+    pubTodayCount++;
+  } else {
+    pubTodayCount++;
+    showToast('提交成功！等待审核中...');
+  }
+  updatePublishRemain();
+
+  // Reset form
+  document.getElementById('pubCategory').value = '';
+  document.getElementById('pubTitle').value = '';
+  document.getElementById('pubDesc').value = '';
+  document.getElementById('pubRegion1').value = '';
+  document.getElementById('pubSubCat').value = '';
+  document.getElementById('pubSubCatWrap').style.display = 'none';
+  document.getElementById('photoPreview').innerHTML = '';
+  photoCount = 0;
+  document.querySelectorAll('.publish-tag').forEach(t => t.classList.remove('selected'));
+
+  // Switch to home after 1s
+  setTimeout(() => switchTab('home'), 1000);
+}
+
+// ============ My Posts ============
+function showMyPosts() {
+  const html = `
+    <div class="detail-header">
+      <button class="close-btn" onclick="closeMyPosts()">✕</button>
+      <span class="title">我的发布</span>
+      <span style="width:24px"></span>
+    </div>
+    <div class="detail-body">
+      <div style="padding:8px 0">
+        <div class="info-card">
+          <span style="font-size:11px;color:var(--success);background:var(--success-light);padding:2px 8px;border-radius:4px">审核中</span>
+          <div class="card-title" style="margin-top:8px">湖南大学食堂档口招商</div>
+          <div class="card-desc">刚刚提交，等待审核...</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">2026-07-07 10:25</div>
+        </div>
+        <div class="info-card">
+          <span style="font-size:11px;color:var(--success);background:var(--success-light);padding:2px 8px;border-radius:4px">✓ 已上架</span>
+          <div class="card-title" style="margin-top:8px">招聘面点师傅</div>
+          <div class="card-desc">急招面点师傅2名...</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button style="padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer" onclick="showToast('已刷新')">🔄 刷新</button>
+            <button style="padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;color:var(--danger)" onclick="showToast('已下架')">⬇ 下架</button>
+          </div>
+        </div>
+        <div class="info-card">
+          <span style="font-size:11px;color:var(--danger);background:var(--danger-light);padding:2px 8px;border-radius:4px">审核驳回</span>
+          <div class="card-title" style="margin-top:8px">闲置冰柜转让</div>
+          <div class="card-desc" style="color:var(--danger)">驳回原因：图片模糊，请重新上传清晰图片</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button style="padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer" onclick="showToast('进入编辑页面')">✏ 重新编辑</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('mypostsPanel').innerHTML = html;
+  document.getElementById('mypostsOverlay').classList.add('show');
+}
+
+function closeMyPosts() {
+  document.getElementById('mypostsOverlay').classList.remove('show');
+}
+
+// ============ Feedback ============
+function showFeedback() {
+  const html = `
+    <div class="detail-header">
+      <button class="close-btn" onclick="closeFeedback()">✕</button>
+      <span class="title">意见反馈</span>
+      <span style="width:24px"></span>
+    </div>
+    <div class="detail-body">
+      <div class="form-group">
+        <div class="form-label">反馈标题</div>
+        <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
+      </div>
+      <div class="form-group">
+        <div class="form-label">反馈内容</div>
+        <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="form-label">上传截图（选填）</div>
+        <div class="photo-upload">
+          <div class="upload-box" onclick="showToast('模拟上传图片')">
+            <span class="icon">📷</span><span>添加图片</span>
+          </div>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>
+    </div>`;
+  document.getElementById('feedbackPanel').innerHTML = html;
+  document.getElementById('feedbackOverlay').classList.add('show');
+}
+
+function closeFeedback() {
+  document.getElementById('feedbackOverlay').classList.remove('show');
+}
+
+function submitFeedback() {
+  showToast('感谢您的反馈！我们会尽快处理');
+  setTimeout(() => closeFeedback(), 800);
+}
+
+// ============ Interactions ============
+function toggleLike(el, id) {
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    el.textContent = '👍 ' + (mockData.find(d=>d.id===id).likes - 1);
+  } else {
+    el.classList.add('liked');
+    el.textContent = '👍 ' + (mockData.find(d=>d.id===id).likes + 1);
+  }
+}
+
+function toggleFav(el, id) {
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    showToast('已取消收藏');
+  } else {
+    el.classList.add('favorited');
+    showToast('已收藏');
+  }
+}
+
+// ============ CS Menu ============
+function toggleCsMenu() {
+  document.getElementById('csMenu').classList.toggle('hidden');
+}
+
+function scrollToTop() {
+  document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('csMenu').classList.add('hidden');
+}
+
+// ============ Toast ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.whiteSpace = 'pre-line';
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ============ SVG helpers ============
+function encodeSVG(key, idx) {
+  const colors = [
+    ['#3b82f6','#93c5fd'], ['#10b981','#6ee7b7'], ['#f59e0b','#fde68a'],
+    ['#8b5cf6','#c4b5fd'], ['#ef4444','#fca5a5']
+  ];
+  const [c1, c2] = colors[(idx || 0) % colors.length];
+  const label = key.replace('bg','').replace('equip','设备').replace('material','物料').replace('resource','资源');
+  return `%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160'%3E%3Crect width='200' height='160' fill='${c1}'/%3E%3Crect x='40' y='20' width='120' height='120' rx='10' fill='${c2}' opacity='0.5'/%3E%3Ctext x='100' y='85' text-anchor='middle' fill='white' font-size='16'%3E📷%3C/text%3E%3Ctext x='100' y='110' text-anchor='middle' fill='white' font-size='11'%3E${label}%3C/text%3E%3C/svg%3E`;
+}
+
+function getImgSvg(key) {
+  const map = {
+    equip1: ['#0ea5e9','实拍：商用冰柜'],
+    equip2: ['#f97316','实拍：炸炉蒸箱'],
+    equip3: ['#8b5cf6','实拍：收银机'],
+    material1: ['#10b981','实拍：打包盒'],
+    material2: ['#ef4444','实拍：一次性筷'],
+    resource1: ['#6366f1','实拍：配方资料'],
+  };
+  const [c, label] = map[key] || ['#6b7280', key];
+  return `%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='${c}'/%3E%3Crect x='30' y='30' width='140' height='140' rx='12' fill='white' opacity='0.3'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='white' font-size='13'%3E${label}%3C/text%3E%3C/svg%3E`;
+}
+
+// ============ Banner Carousel ============
+var bannerIdx = 0;
+var bannerTotal = 3;
+var bannerTimer = null;
+
+function goBanner(idx) {
+  bannerIdx = idx;
+  document.getElementById('bannerSlides').style.transform = 'translateX(-' + (idx * 100) + '%)';
+  document.querySelectorAll('.banner-dot').forEach(function(d, i) {
+    d.classList.toggle('active', i === idx);
+  });
+}
+
+function bannerAutoPlay() {
+  bannerIdx = (bannerIdx + 1) % bannerTotal;
+  goBanner(bannerIdx);
+}
+
+function startBanner() {
+  stopBanner();
+  bannerTimer = setInterval(bannerAutoPlay, 2000);
+}
+
+function stopBanner() {
+  if (bannerTimer) { clearInterval(bannerTimer); bannerTimer = null; }
+}
+
+// Pause on hover (mobile: no hover, but good practice)
+document.getElementById('homeBanner').addEventListener('mouseenter', stopBanner);
+document.getElementById('homeBanner').addEventListener('mouseleave', startBanner);
+
+startBanner();
+
+// ============ Init ============
+renderHomeCards();
+renderIdleCards();
+renderNewsCards();
+
+// ============ Search Page ============
+var hotSearchData = [
+  { rank:1, keyword:'湖南大学档口转让', badge:'热', badgeClass:'hot-badge-hot' },
+  { rank:2, keyword:'高校食堂招租长沙', badge:'热', badgeClass:'hot-badge-hot' },
+  { rank:3, keyword:'炸炉设备二手转让', badge:'新', badgeClass:'hot-badge-new' },
+  { rank:4, keyword:'面点师傅招聘', badge:'', badgeClass:'' },
+  { rank:5, keyword:'大学城旺铺出租', badge:'升', badgeClass:'hot-badge-rising' },
+  { rank:6, keyword:'食堂档口纯租金', badge:'', badgeClass:'' },
+  { rank:7, keyword:'品牌加盟快餐', badge:'新', badgeClass:'hot-badge-new' },
+  { rank:8, keyword:'中南大学商业街', badge:'', badgeClass:'' },
+  { rank:9, keyword:'餐饮收银机转让', badge:'', badgeClass:'' },
+  { rank:10, keyword:'医院食堂招租', badge:'', badgeClass:'' },
+];
+
+var searchHistory = JSON.parse(localStorage.getItem('whs_search_history') || '[]');
+
+function openSearch() {
+  currentTab = 'search';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-search').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var homeTab = document.querySelector('.tab-item[data-page="home"]');
+  if (homeTab) homeTab.classList.add('active');
+  document.getElementById('navTitle').textContent = '搜索';
+  document.getElementById('pageContainer').scrollTop = 0;
+  initSearchPage();
+  // Focus input
+  setTimeout(function() { document.getElementById('searchInput').focus(); }, 100);
+}
+
+function closeSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+  switchTab('home');
+}
+
+function initSearchPage() {
+  searchSortBy = 'default';
+  allSearchResults = null;
+  renderHotSearch();
+  renderHistory();
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+}
+
+function renderHotSearch() {
+  var html = '';
+  hotSearchData.forEach(function(item) {
+    var rankClass = item.rank <= 3 ? ' top' + item.rank : '';
+    var badgeHtml = item.badge ? '<span class="hot-badge ' + item.badgeClass + '">' + item.badge + '</span>' : '';
+    html += '<div class="hot-search-item" onclick="clickHotSearch(\'' + item.keyword + '\')">' +
+      '<span class="rank' + rankClass + '">' + item.rank + '</span>' +
+      '<span class="keyword">' + item.keyword + '</span>' +
+      badgeHtml +
+      '</div>';
+  });
+  document.getElementById('hotSearchList').innerHTML = html;
+}
+
+function renderHistory() {
+  if (searchHistory.length === 0) {
+    document.getElementById('historySection').style.display = 'none';
+  } else {
+    document.getElementById('historySection').style.display = 'block';
+    var html = '';
+    searchHistory.forEach(function(kw) {
+      html += '<span class="history-tag" onclick="clickHistory(\'' + kw + '\')">' + kw + '</span>';
+    });
+    document.getElementById('historyTags').innerHTML = html;
+  }
+}
+
+function clickHotSearch(keyword) {
+  document.getElementById('searchInput').value = keyword;
+  document.getElementById('clearSearchBtn').classList.add('show');
+  document.getElementById('searchInput').focus();
+}
+
+function clickHistory(keyword) {
+  document.getElementById('searchInput').value = keyword;
+  document.getElementById('clearSearchBtn').classList.add('show');
+  document.getElementById('searchInput').focus();
+}
+
+function clearHistory() {
+  searchHistory = [];
+  localStorage.setItem('whs_search_history', '[]');
+  renderHistory();
+  showToast('搜索历史已清空');
+}
+
+function addToHistory(keyword) {
+  searchHistory = searchHistory.filter(function(k) { return k !== keyword; });
+  searchHistory.unshift(keyword);
+  if (searchHistory.length > 10) searchHistory.pop();
+  localStorage.setItem('whs_search_history', JSON.stringify(searchHistory));
+  renderHistory();
+}
+
+function onSearchInput() {
+  var val = document.getElementById('searchInput').value;
+  if (val) {
+    document.getElementById('clearSearchBtn').classList.add('show');
+  } else {
+    document.getElementById('clearSearchBtn').classList.remove('show');
+  }
+}
+
+function onSearchFocus() {
+  document.getElementById('searchInputWrap').classList.add('focused');
+}
+
+function onSearchBlur() {
+  document.getElementById('searchInputWrap').classList.remove('focused');
+}
+
+function clearSearchInput() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('searchInput').focus();
+}
+
+var searchSortBy = 'default'; // 'default' | 'likes' | 'views' | 'time'
+var allSearchResults = null; // { results, idleResults, newsResults, keyword }
+
+function parseTimeScore(timeStr) {
+  // Parse time strings into a numeric score (lower = newer)
+  if (!timeStr) return 999999;
+  var h = timeStr.match(/(\d+)\s*小时前/);
+  if (h) return parseInt(h[1]);
+  var d = timeStr.match(/(\d+)\s*天前/);
+  if (d) return parseInt(d[1]) * 24;
+  var dt = timeStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (dt) {
+    var refDate = new Date(2026, 6, 7); // today
+    var d2 = new Date(parseInt(dt[1]), parseInt(dt[2]) - 1, parseInt(dt[3]));
+    return Math.floor((refDate - d2) / (1000 * 60 * 60));
+  }
+  return 999999;
+}
+
+function doSearch() {
+  var keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) {
+    showToast('请输入搜索关键词');
+    return;
+  }
+  addToHistory(keyword);
+  searchSortBy = 'default';
+  renderSearchResults(keyword);
+}
+
+function doRealtimeSearch(keyword) {
+  if (!keyword.trim()) {
+    document.getElementById('searchResults').style.display = 'none';
+    document.getElementById('searchContent').style.display = 'block';
+    return;
+  }
+  searchSortBy = 'default';
+  renderSearchResults(keyword);
+}
+
+function changeSearchSort(sortBy) {
+  if (searchSortBy === sortBy) return;
+  searchSortBy = sortBy;
+  if (allSearchResults) {
+    renderSortedResults();
+  }
+}
+
+function renderSortedResults() {
+  if (!allSearchResults) return;
+  var data = allSearchResults;
+  var results = data.results.slice();
+  var idleResults = data.idleResults.slice();
+  var newsResults = data.newsResults.slice();
+
+  var sortFn;
+  if (searchSortBy === 'likes') {
+    // Sort by likes desc, fallback to views
+    sortFn = function(a, b) { return (b.likes || 0) - (a.likes || 0); };
+    results.sort(sortFn);
+    newsResults.sort(function(a, b) { return (b.views || 0) - (a.views || 0); });
+    idleResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  } else if (searchSortBy === 'views') {
+    sortFn = function(a, b) { return (b.views || 0) - (a.views || 0); };
+    results.sort(sortFn);
+    newsResults.sort(function(a, b) { return (b.views || 0) - (a.views || 0); });
+    idleResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  } else if (searchSortBy === 'time') {
+    // Newest first (lower score = newer)
+    var timeSort = function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); };
+    results.sort(timeSort);
+    idleResults.sort(timeSort);
+    newsResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  }
+  // default: no re-sort, keep original relevance order
+
+  outputResultsHTML(data.keyword, results, idleResults, newsResults);
+}
+
+function renderSearchResults(keyword) {
+  document.getElementById('searchContent').style.display = 'none';
+  var kw = (keyword || '').toLowerCase();
+  // Search in all data
+  var results = mockData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.desc.toLowerCase().indexOf(kw) !== -1 ||
+      d.catLabel.toLowerCase().indexOf(kw) !== -1 ||
+      d.location.toLowerCase().indexOf(kw) !== -1 ||
+      d.tags.some(function(t) { return t.toLowerCase().indexOf(kw) !== -1; });
+  });
+
+  var idleResults = idleData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.catLabel.toLowerCase().indexOf(kw) !== -1 ||
+      d.location.toLowerCase().indexOf(kw) !== -1;
+  });
+
+  var newsResults = newsData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.desc.toLowerCase().indexOf(kw) !== -1;
+  });
+
+  allSearchResults = { results: results, idleResults: idleResults, newsResults: newsResults, keyword: keyword };
+  outputResultsHTML(keyword, results, idleResults, newsResults);
+}
+
+function outputResultsHTML(keyword, results, idleResults, newsResults) {
+  var totalCount = results.length + idleResults.length + newsResults.length;
+
+  var html = '';
+  // Filter Bar
+  html += '<div class="search-filter-bar">';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'default' ? ' active' : '') + '" onclick="changeSearchSort(\'default\')">综合</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'likes' ? ' active' : '') + '" onclick="changeSearchSort(\'likes\')">👍 点赞</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'views' ? ' active' : '') + '" onclick="changeSearchSort(\'views\')">👁 浏览量</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'time' ? ' active' : '') + '" onclick="changeSearchSort(\'time\')">🕐 最新</button>';
+  html += '</div>';
+
+  html += '<div class="search-result-count">找到 <strong>' + totalCount + '</strong> 个相关结果</div>';
+
+  if (totalCount === 0) {
+    html += '<div class="no-result"><div class="icon">🔍</div><div class="text">没有找到「' + keyword + '」相关信息</div><div class="sub">换个关键词试试</div></div>';
+  } else {
+    results.forEach(function(item) {
+      html += renderInfoCard(item, item.id);
+    });
+    if (idleResults.length > 0) {
+      html += '<div class="section-title" style="padding-top:16px">📦 闲置物品</div>';
+      idleResults.forEach(function(item) {
+        var imgSvg = getImgSvg(item.img);
+        html += '<div class="idle-card" onclick="showToast(\'查看闲置物品详情: ' + item.title + '\')">' +
+          '<div class="idle-img"><img src="data:image/svg+xml,' + imgSvg + '" alt="' + item.title + '"></div>' +
+          '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
+          '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
+          '<div><div class="idle-price">¥' + item.price + '</div>' +
+          '<div class="idle-location">📍 ' + item.location + ' · ' + item.time + '</div></div></div></div>';
+      });
+    }
+    if (newsResults.length > 0) {
+      html += '<div class="section-title" style="padding-top:16px">📰 行业资讯</div>';
+      newsResults.forEach(function(item) {
+        html += '<div class="news-card" onclick="showToast(\'查看资讯详情: ' + item.title + '\')">' +
+          '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : '💡') + '</div>' +
+          '<div class="news-info"><div class="news-title">' + item.title + '</div>' +
+          '<div class="news-desc">' + item.desc + '</div>' +
+          '<div class="news-meta"><span>👁 ' + item.views + '次阅读</span><span>' + item.time + '</span></div></div></div>';
+      });
+    }
+  }
+
+  document.getElementById('searchResults').innerHTML = html;
+  document.getElementById('searchResults').style.display = 'block';
+}
+
+// Close CS menu on scroll + toggle back-to-top
+document.getElementById('pageContainer').addEventListener('scroll', function() {
+  document.getElementById('csMenu').classList.add('hidden');
+  var scrollTop = document.getElementById('pageContainer').scrollTop;
+  var btn = document.getElementById('backToTop');
+  if (scrollTop > 400) {
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+});
+
+// Close detail on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeDetail();
+    closeMyPosts();
+    closeFeedback();
+  }
+});
+</script>
+</body>
+</html>

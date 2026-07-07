@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>万户山生态科技有限公司 - 餐饮供需平台小程序项目需求文档</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --primary-dark: #1e40af;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+        /* Cover */
+        .cover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%);
+            color: #fff;
+            padding: 64px 48px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .cover h1 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .cover .subtitle { font-size: 18px; opacity: 0.9; margin-bottom: 32px; }
+        .cover .meta { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .cover .meta-item { text-align: center; }
+        .cover .meta-item .label { font-size: 13px; opacity: 0.7; margin-bottom: 4px; }
+        .cover .meta-item .value { font-size: 16px; font-weight: 600; }
+
+        /* Section */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--gray-100); padding-bottom: 12px; }
+        .section-number {
+            background: var(--primary);
+            color: #fff;
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .section-title { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+        .subsection { margin-bottom: 24px; }
+        .subsection-title { font-size: 17px; font-weight: 600; color: var(--primary-dark); margin-bottom: 12px; padding-left: 12px; border-left: 4px solid var(--primary); }
+        .subsubsection-title { font-size: 15px; font-weight: 600; color: var(--gray-700); margin: 16px 0 8px; }
+
+        p { margin-bottom: 10px; color: var(--gray-600); }
+        ul, ol { margin: 8px 0 12px 20px; }
+        li { margin-bottom: 6px; color: var(--gray-600); }
+        strong { color: var(--gray-800); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+        th { background: var(--gray-50); color: var(--gray-700); font-weight: 600; text-align: left; padding: 10px 14px; border: 1px solid var(--gray-200); }
+        td { padding: 10px 14px; border: 1px solid var(--gray-200); color: var(--gray-600); }
+        tr:nth-child(even) td { background: var(--gray-50); }
+
+        /* Callout */
+        .callout { border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+        .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+        .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+        .callout-warning { background: var(--warning-light); border-left: 4px solid var(--warning); }
+        .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+        .callout-title { font-weight: 600; margin-bottom: 6px; }
+        .callout-info .callout-title { color: var(--primary-dark); }
+        .callout-success .callout-title { color: #166534; }
+        .callout-warning .callout-title { color: #92400e; }
+        .callout-danger .callout-title { color: #991b1b; }
+
+        /* Badge */
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-free { background: var(--success-light); color: #166534; }
+        .badge-paid { background: var(--warning-light); color: #92400e; }
+        .badge-core { background: var(--primary-light); color: var(--primary-dark); }
+
+        /* Flow diagram */
+        .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .flow-step { background: var(--gray-50); border: 1px solid var(--gray-300); border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--gray-700); }
+        .flow-arrow { color: var(--gray-400); font-size: 18px; }
+        .flow-step.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* Tag list */
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+        .tag { background: var(--gray-100); color: var(--gray-600); padding: 4px 12px; border-radius: 6px; font-size: 13px; }
+
+        /* Priority indicator */
+        .priority { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        .priority-high { background: var(--danger); }
+        .priority-mid { background: var(--warning); }
+        .priority-low { background: var(--success); }
+
+        /* Architecture diagram */
+        .arch-diagram { background: var(--gray-50); border-radius: 12px; padding: 24px; margin: 16px 0; }
+        .arch-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .arch-box { border-radius: 8px; padding: 12px 20px; text-align: center; font-size: 14px; font-weight: 600; }
+        .arch-box.top { background: var(--primary); color: #fff; }
+        .arch-box.mid { background: var(--primary-light); color: var(--primary-dark); border: 1px solid var(--primary); }
+        .arch-box.bot { background: #fff; color: var(--gray-600); border: 1px solid var(--gray-300); }
+        .arch-arrow { text-align: center; color: var(--gray-400); font-size: 20px; margin: 4px 0; }
+
+        .toc { background: var(--gray-50); border-radius: 8px; padding: 20px 28px; margin-bottom: 24px; }
+        .toc-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--gray-800); }
+        .toc ol { margin-left: 20px; }
+        .toc li { margin-bottom: 4px; }
+        .toc a { color: var(--primary); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+
+        .footer { text-align: center; color: var(--gray-400); font-size: 13px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200); }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Cover -->
+    <div class="cover">
+        <h1>餐饮供需平台小程序</h1>
+        <div class="subtitle">项目需求文档（PRD）</div>
+        <div class="meta">
+            <div class="meta-item">
+                <div class="label">委托方</div>
+                <div class="value">万户山生态科技有限公司</div>
+            </div>
+            <div class="meta-item">
+                <div class="label">文档版本</div>
+                <div class="value">V2.0（细化版）</div>
+            </div>
+            <div class="meta-item">
+                <div class="label">编制日期</div>
+                <div class="value">2026年7月</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revision History -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-number">版本</div>
+            <div class="section-title">修订记录</div>
+        </div>
+        <table>
+            <tr><th>版本</th><th>日期</th><th>修订内容</th><th>修订人</th></tr>
+            <tr><td>V1.0</td><td>2026-07</td><td>原始需求文档（甲方提供）</td><td>万户山生态科技有限公司</td></tr>
+            <tr><td>V2.0</td><td>2026-07-07</td><td>需求重新分析、规则细化、补充非功能需求与技术建议，形成完整PRD</td><td>需求分析团队</td></tr>
+        </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <div class="toc-title">目录</div>
+        <ol>
+            <li><a href="#s1">项目概述</a></li>
+            <li><a href="#s2">用户角色与权限体系</a></li>
+            <li><a href="#s3">系统功能架构总览</a></li>
+            <li><a href="#s4">详细功能需求</a></li>
+            <li><a href="#s5">平台付费体系</a></li>
+            <li><a href="#s6">积分体系</a></li>
+            <li><a href="#s7">审核与风控规则</a></li>
+            <li><a href="#s8">后台管理系统需求</a></li>
+            <li><a href="#s9">非功能性需求</a></li>
+            <li><a href="#s10">技术架构建议</a></li>
+            <li><a href="#s11">项目里程碑建议</a></li>
+        </ol>
+    </div>
+
+    <!-- 1. 项目概述 -->
+    <div class="section" id="s1">
+        <div class="section-header">
+            <div class="section-number">1</div>
+            <div class="section-title">项目概述</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">1.1 项目背景</div>
+            <p>餐饮供需平台小程序是一款面向<strong>校园餐饮行业</strong>的供需撮合 + 闲置交易平台。目前聚焦湖南本土地区，主要服务<strong>校园、医院、工厂食堂</strong>三大场景，覆盖餐饮公司、个人档口创业者、品牌方三大核心人群。</p>
+            <p>平台聚焦校园、医院、工厂餐饮档口招商、转让、求租等供需信息对接，同时新增闲置物品交易社区，制定轻量化、透明化的付费体系——平台仅收取"置顶推广""查看联系方式"两项增值付费功能，打造<strong>免费发布、精准对接、资源复用</strong>的餐饮招商供需信息服务平台。</p>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">1.2 核心定位</div>
+            <table>
+                <tr><th style="width:30%">维度</th><th>描述</th></tr>
+                <tr><td>平台定位</td><td>免费的校园餐饮招商供需信息发布、精准对接、闲置资源交易社区</td></tr>
+                <tr><td>服务区域</td><td>湖南省内（前期），后续可扩展至全国</td></tr>
+                <tr><td>目标用户</td><td>餐饮公司、餐饮创业者/档口商户、品牌方</td></tr>
+                <tr><td>核心价值</td><td>免费发布 + 精准匹配 + 闲置资源流转 + 轻量付费增值</td></tr>
+                <tr><td>盈利模式</td><td>置顶推广付费 + 查看完整手机号付费 + 超额发布付费（后期开通）</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">1.3 名词术语表</div>
+            <table>
+                <tr><th style="width:20%">术语</th><th>说明</th></tr>
+                <tr><td>供需信息</td><td>平台发布的餐饮招商、转让、求租、招聘等信息统称</td></tr>
+                <tr><td>闲置信息</td><td>闲置社区中发布的二手设备、物料、资源转让信息</td></tr>
+                <tr><td>置顶推广</td><td>付费增值功能，将信息在列表中优先展示</td></tr>
+                <tr><td>脱敏号码</td><td>隐藏中间4位的手机号展示形式，如 138****5678</td></tr>
+                <tr><td>档口</td><td>食堂/餐饮场所内的独立经营摊位</td></tr>
+                <tr><td>发布者</td><td>在平台发布信息的注册用户</td></tr>
+                <tr><td>浏览者</td><td>浏览平台信息的用户（含未注册用户）</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. 用户角色与权限体系 -->
+    <div class="section" id="s2">
+        <div class="section-header">
+            <div class="section-number">2</div>
+            <div class="section-title">用户角色与权限体系</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">2.1 角色定义</div>
+            <p>平台<strong>无会员等级、无入驻门槛</strong>，所有注册用户权限统一，仅区分"发布者"与"浏览者"两种行为角色。核心用户群体分为三类：</p>
+            <table>
+                <tr><th style="width:18%">用户类型</th><th style="width:32%">角色描述</th><th>核心行为</th></tr>
+                <tr>
+                    <td><strong>餐饮公司</strong></td>
+                    <td>承包食堂的餐饮企业</td>
+                    <td>发布食堂招商信息、档口转让信息等</td>
+                </tr>
+                <tr>
+                    <td><strong>餐饮创业者/档口商户</strong></td>
+                    <td>个体经营者、档口创业者</td>
+                    <td>发布档口转让/求租、闲置物品转让，浏览供需资源、对接合作</td>
+                </tr>
+                <tr>
+                    <td><strong>品牌方</strong></td>
+                    <td>餐饮品牌加盟企业</td>
+                    <td>发布品牌招商信息，对接平台用户资源</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">2.2 用户注册与认证</div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>规则说明</th></tr>
+                <tr><td>注册方式</td><td>微信小程序一键授权登录（获取openid + 微信昵称 + 头像）</td></tr>
+                <tr><td>手机号绑定</td><td>通过微信手机号快速验证组件绑定手机号，作为实名依据</td></tr>
+                <tr><td>用户资料</td><td>昵称、头像、手机号、所在区域（选填）</td></tr>
+                <tr><td>实名审核</td><td>所有用户统一平台实名审核机制，绑定手机号后方可发布信息</td></tr>
+                <tr><td>账号安全</td><td>一个微信号对应一个账号，不可重复注册</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">2.3 权限矩阵</div>
+            <table>
+                <tr>
+                    <th style="width:25%">功能</th>
+                    <th style="width:15%">未注册用户</th>
+                    <th style="width:15%">注册用户（浏览者）</th>
+                    <th style="width:15%">注册用户（发布者）</th>
+                    <th style="width:15%">付费用户</th>
+                </tr>
+                <tr><td>浏览供需/闲置信息</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>搜索/筛选信息</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>收藏/点赞/转发</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>查看脱敏手机号</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>查看完整手机号</td><td>❌</td><td>❌</td><td>❌</td><td>✅（付费解锁）</td></tr>
+                <tr><td>发布信息（每日首条）</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>发布信息（超额）</td><td>❌</td><td>❌</td><td>❌</td><td>✅（付费发布）</td></tr>
+                <tr><td>置顶推广</td><td>❌</td><td>❌</td><td>❌</td><td>✅（付费推广）</td></tr>
+                <tr><td>行业资讯浏览</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>在线客服</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. 系统功能架构总览 -->
+    <div class="section" id="s3">
+        <div class="section-header">
+            <div class="section-number">3</div>
+            <div class="section-title">系统功能架构总览</div>
+        </div>
+
+        <p>小程序整体分为<strong>五大核心模块</strong> + <strong>后台管理系统</strong>，架构如下：</p>
+
+        <div class="arch-diagram">
+            <div class="arch-row">
+                <div class="arch-box top" style="min-width:300px">餐饮供需平台小程序（C端）</div>
+            </div>
+            <div class="arch-arrow">▼</div>
+            <div class="arch-row">
+                <div class="arch-box mid">首页资源撮合</div>
+                <div class="arch-box mid">闲置社区</div>
+                <div class="arch-box mid">发布中心</div>
+                <div class="arch-box mid">行业资讯</div>
+                <div class="arch-box mid">个人中心</div>
+            </div>
+            <div class="arch-arrow">▼</div>
+            <div class="arch-row">
+                <div class="arch-box bot">在线客服（全局悬浮）</div>
+                <div class="arch-box bot">付费体系</div>
+                <div class="arch-box bot">积分体系</div>
+                <div class="arch-box bot">审核风控</div>
+            </div>
+            <div class="arch-arrow">▼</div>
+            <div class="arch-row">
+                <div class="arch-box top" style="min-width:300px; background:#374151">后台管理系统（B端）</div>
+            </div>
+        </div>
+
+        <table>
+            <tr><th style="width:5%">序号</th><th style="width:18%">模块</th><th style="width:12%">优先级</th><th>核心职责</th></tr>
+            <tr><td>1</td><td>首页资源撮合模块</td><td><span class="priority priority-high"></span>P0</td><td>平台核心页面，聚合全平台供需信息，支持多维筛选、搜索、智能匹配</td></tr>
+            <tr><td>2</td><td>闲置社区模块</td><td><span class="priority priority-high"></span>P0</td><td>餐饮行业闲置物品交易社区，免费发布、同城自提</td></tr>
+            <tr><td>3</td><td>发布中心模块</td><td><span class="priority priority-high"></span>P0</td><td>所有类型信息的统一发布入口，含发布表单、发布管理</td></tr>
+            <tr><td>4</td><td>行业资讯模块</td><td><span class="priority priority-mid"></span>P1</td><td>行业政策、创业干货等内容专栏，免费浏览</td></tr>
+            <tr><td>5</td><td>个人中心模块</td><td><span class="priority priority-high"></span>P0</td><td>用户信息管理、发布管理、付费订单、收藏足迹等</td></tr>
+            <tr><td>6</td><td>后台管理系统</td><td><span class="priority priority-high"></span>P0</td><td>用户管理、内容审核、价格配置、订单管理、数据统计</td></tr>
+        </table>
+
+        <div class="callout callout-info">
+            <div class="callout-title">底部导航栏</div>
+            首页 · 闲置社区 · <strong>发布（+）</strong> · 资讯 · 我的（5个Tab，"发布"居中突出显示）
+        </div>
+    </div>
+
+    <!-- 4. 详细功能需求 -->
+    <div class="section" id="s4">
+        <div class="section-header">
+            <div class="section-number">4</div>
+            <div class="section-title">详细功能需求</div>
+        </div>
+
+        <!-- 4.1 首页 -->
+        <div class="subsection">
+            <div class="subsection-title">4.1 首页资源撮合模块（核心主页面）</div>
+            <p>首页为平台核心供需信息聚合页，展示全平台公开的餐饮招商供需信息，支持多维度筛选、搜索、智能匹配，<strong>所有信息免费浏览</strong>。</p>
+
+            <div class="callout callout-info">
+                <div class="callout-title">核心信息分类</div>
+                <div class="tag-list">
+                    <span class="tag">校园食堂（本科/专科）</span>
+                    <span class="tag">校园商业街（超市/其他）</span>
+                    <span class="tag">医院餐厅</span>
+                    <span class="tag">企业园区（企业食堂/工地食堂/园区餐厅）</span>
+                    <span class="tag">人才招聘（管理岗/技术岗/服务岗）</span>
+                    <span class="tag">生意转让</span>
+                    <span class="tag">校外旺铺（沿街门店/小吃街/美食广场）</span>
+                    <span class="tag">品牌加盟</span>
+                </div>
+            </div>
+
+            <div class="subsubsection-title">4.1.1 校园食堂</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr>
+                    <td>信息展示字段</td>
+                    <td>发布人头像、昵称、信息描述（在校生人数、档口面积、经营品类、收费模式（纯租金/倒扣抽点）、水电标准、空余档位、进场要求、场地实拍图、备注说明）、信息标签、信息图片、所属区域、具体地址</td>
+                </tr>
+                <tr>
+                    <td>筛选功能</td>
+                    <td>支持按<strong>区域</strong>、<strong>类目</strong>、<strong>分类（本科/专科）</strong>进行筛选；置顶信息优先展示在分类列表前面</td>
+                </tr>
+                <tr>
+                    <td>基础交互</td>
+                    <td>免费浏览详情、免费收藏、点赞、转发</td>
+                </tr>
+            </table>
+
+            <div class="subsubsection-title">4.1.2 档口转让</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr>
+                    <td>信息展示字段</td>
+                    <td>发布人头像、昵称、信息描述（在校生人数、档口面积、经营品类、收费模式（纯租金/倒扣抽点）、水电标准、空余档位、进场要求、场地实拍图、备注说明）、信息标签、信息图片、所属区域、具体地址</td>
+                </tr>
+                <tr>
+                    <td>筛选功能</td>
+                    <td>支持按<strong>区域</strong>、<strong>类目</strong>、<strong>分类（本科/专科）</strong>进行筛选；置顶信息优先展示</td>
+                </tr>
+                <tr>
+                    <td>基础交互</td>
+                    <td>免费浏览详情、免费收藏、点赞、转发</td>
+                </tr>
+            </table>
+
+            <div class="subsubsection-title">4.1.3 人才招聘</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr>
+                    <td>信息展示字段</td>
+                    <td>发布人头像、昵称、岗位类型（管理岗/技术岗/服务岗）、岗位要求（招聘人数、工资待遇、工作内容）、招聘单位、业务介绍、工作地址、招聘条件、备注信息、信息图片、所属区域、具体地址</td>
+                </tr>
+                <tr>
+                    <td>筛选功能</td>
+                    <td>支持按<strong>区域</strong>、<strong>类目</strong>、<strong>岗位类型（管理岗/技术岗/服务岗）</strong>进行筛选；置顶信息优先展示</td>
+                </tr>
+                <tr>
+                    <td>基础交互</td>
+                    <td>免费浏览详情、免费收藏、点赞、转发</td>
+                </tr>
+            </table>
+
+            <div class="callout callout-success">
+                <div class="callout-title">细化补充：信息列表展示规则</div>
+                <ul>
+                    <li><strong>排序规则</strong>：置顶信息 > 普通信息；同级别内按发布时间倒序排列（最新优先）</li>
+                    <li><strong>分页加载</strong>：列表采用上拉加载更多，每页默认20条</li>
+                    <li><strong>列表卡片</strong>：展示封面图（首张）、标题、区域标签、发布时间、浏览量</li>
+                    <li><strong>详情页</strong>：展示完整信息字段、图片轮播、发布者信息（脱敏手机号）、交互按钮区</li>
+                    <li><strong>已下架/审核中</strong>的信息不在公开列表展示</li>
+                </ul>
+            </div>
+
+            <div class="subsubsection-title">4.1.4 搜索功能（细化补充）</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr><td>搜索入口</td><td>首页顶部搜索栏</td></tr>
+                <tr><td>搜索范围</td><td>信息标题、描述内容、标签、区域地址</td></tr>
+                <tr><td>搜索历史</td><td>记录用户最近10条搜索词，支持一键清空</td></tr>
+                <tr><td>热门搜索</td><td>后台可配置热门搜索词</td></tr>
+                <tr><td>搜索结果</td><td>按相关度排序，支持二次筛选</td></tr>
+            </table>
+        </div>
+
+        <!-- 4.2 闲置社区 -->
+        <div class="subsection">
+            <div class="subsection-title">4.2 闲置社区模块</div>
+            <p>专属校园团餐行业闲置交易社区，聚焦餐饮商户刚需闲置资源流转，主打<strong>低成本转让、同城自提</strong>，无交易抽成、无入驻费用，所有用户可免费发布闲置信息。</p>
+
+            <div class="subsubsection-title">4.2.1 核心发布类目</div>
+            <table>
+                <tr><th style="width:20%">一级类目</th><th>包含子类</th></tr>
+                <tr><td><strong>餐饮设备</strong></td><td>冰柜、操作台、炸炉、蒸箱、收银机、桌椅板凳等后厨/前厅设备</td></tr>
+                <tr><td><strong>物料耗材</strong></td><td>打包盒、餐具、清洁用品、包装物料、剩余食材原料</td></tr>
+                <tr><td><strong>经营资源</strong></td><td>档口配套资源、品牌授权、技术配方转让等合规资源</td></tr>
+                <tr><td><strong>其他闲置</strong></td><td>团餐经营相关各类闲置物品</td></tr>
+            </table>
+
+            <div class="subsubsection-title">4.2.2 核心功能</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr>
+                    <td>免费发布</td>
+                    <td>所有用户可免费发布闲置转让信息，上传物品实拍、价格、新旧程度、使用时长、同城位置、联系方式</td>
+                </tr>
+                <tr>
+                    <td>筛选搜索</td>
+                    <td>支持按<strong>物品类目</strong>、<strong>同城区域</strong>、<strong>价格区间</strong>、<strong>发布时间</strong>筛选</td>
+                </tr>
+                <tr>
+                    <td>社区交互</td>
+                    <td>物品收藏、点赞、转发</td>
+                </tr>
+                <tr>
+                    <td>交易规则</td>
+                    <td>平台仅提供信息展示，<strong>不参与交易、无手续费、无抽成</strong>，支持线下同城自提交易</td>
+                </tr>
+            </table>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">细化补充：闲置信息发布字段</div>
+                <ul>
+                    <li><strong>必填</strong>：物品名称、物品类目、物品图片（至少1张）、价格、新旧程度（全新/九成新/八成新/七成新及以下）、同城位置</li>
+                    <li><strong>选填</strong>：使用时长、品牌型号、物品描述、联系方式（默认使用绑定的手机号）</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4.3 发布中心 -->
+        <div class="subsection">
+            <div class="subsection-title">4.3 发布中心模块（前期全部免费发布）</div>
+            <p>底部中间核心<strong>「+发布」</strong>入口，所有类型信息前期免费发布。</p>
+
+            <div class="callout callout-danger">
+                <div class="callout-title">发布规则（细化）</div>
+                <ul>
+                    <li><strong>每日免费额度</strong>：每位用户每天可免费发布 <strong>1条</strong> 信息（自然日计算，0:00重置）</li>
+                    <li><strong>超额发布</strong>：超出每日免费额度后，每条需付费 <strong>2元</strong> 发布</li>
+                    <li><strong>无审核费用</strong>：审核为平台义务，不收取额外费用</li>
+                    <li><strong>统一实名审核</strong>：所有发布信息需经平台审核通过后方可上架展示</li>
+                    <li><strong>免费额度适用范围</strong>：每日免费额度适用于所有类型信息（供需信息 + 闲置信息通用）</li>
+                </ul>
+            </div>
+
+            <div class="subsubsection-title">4.3.1 发布类目</div>
+            <table>
+                <tr><th style="width:5%">序号</th><th style="width:25%">发布类目</th><th>说明</th></tr>
+                <tr><td>1</td><td>校园食堂招租发布</td><td>本科/专科食堂档口招商</td></tr>
+                <tr><td>2</td><td>校园商圈招租发布</td><td>校园商业街（超市/其他）招租</td></tr>
+                <tr><td>3</td><td>医院餐厅招租发布</td><td>医院餐厅档口招商</td></tr>
+                <tr><td>4</td><td>档口转让发布</td><td>现有档口转让信息</td></tr>
+                <tr><td>5</td><td>企业园区招租发布</td><td>企业食堂/工地食堂/园区餐厅</td></tr>
+                <tr><td>6</td><td>人才招聘发布</td><td>管理岗/技术岗/服务岗</td></tr>
+                <tr><td>7</td><td>校外旺铺发布</td><td>沿街门店/小吃街/美食广场</td></tr>
+                <tr><td>8</td><td>生意转让发布</td><td>餐饮生意整体转让</td></tr>
+                <tr><td>9</td><td>闲置物品转让发布</td><td>餐饮设备/物料/资源等闲置</td></tr>
+                <tr><td>10</td><td>品牌信息发布</td><td>品牌加盟招商</td></tr>
+            </table>
+
+            <div class="subsubsection-title">4.3.2 发布表单（通用）</div>
+            <table>
+                <tr><th style="width:20%">表单字段</th><th style="width:15%">必填</th><th>说明</th></tr>
+                <tr><td>信息标题</td><td>✅</td><td>简要概括信息内容</td></tr>
+                <tr><td>发布分类</td><td>✅</td><td>选择二级分类（如：校园食堂 → 本科）</td></tr>
+                <tr><td>描述信息</td><td>✅</td><td>详细描述信息内容</td></tr>
+                <tr><td>照片上传</td><td>✅</td><td>支持多张图片上传（建议最多9张）</td></tr>
+                <tr><td>视频上传</td><td>选填</td><td>支持上传视频（建议单个，时长≤60s）</td></tr>
+                <tr><td>帖子标签</td><td>选填</td><td>如"餐厅一楼""公司直招""全封闭式"等（后台可配置标签库）</td></tr>
+                <tr><td>所属区域</td><td>✅</td><td>湖南省内区域选择（市/区两级）</td></tr>
+                <tr><td>详细地址</td><td>✅</td><td>填写具体地址</td></tr>
+                <tr><td>联系电话</td><td>✅</td><td>默认填充绑定手机号，可修改</td></tr>
+                <tr><td>置顶效果</td><td>选填</td><td>可选择是否购买置顶推广</td></tr>
+            </table>
+
+            <div class="callout callout-info">
+                <div class="callout-title">媒体存储建议</div>
+                发布表单支持文字、图片、视频上传。建议购买 <strong>阿里云OSS / 腾讯云COS</strong> 对象存储服务，用于存储用户上传的图片和视频文件，保障加载速度与存储可靠性。
+            </div>
+
+            <div class="subsubsection-title">4.3.3 发布管理功能</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr><td>发布记录</td><td>所有已发布信息支持编辑、下架、刷新、重新编辑提交</td></tr>
+                <tr><td>信息状态</td><td>审核中 / 已上架 / 已下架 / 审核驳回（显示驳回原因）</td></tr>
+                <tr><td>审核机制</td><td>所有信息需平台合规审核，杜绝虚假、违规信息</td></tr>
+                <tr><td>刷新功能</td><td>刷新后信息更新时间刷新，在列表中排序提前（细化：建议每条信息每天限刷新1次）</td></tr>
+                <tr><td>编辑限制</td><td>已上架信息编辑后需重新审核；审核中信息不可编辑</td></tr>
+            </table>
+        </div>
+
+        <!-- 4.4 行业资讯 -->
+        <div class="subsection">
+            <div class="subsection-title">4.4 行业资讯模块</div>
+
+            <div class="subsubsection-title">4.4.1 平台资讯专栏（免费查看）</div>
+            <table>
+                <tr><th style="width:20%">资讯分类</th><th>内容范围</th></tr>
+                <tr><td><strong>行业政策</strong></td><td>校园、医院、工厂餐饮新规、卫生监管政策、后勤招标政策更新</td></tr>
+                <tr><td><strong>创业干货</strong></td><td>档口选址、成本控制、经营避坑、品类运营技巧</td></tr>
+            </table>
+
+            <div class="callout callout-success">
+                <div class="callout-title">细化补充</div>
+                <ul>
+                    <li>资讯文章支持图文混排展示</li>
+                    <li>支持资讯收藏、转发分享</li>
+                    <li>资讯列表按发布时间倒序排列</li>
+                    <li>后台支持富文本编辑器发布资讯</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4.5 个人中心 -->
+        <div class="subsection">
+            <div class="subsection-title">4.5 个人中心模块</div>
+
+            <div class="subsubsection-title">4.5.1 基础中心</div>
+            <div class="tag-list">
+                <span class="tag">账号绑定</span>
+                <span class="tag">我的积分</span>
+                <span class="tag">我的余额（可充值）</span>
+                <span class="tag">消息通知</span>
+                <span class="tag">浏览足迹</span>
+                <span class="tag">我的收藏</span>
+                <span class="tag">我的评价</span>
+            </div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr><td>账号绑定</td><td>微信授权信息、手机号绑定状态管理</td></tr>
+                <tr><td>我的积分</td><td>积分余额展示、积分获取/消耗记录</td></tr>
+                <tr><td>我的余额</td><td>余额展示、余额充值（微信支付）、余额消费记录</td></tr>
+                <tr><td>消息通知</td><td>系统通知、审核结果通知、订单通知</td></tr>
+                <tr><td>浏览足迹</td><td>最近浏览的供需/闲置信息记录</td></tr>
+                <tr><td>我的收藏</td><td>已收藏的供需信息、闲置信息分类查看</td></tr>
+                <tr><td>我的评价</td><td>对供需信息、闲置信息的评价记录</td></tr>
+            </table>
+
+            <div class="subsubsection-title">4.5.2 内容管理</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr><td>我的发布</td><td>查看已发布的所有信息，支持编辑、下架、刷新、重新提交</td></tr>
+                <tr><td>咨询记录</td><td>用户发起的咨询/沟通记录</td></tr>
+                <tr><td>信息状态管理</td><td>上架 / 下架 / 审核中 状态切换与查看</td></tr>
+            </table>
+
+            <div class="subsubsection-title">4.5.3 付费订单中心</div>
+            <table>
+                <tr><th style="width:20%">功能项</th><th>详细规则</th></tr>
+                <tr><td>订单汇总</td><td>所有付费记录汇总展示</td></tr>
+                <tr><td>置顶订单</td><td>置顶推广订单记录，含置顶信息、周期、到期时间</td></tr>
+                <tr><td>手机号解锁订单</td><td>查看完整手机号的付费解锁记录</td></tr>
+                <tr><td>超额发布订单</td><td>超额发布付费记录</td></tr>
+                <tr><td>订单状态</td><td>待支付 / 已支付 / 已退款 / 已关闭</td></tr>
+                <tr><td>消费明细</td><td>所有消费记录明细</td></tr>
+                <tr><td>余额记录</td><td>余额充值、消费、退款记录</td></tr>
+            </table>
+
+            <div class="subsubsection-title">4.5.4 客服与售后</div>
+            <ul>
+                <li>在线客服：点击进入在线客服对话</li>
+                <li>反馈意见：提交意见反馈表单（反馈标题、反馈内容、图片上传）</li>
+            </ul>
+        </div>
+
+        <!-- 4.6 在线客服 -->
+        <div class="subsection">
+            <div class="subsection-title">4.6 在线客服模块（首页悬浮窗口）</div>
+            <table>
+                <tr><th style="width:20%">客服方式</th><th>详细规则</th></tr>
+                <tr><td>客服电话</td><td>用户可一键拨打平台客服电话，平台安排人员线下对接</td></tr>
+                <tr><td>客服微信</td><td>用户可添加平台客服微信，线下对接</td></tr>
+                <tr><td>在线客服</td><td>用户可点击在线客服，在线与客服对接（对接小程序官方客服接口）</td></tr>
+                <tr><td>返回顶部</td><td>悬浮窗口含返回顶部按钮</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. 平台付费体系 -->
+    <div class="section" id="s5">
+        <div class="section-header">
+            <div class="section-number">5</div>
+            <div class="section-title">平台付费体系</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">5.1 免费功能清单（全部用户通用）</div>
+            <table>
+                <tr><th style="width:5%">序号</th><th style="width:20%">类型</th><th style="width:10%">标签</th><th>说明</th></tr>
+                <tr><td>1</td><td>信息发布</td><td><span class="badge badge-free">免费</span></td><td>所有类型信息免费发布（每日首条免费，无审核费用）</td></tr>
+                <tr><td>2</td><td>信息浏览</td><td><span class="badge badge-free">免费</span></td><td>所有供需、闲置信息免费浏览、收藏、点赞、转发</td></tr>
+                <tr><td>3</td><td>行业资讯</td><td><span class="badge badge-free">免费</span></td><td>行业资讯免费浏览</td></tr>
+                <tr><td>4</td><td>闲置社区</td><td><span class="badge badge-free">免费</span></td><td>闲置社区免费发布、免费咨询、免费浏览</td></tr>
+                <tr><td>5</td><td>信息管理</td><td><span class="badge badge-free">免费</span></td><td>信息编辑、下架、刷新基础功能免费</td></tr>
+                <tr><td>6</td><td>在线客服</td><td><span class="badge badge-free">免费</span></td><td>客服电话、客服微信、在线客服免费使用</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">5.2 付费功能清单（前期全部免费，后期可自由开通）</div>
+
+            <div class="subsubsection-title">5.2.1 信息置顶推广 <span class="badge badge-paid">按周期付费</span></div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>详细规则</th></tr>
+                <tr><td>功能说明</td><td>用户可对自己已发布的合规信息购买置顶权限，置顶后信息优先展示在首页、分类列表最前方，获得超高曝光</td></tr>
+                <tr><td>计费方式</td><td>按周期付费，支持周期套餐（如7天/15天/30天），后台可自定义定价</td></tr>
+                <tr><td>多条置顶</td><td>支持多条信息分别置顶</td></tr>
+                <tr><td>续费规则</td><td>支持续费叠加周期</td></tr>
+                <tr><td>到期处理</td><td>置顶到期自动恢复普通排序</td></tr>
+                <tr><td>排序规则</td><td>针对多条信息置顶的排序，按照信息发布时间先后顺序排，最开始发布的那条排在前面</td></tr>
+                <tr><td>后台管理</td><td>后台可随时查看置顶时效</td></tr>
+                <tr><td>前置条件</td><td>仅对已审核通过（合规上架）的信息开放置顶</td></tr>
+            </table>
+
+            <div class="subsubsection-title">5.2.2 查看发布者完整手机号 <span class="badge badge-paid">单次付费解锁</span></div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>详细规则</th></tr>
+                <tr><td>默认展示</td><td>平台默认隐藏所有发布者完整手机号，仅展示部分脱敏号码（如 138****5678），保护用户隐私</td></tr>
+                <tr><td>解锁方式</td><td>浏览用户如需获取发布者完整联系方式，可单次付费 X 元（后台自定义价格）解锁</td></tr>
+                <tr><td>解锁时效</td><td>解锁后永久支持 <strong>24小时</strong> 查看该条信息的完整手机号</td></tr>
+                <tr><td>权限范围</td><td>单次付费对应<strong>单条信息</strong>权限</td></tr>
+                <tr><td>计费模式</td><td>无包月、无年费，按需单次付费，灵活消费</td></tr>
+                <tr><td>前置条件</td><td>仅对已审核通过（合规上架）的信息开放手机号查看</td></tr>
+            </table>
+
+            <div class="subsubsection-title">5.2.3 超额发布 <span class="badge badge-paid">按条付费</span></div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>详细规则</th></tr>
+                <tr><td>功能说明</td><td>每日免费发布1条后，超出部分需按条付费发布</td></tr>
+                <tr><td>计费方式</td><td>2元/条（后台可配置）</td></tr>
+                <tr><td>计费周期</td><td>按自然日计算，0:00重置免费额度</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">5.3 支付体系</div>
+            <table>
+                <tr><th style="width:25%">支付方式</th><th>说明</th></tr>
+                <tr><td>微信小程序官方支付</td><td>通过微信支付API完成支付</td></tr>
+                <tr><td>余额支付</td><td>用户充值余额后可使用余额支付</td></tr>
+                <tr><td>组合支付：积分+余额</td><td>积分抵扣部分金额 + 余额补差额</td></tr>
+                <tr><td>组合支付：积分+微信</td><td>积分抵扣部分金额 + 微信支付补差额</td></tr>
+            </table>
+
+            <div class="callout callout-info">
+                <div class="callout-title">组合支付规则（细化）</div>
+                <ul>
+                    <li>后台定义积分和现金的比例（如100积分=1元）</li>
+                    <li>用户支付查看手机号的费用时：
+                        <ul>
+                            <li>如有积分并且积分够 → 优先积分全额支付</li>
+                            <li>如果没有积分 → 用微信或余额支付</li>
+                            <li>如果积分不够 → 一部分积分 + 一部分微信支付</li>
+                        </ul>
+                    </li>
+                    <li>支付查看手机号费用时，如用户有积分且积分充足，<strong>优先积分全额支付</strong>；如无积分则使用微信或余额支付；如积分不足则使用积分+微信组合支付</li>
+                </ul>
+            </div>
+
+            <table>
+                <tr><th style="width:25%">项目</th><th>说明</th></tr>
+                <tr><td>订单记录</td><td>所有付费订单支持订单记录查询、凭证留存</td></tr>
+                <tr><td>价格配置</td><td>后台可配置所有付费项目价格</td></tr>
+                <tr><td>功能开关</td><td>后台可开通/关闭对应付费功能</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 6. 积分体系 -->
+    <div class="section" id="s6">
+        <div class="section-header">
+            <div class="section-number">6</div>
+            <div class="section-title">积分体系</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">6.1 积分获取通道</div>
+            <table>
+                <tr><th style="width:25%">获取方式</th><th>规则</th><th style="width:15%">后台可配置</th></tr>
+                <tr><td>新用户注册赠送</td><td>新用户注册自动赠送 X 积分</td><td>✅ 赠送数量可设置</td></tr>
+                <tr><td>分享拉新奖励</td><td>分享链接带来的新用户注册成功，分享者获得 X 积分</td><td>✅ 奖励数量可设置</td></tr>
+            </table>
+
+            <div class="callout callout-success">
+                <div class="callout-title">细化补充：建议增加的积分获取方式</div>
+                <ul>
+                    <li>每日签到（连续签到递增积分，后台可配置）</li>
+                    <li>每日首次发布信息（小额积分奖励）</li>
+                    <li>信息被收藏/点赞（发布者获得积分）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">6.2 积分消耗通道</div>
+            <table>
+                <tr><th style="width:25%">消耗方式</th><th>规则</th></tr>
+                <tr><td>查看隐藏电话</td><td>查看完整手机号时可使用积分支付（替代现金支付）</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 7. 审核与风控规则 -->
+    <div class="section" id="s7">
+        <div class="section-header">
+            <div class="section-number">7</div>
+            <div class="section-title">审核与风控规则</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">7.1 内容审核</div>
+            <table>
+                <tr><th style="width:25%">审核项</th><th>规则</th></tr>
+                <tr><td>审核范围</td><td>所有供需、闲置信息需审核通过后方可上架</td></tr>
+                <tr><td>禁止内容</td><td>禁止违规、虚假、诈骗、无关行业信息</td></tr>
+                <tr><td>审核方式</td><td>后台人工审核（建议后期增加关键词自动过滤 + 人工复审双重机制）</td></tr>
+                <tr><td>审核时效</td><td>建议工作时间内4小时内完成审核（细化建议）</td></tr>
+                <tr><td>驳回处理</td><td>审核驳回需填写驳回原因，用户可在发布记录中查看并修改后重新提交</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">7.2 付费风控</div>
+            <table>
+                <tr><th style="width:25%">风控项</th><th>规则</th></tr>
+                <tr><td>置顶推广</td><td>仅对合规上架（审核通过）的信息开放置顶功能</td></tr>
+                <tr><td>手机号解锁</td><td>仅对合规上架信息的手机号解锁付费功能开放</td></tr>
+                <tr><td>超额发布</td><td>超额发布的付费信息同样需要审核通过后上架</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">7.3 意见反馈</div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>规则</th></tr>
+                <tr><td>反馈入口</td><td>个人中心 → 反馈意见</td></tr>
+                <tr><td>反馈表单</td><td>反馈标题、反馈内容、图片上传（支持多张）</td></tr>
+                <tr><td>提交方式</td><td>提交反馈表单至后台</td></tr>
+            </table>
+        </div>
+
+        <div class="callout callout-warning">
+            <div class="callout-title">细化补充：建议增加的风控措施</div>
+            <ul>
+                <li><strong>敏感词过滤</strong>：发布时自动检测敏感词，命中后提示修改</li>
+                <li><strong>频率限制</strong>：同一用户短时间高频发布触发风控预警</li>
+                <li><strong>举报机制</strong>：用户可对违规信息进行举报，后台审核处理</li>
+                <li><strong>封禁机制</strong>：多次违规用户账号封禁，禁止发布和付费功能</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 8. 后台管理系统 -->
+    <div class="section" id="s8">
+        <div class="section-header">
+            <div class="section-number">8</div>
+            <div class="section-title">后台管理系统需求</div>
+        </div>
+
+        <table>
+            <tr><th style="width:5%">序号</th><th style="width:15%">模块</th><th>功能说明</th></tr>
+            <tr>
+                <td>1</td>
+                <td><strong>用户管理</strong></td>
+                <td>
+                    <ul>
+                        <li>用户列表（昵称、手机号、注册时间、发布数量、状态）</li>
+                        <li>用户详情查看</li>
+                        <li>违规账号封禁/解封</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>内容管理</strong></td>
+                <td>
+                    <ul>
+                        <li>所有发布信息审核（通过/驳回+原因）</li>
+                        <li>信息下架</li>
+                        <li>置顶管理（查看/取消置顶）</li>
+                        <li>标签库管理（配置帖子标签）</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>价格配置</strong></td>
+                <td>
+                    <ul>
+                        <li>自定义手机号解锁单价</li>
+                        <li>各周期置顶价格配置</li>
+                        <li>每日免费发布后超额发布信息的费用设置（按条配置）</li>
+                        <li>积分与现金比例配置</li>
+                        <li>新用户赠送积分数配置</li>
+                        <li>分享拉新奖励积分数配置</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><strong>订单管理</strong></td>
+                <td>
+                    <ul>
+                        <li>所有付费订单统计</li>
+                        <li>订单明细查看</li>
+                        <li>对账功能</li>
+                        <li>订单导出</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><strong>资讯管理</strong></td>
+                <td>
+                    <ul>
+                        <li>行业资讯发布（富文本编辑器）</li>
+                        <li>资讯编辑、下架</li>
+                        <li>资讯分类管理</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td><strong>数据统计</strong></td>
+                <td>
+                    <ul>
+                        <li>发布量统计（按日/周/月）</li>
+                        <li>浏览量统计</li>
+                        <li>用户增量数据</li>
+                        <li>付费订单统计（收入概览）</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td><strong>客服管理</strong></td>
+                <td>
+                    <ul>
+                        <li>客服电话配置</li>
+                        <li>客服微信号配置</li>
+                        <li>用户反馈查看与处理</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td><strong>系统配置</strong></td>
+                <td>
+                    <ul>
+                        <li>热门搜索词配置</li>
+                        <li>轮播图/Banner管理</li>
+                        <li>付费功能开关（置顶/手机号解锁/超额发布）</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 9. 非功能性需求 -->
+    <div class="section" id="s9">
+        <div class="section-header">
+            <div class="section-number">9</div>
+            <div class="section-title">非功能性需求</div>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">9.1 性能需求</div>
+            <table>
+                <tr><th style="width:25%">指标</th><th>要求</th></tr>
+                <tr><td>页面加载时间</td><td>首页及列表页首屏加载 ≤ 2秒</td></tr>
+                <tr><td>详情页加载</td><td>信息详情页加载 ≤ 1.5秒</td></tr>
+                <tr><td>搜索响应</td><td>搜索结果返回 ≤ 1秒</td></tr>
+                <tr><td>图片加载</td><td>图片需压缩处理，支持懒加载，CDN加速</td></tr>
+                <tr><td>并发支持</td><td>支持至少 1000 并发用户访问</td></tr>
+                <tr><td>分页加载</td><td>列表上拉加载更多，每页20条，无卡顿</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">9.2 安全需求</div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>要求</th></tr>
+                <tr><td>用户隐私</td><td>手机号脱敏展示，付费解锁后方可查看完整号码</td></tr>
+                <tr><td>数据加密</td><td>用户敏感信息加密存储，接口传输使用HTTPS</td></tr>
+                <tr><td>支付安全</td><td>微信支付官方API，订单签名验证，防篡改</td></tr>
+                <tr><td>防刷机制</td><td>接口频率限制，防止恶意刷接口、刷发布</td></tr>
+                <tr><td>内容安全</td><td>敏感词过滤，违规内容拦截</td></tr>
+                <tr><td>权限控制</td><td>后台管理系统角色权限分级，操作日志可追溯</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">9.3 兼容性需求</div>
+            <table>
+                <tr><th style="width:25%">项目</th><th>要求</th></tr>
+                <tr><td>平台兼容</td><td>微信小程序（iOS + Android）</td></tr>
+                <tr><td>微信版本</td><td>兼容微信基础库 2.x 及以上版本</td></tr>
+                <tr><td>屏幕适配</td><td>适配主流手机屏幕尺寸（iPhone/Android）</td></tr>
+                <tr><td>后台浏览器</td><td>Chrome、Edge、Firefox 等主流浏览器</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="subsection-title">9.4 可扩展性需求</div>
+            <ul>
+                <li>分类体系可扩展：后台可动态增减信息分类、子分类</li>
+                <li>区域可扩展：当前湖南省内，后续可扩展至全国其他省份</li>
+                <li>付费项目可配置：价格、开关均可在后台动态配置</li>
+                <li>模块化设计：各功能模块独立，便于后续迭代新增功能</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 10. 技术架构建议 -->
+    <div class="section" id="s10">
+        <div class="section-header">
+            <div class="section-number">10</div>
+            <div class="section-title">技术架构建议</div>
+        </div>
+
+        <table>
+            <tr><th style="width:20%">层级</th><th style="width:25%">技术选型建议</th><th>说明</th></tr>
+            <tr>
+                <td><strong>小程序前端</strong></td>
+                <td>微信小程序原生 / Taro / uni-app</td>
+                <td>建议使用原生开发或跨端框架，保障性能与兼容性</td>
+            </tr>
+            <tr>
+                <td><strong>后台管理系统</strong></td>
+                <td>Vue3 + Element Plus / React + Ant Design</td>
+                <td>PC端Web后台，响应式布局</td>
+            </tr>
+            <tr>
+                <td><strong>后端服务</strong></td>
+                <td>Java (Spring Boot) / Node.js / Python</td>
+                <td>根据团队技术栈选择，建议Java Spring Boot</td>
+            </tr>
+            <tr>
+                <td><strong>数据库</strong></td>
+                <td>MySQL 8.x</td>
+                <td>关系型数据库存储业务数据</td>
+            </tr>
+            <tr>
+                <td><strong>缓存</strong></td>
+                <td>Redis</td>
+                <td>热点数据缓存、搜索、频率限制</td>
+            </tr>
+            <tr>
+                <td><strong>对象存储</strong></td>
+                <td>阿里云OSS / 腾讯云COS</td>
+                <td>存储用户上传的图片、视频文件</td>
+            </tr>
+            <tr>
+                <td><strong>CDN加速</strong></td>
+                <td>阿里云CDN / 腾讯云CDN</td>
+                <td>图片、视频等静态资源加速分发</td>
+            </tr>
+            <tr>
+                <td><strong>支付集成</strong></td>
+                <td>微信支付（小程序支付）</td>
+                <td>微信小程序官方支付API</td>
+            </tr>
+            <tr>
+                <td><strong>客服集成</strong></td>
+                <td>微信小程序客服消息接口</td>
+                <td>对接小程序官方客服接口</td>
+            </tr>
+            <tr>
+                <td><strong>服务器</strong></td>
+                <td>阿里云ECS / 腾讯云CVM</td>
+                <td>2核4G起步，可根据访问量弹性扩容</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 11. 项目里程碑 -->
+    <div class="section" id="s11">
+        <div class="section-header">
+            <div class="section-number">11</div>
+            <div class="section-title">项目里程碑建议</div>
+        </div>
+
+        <table>
+            <tr><th style="width:5%">阶段</th><th style="width:20%">里程碑</th><th style="width:15%">周期建议</th><th>交付物</th></tr>
+            <tr><td>一</td><td>需求确认与原型设计</td><td>1-2周</td><td>需求文档确认、UI/UX原型图、交互流程图</td></tr>
+            <tr><td>二</td><td>UI设计与评审</td><td>1-2周</td><td>高保真UI设计稿、设计规范</td></tr>
+            <tr><td>三</td><td>前端开发（小程序+后台）</td><td>3-4周</td><td>小程序前端、后台管理前端</td></tr>
+            <tr><td>四</td><td>后端开发与接口联调</td><td>3-4周</td><td>后端服务、API接口、数据库设计</td></tr>
+            <tr><td>五</td><td>测试与修复</td><td>1-2周</td><td>测试报告、Bug修复、性能优化</td></tr>
+            <tr><td>六</td><td>上线部署与交付</td><td>1周</td><td>小程序提交审核上线、后台部署、操作手册</td></tr>
+        </table>
+
+        <div class="callout callout-info">
+            <div class="callout-title">说明</div>
+            以上周期为参考建议，实际周期需根据团队规模、需求变更情况及甲方反馈节奏进行调整。
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>万户山生态科技有限公司 · 餐饮供需平台小程序 · 项目需求文档 V2.0</p>
+        <p>本文档基于甲方原始需求文档重新分析、规则细化后生成</p>
+    </div>
+
+</div>
+</body>
+</html>
