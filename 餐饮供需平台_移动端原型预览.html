@@ -828,11 +828,17 @@ body {
       <div id="newsCards"></div>
     </div>
 
-    <!-- ==================== 个人中心 ==================== -->
+    <!-- ==================== 供需详情 ==================== -->
     <div class="page" id="page-detail">
       <div class="detail-body" id="detailPageBody"></div>
     </div>
 
+    <!-- ==================== 闲置详情 ==================== -->
+    <div class="page" id="page-idle-detail">
+      <div class="detail-body" id="idleDetailBody"></div>
+    </div>
+
+    <!-- ==================== 个人中心 ==================== -->
     <div class="page" id="page-me">
       <div class="profile-header">
         <div class="profile-avatar">👤</div>
@@ -1033,9 +1039,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情' };
+  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情' };
   document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
-  if (page === 'search' || page === 'detail') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail') {
     document.getElementById('navBack').style.display = 'block';
   } else {
     document.getElementById('navBack').style.display = 'none';
@@ -1053,8 +1059,8 @@ var previousTab = 'home';
 
 function goBack() {
   var target = previousTab;
-  // Safety: never go back to search or detail itself
-  if (target === 'search' || target === 'detail') target = 'home';
+  // Safety: never go back to search, detail or idle-detail itself
+  if (['search', 'detail', 'idle-detail'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -1149,7 +1155,7 @@ function renderIdleCards() {
     const idleStyle = idleImgStyle(item.img, idx);
     const idleIcon = idleImgIcon(idx);
     html += `
-    <div class="idle-card" onclick="showToast('查看闲置物品详情: ${item.title}')">
+    <div class="idle-card" onclick="openIdleDetail(${item.id})">
       <div class="idle-img" style="${idleStyle}">${idleIcon}</div>
       <div class="idle-info">
         <div>
@@ -1164,6 +1170,52 @@ function renderIdleCards() {
     </div>`;
   });
   document.getElementById('idleCards').innerHTML = html;
+}
+
+// ============ Idle Detail ============
+function openIdleDetail(id) {
+  var item = idleData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  previousTab = 'idle';
+  renderIdleDetailPage(item);
+  switchTab('idle-detail');
+}
+
+function renderIdleDetailPage(item) {
+  var descMap = {
+    'equip': '该餐饮设备成色良好，功能正常，适合后厨使用。因店面升级/搬迁原因转让，有需要的老板可以联系看实物，支持现场验货。',
+    'material': '全新或几乎全新的餐饮耗材，因库存积压/店铺转行低价处理。价格实惠，量大可议，适合食堂档口批量采购。',
+    'resource': '经营资源转让，含完整技术方案/配方/培训，已验证可行。适合想拓展品类的餐饮创业者，提供一对一指导。',
+    'other': '个人闲置物品，使用正常无暗病。因不再需要低价转让，先到先得，诚意购买可小刀议价。'
+  };
+  var desc = descMap[item.cat] || '个人闲置物品，使用正常，因不再需要低价转让，欢迎联系看货面议。';
+  var idleStyle = idleImgStyle(item.img, item.id);
+  var idleIcon = idleImgIcon(item.id);
+
+  var html = `
+    <div style="border-radius:16px;overflow:hidden;margin-bottom:24px;height:400px;display:flex;align-items:center;justify-content:center;font-size:100px;${idleStyle}">${idleIcon}</div>
+    <div style="font-size:40px;font-weight:700;color:var(--danger);margin-bottom:16px">¥${item.price}</div>
+    <h3 style="font-size:var(--fs-title);margin-bottom:12px;line-height:1.5">${item.title}</h3>
+    <div class="card-tags" style="margin-bottom:20px">
+      <span class="tag tag-orange">${item.catLabel}</span>
+      <span class="tag tag-green">${item.condition}</span>
+      <span class="tag tag-blue">${item.used}</span>
+    </div>
+    <div class="detail-field"><div class="field-label">商品描述</div><div class="field-value" style="line-height:1.8">${desc}</div></div>
+    <div class="detail-field"><div class="field-label">所在地区</div><div class="field-value">${locIcon} ${item.location}</div></div>
+    <div class="detail-field"><div class="field-label">发布时间</div><div class="field-value">${item.time}</div></div>
+    <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
+      <div class="field-label">联系卖家</div>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">138****6789</div>
+      <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast('解锁成功！完整号码：13987654321')">解锁查看完整号码 ¥1.00</button>
+    </div>
+    <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已收藏该闲置物品')">☆ 收藏</span>
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
+      <span style="cursor:pointer;font-size:var(--fs-body);color:#ea580c;font-weight:600" onclick="showToast('已发送咨询消息给卖家')">💬 聊一聊</span>
+    </div>`;
+
+  document.getElementById('idleDetailBody').innerHTML = html;
 }
 
 // ============ News Page ============
@@ -1836,7 +1888,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
       idleResults.forEach(function(item, idx) {
         var istyle = idleImgStyle(item.img, idx);
         var iicon = idleImgIcon(idx);
-        html += '<div class="idle-card" onclick="showToast(\'查看闲置物品详情: ' + item.title + '\')">' +
+        html += '<div class="idle-card" onclick="openIdleDetail(' + item.id + ')">' +
           '<div class="idle-img" style="' + istyle + '">' + iicon + '</div>' +
           '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
           '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
