@@ -2268,7 +2268,7 @@ function renderIdleDetailPage(item) {
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系卖家</div>
       <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">138****6789</div>
-      <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast('解锁成功！完整号码：13987654321')">解锁查看完整号码 ¥1.00</button>
+      <button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="toggleIdleLike(this)">♡ 点赞</span>
@@ -2342,7 +2342,7 @@ function renderDetailPage(item) {
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系电话</div>
       <div class="field-value" style="font-size:32px;letter-spacing:2px">${item.phone}</div>
-      <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
+      <button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
       <span id="detailLikeBtn" class="${item.userLiked ? 'liked' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userLiked ? 'color:#ef4444;font-weight:600;' : ''}" onclick="toggleDetailLike(${item.id})">${item.userLiked ? '❤' : '♡'} 点赞 ${item.likes}</span>
@@ -2359,18 +2359,37 @@ function closeDetail() {
 }
 
 // ============ Phone Unlock ============
+function unlockBtnToDial(el) {
+  el.textContent = '📞 一键拨号';
+  el.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+  el.style.color = '#fff';
+  el.onclick = function() { showToast('正在拨打 13912345678…'); };
+}
+
 function handleUnlockPhone(id, el) {
   showToast('支付 ¥2.00 即可查看完整手机号\n（模拟：13912345678）');
   if (el) {
     el.querySelector('.phone-num').textContent = '13912345678';
-    el.querySelector('.unlock-btn').textContent = '✓ 已解锁';
-    el.querySelector('.unlock-btn').style.background = '#dcfce7';
-    el.querySelector('.unlock-btn').style.color = '#166534';
+    var btn = el.querySelector('.unlock-btn');
+    btn.textContent = '📞 一键拨号';
+    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    btn.style.color = '#fff';
+    btn.onclick = function(e) { e.stopPropagation(); showToast('正在拨打 13912345678…'); };
   }
 }
 
-function handleUnlockDetail(id) {
-  showToast('支付成功！完整手机号：13912345678（24小时内有效）');
+function handleIdleDetailUnlock(el) {
+  var parent = el.parentElement;
+  parent.querySelector('.field-value').textContent = '13912345678';
+  unlockBtnToDial(el);
+  showToast('解锁成功！完整号码：13912345678');
+}
+
+function handleDetailUnlock(el) {
+  var parent = el.parentElement;
+  parent.querySelector('.field-value').textContent = '13912345678';
+  unlockBtnToDial(el);
+  showToast('解锁成功！完整号码：13912345678（24小时内有效）');
 }
 
 // ============ Publish ============
