@@ -291,6 +291,55 @@ body {
   cursor: pointer; outline: none;
 }
 .form-select:focus { border-color: var(--primary); }
+
+/* Publish form trigger (clickable select replacement) */
+.form-trigger {
+  width: 100%; padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 16px; font-size: var(--fs-body); background: #fff; color: var(--text);
+  cursor: pointer; outline: none; display: flex; align-items: center;
+  justify-content: space-between; transition: border-color 0.2s;
+}
+.form-trigger:active { border-color: var(--primary); }
+.form-trigger .arrow { transition: transform 0.25s; font-size: 20px; color: var(--text-muted); }
+.form-trigger .arrow.up { transform: rotate(180deg); }
+.form-trigger .placeholder { color: var(--text-muted); }
+
+/* Publish overlay & panel */
+.pub-overlay {
+  position: fixed; top: 176px; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
+}
+.pub-overlay.show { display: block; }
+.pub-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  max-height: 560px; overflow: hidden;
+  border-radius: 0 0 24px 24px;
+}
+.pub-panel.show { display: block; }
+
+/* Pin grid */
+.pub-pin-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.pub-pin-card {
+  border: 2px solid var(--border); border-radius: 16px;
+  padding: 20px 12px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: #fff;
+}
+.pub-pin-card:active { background: #f3f4f6; }
+.pub-pin-card.selected {
+  border-color: #f59e0b; background: #fffbeb;
+  box-shadow: 0 0 0 2px rgba(245,158,11,0.15);
+}
+.pub-pin-card .pin-icon { font-size: 40px; margin-bottom: 8px; }
+.pub-pin-card .pin-days { font-size: var(--fs-body-sm); font-weight: 700; color: var(--text); }
+.pub-pin-card .pin-price { font-size: var(--fs-caption-sm); color: var(--danger); margin-top: 4px; }
+.pub-pin-card .pin-unit { font-size: var(--fs-mini); color: var(--text-muted); }
+.pub-pin-card.selected .pin-icon,
+.pub-pin-card.selected .pin-days,
+.pub-pin-card.selected .pin-price { color: #f59e0b; }
+
 .photo-upload {
   display: flex; gap: 16px; flex-wrap: wrap;
 }
@@ -1000,19 +1049,11 @@ body {
       <div class="publish-form">
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>发布分类</div>
-          <select class="form-select" id="pubCategory" onchange="onPubCatChange()">
-            <option value="">请选择分类</option>
-            <option value="canteen">校园食堂招租</option>
-            <option value="bizstreet">校园商圈招租</option>
-            <option value="hospital">医院餐厅招租</option>
-            <option value="transfer">档口转让</option>
-            <option value="park">企业园区招租</option>
-            <option value="recruit">人才招聘</option>
-            <option value="shop">校外旺铺发布</option>
-            <option value="bizsell">生意转让</option>
-            <option value="equipment">闲置物品转让</option>
-            <option value="brand">品牌信息发布</option>
-          </select>
+          <div class="form-trigger" id="pubCategoryTrigger" onclick="openPubCategoryPanel()">
+            <span id="pubCategoryText" class="placeholder">请选择分类</span>
+            <span class="arrow">▾</span>
+          </div>
+          <input type="hidden" id="pubCategory" value="">
         </div>
 
         <div class="form-group" id="pubSubCatWrap" style="display:none">
@@ -1055,14 +1096,11 @@ body {
 
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>所属区域（湖南省内）</div>
-          <select class="form-select" id="pubRegion1">
-            <option value="">选择城市</option>
-            <option>长沙</option><option>株洲</option><option>湘潭</option>
-            <option>衡阳</option><option>岳阳</option><option>常德</option>
-            <option>益阳</option><option>娄底</option><option>邵阳</option>
-            <option>郴州</option><option>永州</option><option>怀化</option>
-            <option>湘西州</option><option>张家界</option>
-          </select>
+          <div class="form-trigger" id="pubRegionTrigger" onclick="openPubRegionPanel()">
+            <span id="pubRegionText" class="placeholder">选择城市</span>
+            <span class="arrow">▾</span>
+          </div>
+          <input type="hidden" id="pubRegion1" value="">
         </div>
 
         <div class="form-group">
@@ -1077,18 +1115,66 @@ body {
 
         <div class="form-group">
           <div class="form-label">置顶推广（按周期付费）</div>
-          <select class="form-select" id="pubPin">
-            <option value="">不置顶（免费）</option>
-            <option value="7">7天置顶 - ¥9.9</option>
-            <option value="15">15天置顶 - ¥18.8</option>
-            <option value="30">30天置顶 - ¥29.9</option>
-          </select>
+          <div class="pub-pin-grid" id="pubPinGrid">
+            <div class="pub-pin-card selected" data-pin="" onclick="selectPubPin(this, '')">
+              <div class="pin-icon">📌</div>
+              <div class="pin-days">不置顶</div>
+              <div class="pin-price">¥0</div>
+              <div class="pin-unit">免费发布</div>
+            </div>
+            <div class="pub-pin-card" data-pin="7" onclick="selectPubPin(this, '7')">
+              <div class="pin-icon">📌</div>
+              <div class="pin-days">7天置顶</div>
+              <div class="pin-price">¥9.9</div>
+              <div class="pin-unit">¥1.4/天</div>
+            </div>
+            <div class="pub-pin-card" data-pin="15" onclick="selectPubPin(this, '15')">
+              <div class="pin-icon">📌</div>
+              <div class="pin-days">15天置顶</div>
+              <div class="pin-price">¥18.8</div>
+              <div class="pin-unit">¥1.25/天</div>
+            </div>
+            <div class="pub-pin-card" data-pin="30" onclick="selectPubPin(this, '30')">
+              <div class="pin-icon">📌</div>
+              <div class="pin-days">30天置顶</div>
+              <div class="pin-price">¥29.9</div>
+              <div class="pin-unit">¥1.0/天</div>
+            </div>
+          </div>
+          <input type="hidden" id="pubPin" value="">
         </div>
 
         <p style="font-size:var(--fs-caption-sm);color:var(--text-muted);text-align:center;margin-bottom:16px;">
           每日免费发布 1 条，今日剩余：<strong style="color:var(--success)" id="pubRemain">1</strong> 条
         </p>
         <button class="submit-btn" onclick="submitPublish()">确认发布</button>
+      </div>
+
+      <!-- Publish Popup Overlay -->
+      <div class="pub-overlay" id="pubOverlay" onclick="closePubPanels()"></div>
+
+      <!-- Category option panel -->
+      <div class="pub-panel option-panel" id="pubCategoryPanel">
+        <div class="option-item selected" data-value="" onclick="selectPubCategory(this, '')">请选择分类</div>
+        <div class="option-item" data-value="canteen" onclick="selectPubCategory(this, 'canteen')">校园食堂招租</div>
+        <div class="option-item" data-value="bizstreet" onclick="selectPubCategory(this, 'bizstreet')">校园商圈招租</div>
+        <div class="option-item" data-value="hospital" onclick="selectPubCategory(this, 'hospital')">医院餐厅招租</div>
+        <div class="option-item" data-value="transfer" onclick="selectPubCategory(this, 'transfer')">档口转让</div>
+        <div class="option-item" data-value="park" onclick="selectPubCategory(this, 'park')">企业园区招租</div>
+        <div class="option-item" data-value="recruit" onclick="selectPubCategory(this, 'recruit')">人才招聘</div>
+        <div class="option-item" data-value="shop" onclick="selectPubCategory(this, 'shop')">校外旺铺发布</div>
+        <div class="option-item" data-value="bizsell" onclick="selectPubCategory(this, 'bizsell')">生意转让</div>
+        <div class="option-item" data-value="equipment" onclick="selectPubCategory(this, 'equipment')">闲置物品转让</div>
+        <div class="option-item" data-value="brand" onclick="selectPubCategory(this, 'brand')">品牌信息发布</div>
+      </div>
+
+      <!-- Region picker panel -->
+      <div class="pub-panel region-panel" id="pubRegionPanel">
+        <div class="region-columns" id="pubRegionColumns"></div>
+        <div class="panel-footer">
+          <button class="panel-btn reset" onclick="resetPubRegion()">重置</button>
+          <button class="panel-btn confirm" onclick="confirmPubRegion()">确定</button>
+        </div>
       </div>
     </div>
 
@@ -1498,9 +1584,20 @@ function renderCatListCards() {
 // ============ Filter Panel System ============
 const regionData = {
   '湖南省': {
-    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '全市'],
+    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '天心区', '雨花区', '全市'],
     '株洲市': ['不限', '芦淞区', '天元区'],
-    '湘潭市': ['不限', '雨湖区', '岳塘区']
+    '湘潭市': ['不限', '雨湖区', '岳塘区'],
+    '衡阳市': ['不限', '蒸湘区', '珠晖区'],
+    '岳阳市': ['不限', '岳阳楼区', '云溪区'],
+    '常德市': ['不限', '武陵区', '鼎城区'],
+    '益阳市': ['不限', '赫山区', '资阳区'],
+    '娄底市': ['不限', '娄星区'],
+    '邵阳市': ['不限', '大祥区', '双清区'],
+    '郴州市': ['不限', '北湖区', '苏仙区'],
+    '永州市': ['不限', '冷水滩区', '零陵区'],
+    '怀化市': ['不限', '鹤城区'],
+    '湘西州': ['不限', '吉首市'],
+    '张家界市': ['不限', '永定区', '武陵源区']
   }
 };
 
@@ -2145,10 +2242,136 @@ function handleUnlockDetail(id) {
 }
 
 // ============ Publish ============
-function onPubCatChange() {
-  const val = document.getElementById('pubCategory').value;
-  const subWrap = document.getElementById('pubSubCatWrap');
-  const sub = document.getElementById('pubSubCat');
+// Category panel
+function openPubCategoryPanel() {
+  closePubPanels();
+  document.getElementById('pubOverlay').classList.add('show');
+  document.getElementById('pubCategoryPanel').classList.add('show');
+  var trig = document.getElementById('pubCategoryTrigger');
+  trig.querySelector('.arrow').classList.add('up');
+}
+
+function selectPubCategory(el, val) {
+  var text = el.textContent.trim();
+  document.getElementById('pubCategory').value = val;
+  document.getElementById('pubCategoryText').textContent = text;
+  if (val) {
+    document.getElementById('pubCategoryText').classList.remove('placeholder');
+  } else {
+    document.getElementById('pubCategoryText').classList.add('placeholder');
+  }
+  // Update selection highlight
+  document.querySelectorAll('#pubCategoryPanel .option-item').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  closePubPanels();
+  // Trigger sub-category logic
+  onPubCatChange(val);
+}
+
+// Region panel for publish
+let pubRegionPick = { province: '湖南', city: '', district: '' };
+let pubRegionPickWorking = { province: '湖南', city: '', district: '' };
+
+function openPubRegionPanel() {
+  closePubPanels();
+  document.getElementById('pubOverlay').classList.add('show');
+  document.getElementById('pubRegionPanel').classList.add('show');
+  var trig = document.getElementById('pubRegionTrigger');
+  trig.querySelector('.arrow').classList.add('up');
+  buildPubRegionPicker();
+}
+
+function buildPubRegionPicker() {
+  var container = document.getElementById('pubRegionColumns');
+  var current = document.getElementById('pubRegion1').value;
+  pubRegionPickWorking.province = '湖南省';
+  if (current) {
+    var parts = current.split(' · ');
+    pubRegionPickWorking.city = parts[0] || '';
+    pubRegionPickWorking.district = parts[1] || '';
+  }
+  var hnData = regionData['湖南省'];
+  var cities = Object.keys(hnData);
+  var districts = pubRegionPickWorking.city ? (hnData[pubRegionPickWorking.city] || []) : [];
+
+  var html = '<div class="region-col"><div class="region-col-title">城市</div>';
+  cities.forEach(function(c) {
+    var sel = pubRegionPickWorking.city === c ? ' selected' : '';
+    html += '<div class="region-option' + sel + '" onclick="selectPubCity(\'' + c + '\')">' + c + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="region-col"><div class="region-col-title">区县</div>';
+  if (districts.length) {
+    districts.forEach(function(d) {
+      var sel = pubRegionPickWorking.district === d ? ' selected' : '';
+      html += '<div class="region-option' + sel + '" onclick="selectPubDistrict(\'' + d + '\')">' + d + '</div>';
+    });
+  } else {
+    html += '<div class="region-option" style="color:var(--text-muted)">请先选择城市</div>';
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function selectPubCity(city) {
+  pubRegionPickWorking.city = city;
+  pubRegionPickWorking.district = '';
+  buildPubRegionPicker();
+}
+
+function selectPubDistrict(district) {
+  pubRegionPickWorking.district = district;
+  buildPubRegionPicker();
+}
+
+function resetPubRegion() {
+  pubRegionPickWorking.province = '湖南省';
+  pubRegionPickWorking.city = '';
+  pubRegionPickWorking.district = '';
+  buildPubRegionPicker();
+}
+
+function confirmPubRegion() {
+  var result = '';
+  if (pubRegionPickWorking.city) {
+    result = pubRegionPickWorking.city;
+    if (pubRegionPickWorking.district && pubRegionPickWorking.district !== '不限') {
+      result += ' · ' + pubRegionPickWorking.district;
+    }
+  }
+  document.getElementById('pubRegion1').value = result;
+  var textEl = document.getElementById('pubRegionText');
+  if (result) {
+    textEl.textContent = result;
+    textEl.classList.remove('placeholder');
+  } else {
+    textEl.textContent = '选择城市';
+    textEl.classList.add('placeholder');
+  }
+  closePubPanels();
+}
+
+// Pin grid selection
+function selectPubPin(el, val) {
+  document.querySelectorAll('.pub-pin-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('pubPin').value = val;
+}
+
+// Close all publish popups
+function closePubPanels() {
+  document.getElementById('pubOverlay').classList.remove('show');
+  document.getElementById('pubCategoryPanel').classList.remove('show');
+  document.getElementById('pubRegionPanel').classList.remove('show');
+  document.querySelectorAll('#page-publish .form-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+}
+
+// Sub-category logic (triggered after category selected)
+function onPubCatChange(val) {
+  var subWrap = document.getElementById('pubSubCatWrap');
+  var sub = document.getElementById('pubSubCat');
   if (['canteen','transfer','recruit'].includes(val)) {
     subWrap.style.display = 'block';
     if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>本科食堂</option><option>专科食堂</option>';
@@ -2204,11 +2427,22 @@ function submitPublish() {
 
   // Reset form
   document.getElementById('pubCategory').value = '';
+  document.getElementById('pubCategoryText').textContent = '请选择分类';
+  document.getElementById('pubCategoryText').classList.add('placeholder');
   document.getElementById('pubTitle').value = '';
   document.getElementById('pubDesc').value = '';
   document.getElementById('pubRegion1').value = '';
+  document.getElementById('pubRegionText').textContent = '选择城市';
+  document.getElementById('pubRegionText').classList.add('placeholder');
   document.getElementById('pubSubCat').value = '';
   document.getElementById('pubSubCatWrap').style.display = 'none';
+  // Reset pin to free
+  document.getElementById('pubPin').value = '';
+  document.querySelectorAll('.pub-pin-card').forEach(function(c) { c.classList.remove('selected'); });
+  document.querySelector('#pubPinGrid .pub-pin-card[data-pin=""]').classList.add('selected');
+  // Reset category panel selection
+  document.querySelectorAll('#pubCategoryPanel .option-item').forEach(function(o) { o.classList.remove('selected'); });
+  document.querySelector('#pubCategoryPanel .option-item[data-value=""]').classList.add('selected');
   document.getElementById('photoPreview').innerHTML = '';
   photoCount = 0;
   document.querySelectorAll('.publish-tag').forEach(t => t.classList.remove('selected'));
