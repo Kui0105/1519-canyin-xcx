@@ -921,8 +921,8 @@ body {
       <div class="home-top-wrap">
       <!-- Search -->
       <div class="search-bar">
-        <div class="search-input-wrap">
-          <span class="city-locator" onclick="openCityList()" id="cityLocator">
+        <div class="search-input-wrap" onclick="openSearch()" style="cursor:pointer">
+          <span class="city-locator" onclick="event.stopPropagation();openCityList()" id="cityLocator">
             <span class="loc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
             <span id="currentCityName">长沙</span>
             <span class="loc-arrow">▾</span>
