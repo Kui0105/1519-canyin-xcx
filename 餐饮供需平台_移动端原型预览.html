@@ -123,7 +123,9 @@ body {
 .tab-publish .publish-circle {
   width: 100px; height: 100px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 56px; font-weight: 300;
+  color: #fff; font-size: 56px; font-weight: 300; line-height: 1;
+  position: relative;
+}
   box-shadow: 0 8px 24px rgba(37,99,235,0.4); margin-bottom: 8px;
 }
 .tab-publish .tab-label { color: var(--text-secondary); font-weight: 500; }
@@ -1306,7 +1308,7 @@ body {
       <span class="tab-label">闲置社区</span>
     </div>
     <div class="tab-item tab-publish" data-page="publish" onclick="switchTab('publish')">
-      <div class="publish-circle">+</div>
+      <div class="publish-circle"><span style="line-height:1;margin-top:-4px">+</span></div>
       <span class="tab-label">发布</span>
     </div>
     <div class="tab-item" data-page="news" onclick="switchTab('news')">
