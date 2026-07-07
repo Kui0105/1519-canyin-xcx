@@ -240,6 +240,7 @@ body {
 .detail-header .close-btn { font-size: 20px; background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 4px; }
 .detail-header .title { font-size: 15px; font-weight: 600; }
 .detail-body { padding: 16px; }
+#page-detail .detail-body { padding: 12px 16px 80px; }
 .detail-body .detail-img-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
   margin: 12px 0;
@@ -814,6 +815,10 @@ body {
     </div>
 
     <!-- ==================== 个人中心 ==================== -->
+    <div class="page" id="page-detail">
+      <div class="detail-body" id="detailPageBody"></div>
+    </div>
+
     <div class="page" id="page-me">
       <div class="profile-header">
         <div class="profile-avatar">👤</div>
@@ -986,9 +991,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索' };
+  var titles = { home:'餐饮供需平台', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情' };
   document.getElementById('navTitle').textContent = titles[page] || '餐饮供需平台';
-  if (page === 'search') {
+  if (page === 'search' || page === 'detail') {
     document.getElementById('navBack').style.display = 'block';
   } else {
     document.getElementById('navBack').style.display = 'none';
@@ -1002,10 +1007,12 @@ function switchTab(page) {
   if (page === 'search') initSearchPage();
 }
 
+var previousTab = 'home';
+
 function goBack() {
   document.getElementById('navBack').style.display = 'none';
   document.getElementById('navTitle').textContent = '餐饮供需平台';
-  switchTab('home');
+  switchTab(previousTab);
 }
 
 // ============ Home Page ============
@@ -1147,51 +1154,50 @@ function renderNewsCards() {
 
 // ============ Detail View ============
 function openDetail(id) {
-  const item = mockData.find(d => d.id === id);
+  var item = mockData.find(function(d) { return d.id === id; });
   if (!item) return;
 
-  const imagesHtml = item.images.length ? `
+  previousTab = currentTab;
+  renderDetailPage(item);
+  switchTab('detail');
+}
+
+function renderDetailPage(item) {
+  var imagesHtml = item.images.length ? `
     <div class="detail-img-grid">
-      ${item.images.map((img,i) => `<img src="data:image/svg+xml,${encodeSVG(img, i)}" alt="图片" onclick="showToast('查看大图')">`).join('')}
+      ${item.images.map(function(img,i){ return '<img src="data:image/svg+xml,' + encodeSVG(img, i) + '" alt="图片" onclick="showToast(\'查看大图\')">'; }).join('')}
     </div>` : '<p style="color:var(--text-muted);font-size:13px">暂无图片</p>';
 
-  const html = `
-    <div class="detail-header">
-      <button class="close-btn" onclick="closeDetail()">✕</button>
-      <span class="title">信息详情</span>
-      <span style="width:24px"></span>
+  var html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div class="user-avatar" style="width:40px;height:40px;font-size:16px">${item.avatar}</div>
+      <div>
+        <div style="font-weight:600;font-size:15px">${item.username}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${item.time} · ${item.catLabel}</div>
+      </div>
+      ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;border:1px solid #fde68a">置顶</span>' : ''}
     </div>
-    <div class="detail-body">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div class="user-avatar" style="width:40px;height:40px;font-size:16px">${item.avatar}</div>
-        <div>
-          <div style="font-weight:600;font-size:15px">${item.username}</div>
-          <div style="font-size:12px;color:var(--text-muted)">${item.time} · ${item.catLabel}</div>
-        </div>
-        ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;vertical-align:middle;border:1px solid #fde68a">置顶</span>' : ''}
-      </div>
-      <h3 style="font-size:17px;margin-bottom:10px">${item.title}${item.pinned ? ' <span class="pin-badge" style="vertical-align:middle">置顶</span>' : ''}</h3>
-      <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:12px">${item.desc}</p>
-      <div class="card-tags">${item.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('')}</div>
-      <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">📍 ${item.location}</div></div>
-      ${imagesHtml}
-      <div class="detail-field" style="background:#f9fafb;padding:12px;border-radius:8px;margin-top:12px">
-        <div class="field-label">联系电话</div>
-        <div class="field-value" style="font-size:16px;letter-spacing:1px">📱 ${item.phone}</div>
-        <button style="margin-top:8px;width:100%;padding:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
-      </div>
-      <div style="display:flex;justify-content:space-around;padding:12px 0;margin-top:12px;border-top:1px solid var(--border)">
-        <span style="cursor:pointer" onclick="showToast('已收藏')">⭐ 收藏</span>
-        <span style="cursor:pointer" onclick="showToast('已点赞')">👍 点赞(${item.likes})</span>
-        <span style="cursor:pointer" onclick="showToast('已复制分享链接')">📤 分享</span>
-      </div>
+    <h3 style="font-size:17px;margin-bottom:10px;line-height:1.5">${item.title}</h3>
+    <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:12px">${item.desc}</p>
+    <div class="card-tags">${item.tags.map(function(t){ return '<span class="tag tag-blue">'+t+'</span>'; }).join('')}</div>
+    <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">📍 ${item.location}</div></div>
+    ${imagesHtml}
+    <div class="detail-field" style="background:#f9fafb;padding:12px;border-radius:8px;margin-top:12px">
+      <div class="field-label">联系电话</div>
+      <div class="field-value" style="font-size:16px;letter-spacing:1px">📱 ${item.phone}</div>
+      <button style="margin-top:8px;width:100%;padding:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
+    </div>
+    <div style="display:flex;justify-content:space-around;padding:12px 0;margin-top:12px;border-top:1px solid var(--border)">
+      <span style="cursor:pointer" onclick="showToast('已收藏')">⭐ 收藏</span>
+      <span style="cursor:pointer" onclick="showToast('已点赞')">👍 点赞(${item.likes})</span>
+      <span style="cursor:pointer" onclick="showToast('已复制分享链接')">📤 分享</span>
     </div>`;
 
-  document.getElementById('detailPanel').innerHTML = html;
-  document.getElementById('detailOverlay').classList.add('show');
+  document.getElementById('detailPageBody').innerHTML = html;
 }
 
 function closeDetail() {
+  // Legacy — kept for other overlays (myposts, feedback)
   document.getElementById('detailOverlay').classList.remove('show');
 }
 
