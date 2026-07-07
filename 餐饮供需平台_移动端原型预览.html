@@ -1325,14 +1325,14 @@ const mockData = [
 ];
 
 const idleData = [
-  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前' },
-  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前' },
-  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前' },
-  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前' },
-  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前' },
-  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前' },
-  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前' },
-  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前' },
+  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', userFaved:false, favorites:5 },
+  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前', userFaved:false, favorites:3 },
+  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前', userFaved:false, favorites:2 },
+  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前', userFaved:false, favorites:1 },
+  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前', userFaved:false, favorites:0 },
+  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前', userFaved:false, favorites:8 },
+  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前', userFaved:false, favorites:0 },
+  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前', userFaved:false, favorites:4 },
 ];
 
 const newsData = [
@@ -2043,7 +2043,7 @@ function renderIdleDetailPage(item) {
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="toggleIdleLike(this)">♡ 点赞</span>
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已收藏该闲置物品')">☆ 收藏</span>
+      <span id="idleDetailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleIdleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
     </div>`;
 
@@ -2344,6 +2344,27 @@ function toggleIdleLike(el) {
     el.style.color = '#ef4444';
     el.style.fontWeight = '600';
     showToast('已点赞');
+  }
+}
+
+function toggleIdleDetailFav(id) {
+  var el = document.getElementById('idleDetailFavBtn');
+  var item = idleData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    item.userFaved = false;
+    el.style.color = '';
+    el.style.fontWeight = '';
+    el.innerHTML = '☆ 收藏 ' + item.favorites;
+    showToast('已取消收藏');
+  } else {
+    el.classList.add('favorited');
+    item.userFaved = true;
+    el.style.color = '#f59e0b';
+    el.style.fontWeight = '600';
+    el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
+    showToast('已收藏');
   }
 }
 
