@@ -258,7 +258,7 @@ body {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
   margin: 24px 0;
 }
-.detail-body .detail-img-grid img {
+.detail-body .detail-img-grid > * {
   width: 100%; height: 200px; object-fit: cover; border-radius: 8px; background: #f3f4f6;
 }
 .detail-body .detail-field { margin-bottom: 24px; }
@@ -1094,7 +1094,7 @@ function renderHomeCards() {
 function renderInfoCard(item, idx) {
   const imagesHtml = item.images.length ? `
     <div class="card-images">
-      ${item.images.map((img,i) => `<div class="card-img"><img src="data:image/svg+xml,${encodeSVG(img, i)}" alt="图片"></div>`).join('')}
+      ${item.images.map((img,i) => `<div class="card-img" style="${cardImgStyle(img, i)}">${imgContent(i)}</div>`).join('')}
     </div>` : '';
   const pinHtml = item.pinned ? '<span class="pin-badge">置顶</span>' : '';
   const tagsHtml = item.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('');
@@ -1114,7 +1114,7 @@ function renderInfoCard(item, idx) {
       <div class="card-location">${locIcon} ${item.location}</div>
       ${imagesHtml}
       <div class="card-phone" onclick="event.stopPropagation();handleUnlockPhone(${item.id}, this)">
-        📱 <span class="phone-num">${item.phone}</span>
+        <span class="phone-num">${item.phone}</span>
         <span class="unlock-btn">查看完整号码 ¥2</span>
       </div>
       <div class="card-actions">
@@ -1144,11 +1144,12 @@ function renderIdleCards() {
   }
 
   let html = '';
-  data.forEach(item => {
-    const imgSvg = getImgSvg(item.img);
+  data.forEach((item, idx) => {
+    const idleStyle = idleImgStyle(item.img, idx);
+    const idleIcon = idleImgIcon(idx);
     html += `
     <div class="idle-card" onclick="showToast('查看闲置物品详情: ${item.title}')">
-      <div class="idle-img"><img src="data:image/svg+xml,${imgSvg}" alt="${item.title}"></div>
+      <div class="idle-img" style="${idleStyle}">${idleIcon}</div>
       <div class="idle-info">
         <div>
           <div class="idle-title">${item.title}</div>
@@ -1207,7 +1208,7 @@ function openDetail(id) {
 function renderDetailPage(item) {
   var imagesHtml = item.images.length ? `
     <div class="detail-img-grid">
-      ${item.images.map(function(img,i){ return '<img src="data:image/svg+xml,' + encodeSVG(img, i) + '" alt="图片" onclick="showToast(\'查看大图\')">'; }).join('')}
+      ${item.images.map(function(img,i){ return '<div class="detail-img-item" style="' + cardImgStyle(img, i) + ';height:200px;border-radius:8px;font-size:40px">' + imgContent(i) + '</div>'; }).join('')}
     </div>` : '<p style="color:var(--text-muted);font-size:var(--fs-body-sm)">暂无图片</p>';
 
   var html = `
@@ -1226,7 +1227,7 @@ function renderDetailPage(item) {
     ${imagesHtml}
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系电话</div>
-      <div class="field-value" style="font-size:32px;letter-spacing:2px">📱 ${item.phone}</div>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px">${item.phone}</div>
       <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleUnlockDetail(${item.id})">解锁查看完整号码 ¥2.00</button>
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
@@ -1509,27 +1510,33 @@ function showToast(msg) {
 }
 
 // ============ SVG helpers ============
-function encodeSVG(key, idx) {
-  const colors = [
-    ['#3b82f6','#93c5fd'], ['#10b981','#6ee7b7'], ['#f59e0b','#fde68a'],
-    ['#8b5cf6','#c4b5fd'], ['#ef4444','#fca5a5']
+function cardImgStyle(key, idx) {
+  const palettes = [
+    ['#f97316','#ea580c'], ['#10b981','#047857'], ['#3b82f6','#1d4ed8'],
+    ['#8b5cf6','#6d28d9'], ['#f59e0b','#d97706'], ['#ef4444','#dc2626']
   ];
-  const [c1, c2] = colors[(idx || 0) % colors.length];
-  const label = key.replace('bg','').replace('equip','设备').replace('material','物料').replace('resource','资源');
-  return `%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='160'%3E%3Crect width='200' height='160' fill='${c1}'/%3E%3Crect x='40' y='20' width='120' height='120' rx='10' fill='${c2}' opacity='0.5'/%3E%3Ctext x='100' y='85' text-anchor='middle' fill='white' font-size='16'%3E📷%3C/text%3E%3Ctext x='100' y='110' text-anchor='middle' fill='white' font-size='11'%3E${label}%3C/text%3E%3C/svg%3E`;
+  const labels = ['食堂','档口','后厨','设备','餐厅','校园'];
+  const [c1, c2] = palettes[(idx || 0) % palettes.length];
+  const lb = labels[(idx || 0) % labels.length];
+  return `background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:600`;
+}
+function imgContent(idx) {
+  const icons = ['🍜','🍚','🍳','🍖','🍲','🥘'];
+  return icons[(idx || 0) % icons.length];
 }
 
-function getImgSvg(key) {
+function idleImgStyle(key, idx) {
   const map = {
-    equip1: ['#0ea5e9','实拍：商用冰柜'],
-    equip2: ['#f97316','实拍：炸炉蒸箱'],
-    equip3: ['#8b5cf6','实拍：收银机'],
-    material1: ['#10b981','实拍：打包盒'],
-    material2: ['#ef4444','实拍：一次性筷'],
-    resource1: ['#6366f1','实拍：配方资料'],
+    equip1: ['#0ea5e9','#0284c7'], equip2: ['#f97316','#ea580c'], equip3: ['#8b5cf6','#6d28d9'],
+    material1: ['#10b981','#047857'], material2: ['#ef4444','#dc2626'], resource1: ['#6366f1','#4338ca'],
   };
-  const [c, label] = map[key] || ['#6b7280', key];
-  return `%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='${c}'/%3E%3Crect x='30' y='30' width='140' height='140' rx='12' fill='white' opacity='0.3'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='white' font-size='13'%3E${label}%3C/text%3E%3C/svg%3E`;
+  const [c1, c2] = map[key] || ['#6b7280', '#4b5563'];
+  return `background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px`;
+}
+function idleImgIcon(idx) {
+  const icons = ['🔧','🍳','💻','📦','🥢','📋'];
+  return icons[(idx || 0) % icons.length];
+}
 }
 
 // ============ Banner Carousel ============
@@ -1825,10 +1832,11 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
     });
     if (idleResults.length > 0) {
       html += '<div class="section-title" style="padding-top:32px">📦 闲置物品</div>';
-      idleResults.forEach(function(item) {
-        var imgSvg = getImgSvg(item.img);
+      idleResults.forEach(function(item, idx) {
+        var istyle = idleImgStyle(item.img, idx);
+        var iicon = idleImgIcon(idx);
         html += '<div class="idle-card" onclick="showToast(\'查看闲置物品详情: ' + item.title + '\')">' +
-          '<div class="idle-img"><img src="data:image/svg+xml,' + imgSvg + '" alt="' + item.title + '"></div>' +
+          '<div class="idle-img" style="' + istyle + '">' + iicon + '</div>' +
           '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
           '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
           '<div><div class="idle-price">¥' + item.price + '</div>' +
