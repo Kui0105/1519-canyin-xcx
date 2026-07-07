@@ -335,6 +335,92 @@ body {
 .idle-card .idle-price { font-size: 36px; font-weight: 700; color: var(--danger); }
 .idle-card .idle-location { font-size: var(--fs-caption-sm); color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 
+/* Idle Search Bar */
+.idle-search-bar { padding: 20px 24px 0; background: #fff; }
+.idle-search-wrap {
+  display: flex; align-items: center; gap: 12px;
+}
+.idle-search-wrap input {
+  flex: 1; border: 2px solid var(--border); border-radius: 16px;
+  padding: 16px 24px; font-size: var(--fs-body); color: var(--text);
+  background: #f9fafb; outline: none; transition: border-color 0.2s;
+}
+.idle-search-wrap input:focus { border-color: #3b82f6; background: #fff; }
+.idle-search-wrap input::placeholder { color: var(--text-muted); }
+.idle-search-btn {
+  padding: 16px 28px; background: #3b82f6; color: #fff; border: none;
+  border-radius: 16px; font-size: var(--fs-body); font-weight: 600;
+  cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+}
+.idle-search-btn:active { background: #2563eb; }
+
+/* Idle Filter Bar */
+.idle-filter-bar {
+  display: flex; gap: 12px; padding: 16px 24px; background: #fff;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 20;
+}
+.idle-filter-item { flex: 1; min-width: 0; }
+.idle-filter-trigger {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 8px; background: #f3f4f6; border-radius: 12px;
+  font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; white-space: nowrap; user-select: none;
+  transition: all 0.2s; border: 2px solid transparent; width: 100%;
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.idle-filter-trigger.active {
+  background: #eff6ff; border-color: #3b82f6; color: #3b82f6;
+}
+.idle-filter-trigger .arrow { font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+.idle-filter-trigger .arrow.up { transform: rotate(180deg); }
+.idle-filter-overlay {
+  position: fixed; top: 176px; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
+}
+.idle-filter-overlay.show { display: block; }
+.idle-filter-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  max-height: 560px; overflow: hidden;
+}
+.idle-filter-panel.show { display: block; }
+.idle-filter-panel .idle-poi-row {
+  display: flex; gap: 0; border-bottom: 2px solid var(--border);
+  height: 420px; overflow: hidden;
+}
+.idle-filter-panel .idle-poi-col {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  border-right: 2px solid var(--border); padding: 12px 0;
+}
+.idle-filter-panel .idle-poi-col:last-child { border-right: none; }
+.idle-filter-panel .idle-poi-item {
+  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.idle-filter-panel .idle-poi-item:hover, .idle-filter-panel .idle-poi-item:active { background: #f3f4f6; }
+.idle-filter-panel .idle-poi-item.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
+.idle-filter-panel .idle-poi-actions {
+  display: flex; gap: 16px; padding: 20px 24px; border-top: 2px solid var(--border);
+  background: #fff;
+}
+.idle-filter-panel .idle-poi-btn {
+  flex: 1; padding: 16px; text-align: center; border-radius: 16px;
+  font-size: var(--fs-body); font-weight: 600; cursor: pointer; border: 2px solid var(--border);
+  background: #fff; color: var(--text-primary);
+}
+.idle-filter-panel .idle-poi-btn.confirm { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+.idle-filter-panel .idle-poi-btn.confirm:active { background: #2563eb; }
+
+/* Idle Option Panel */
+.idle-option-panel .idle-panel-option {
+  padding: 18px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #f3f4f6;
+}
+.idle-option-panel .idle-panel-option:hover, .idle-option-panel .idle-panel-option:active { background: #f3f4f6; }
+.idle-option-panel .idle-panel-option.selected { color: #3b82f6; font-weight: 600; }
+.idle-option-panel .idle-panel-option.selected::after { content: ' ✓'; }
+
 /* News Card */
 .news-card {
   background: #fff; margin: 16px 24px; border-radius: 20px;
@@ -753,7 +839,7 @@ body {
           </div>
           <div class="banner-slide" style="background-image:url('banner2.jpg');background-size:cover;background-position:center;" onclick="showToast('查看详情：闲置设备限时秒杀')">
           </div>
-          <div class="banner-slide" style="background:linear-gradient(135deg, #16a34a, #22c55e);" onclick="showToast('查看详情：品牌加盟季·0元审核')">
+          <div class="banner-slide" style="background-image:url('banner3.jpg');background-size:cover;background-position:center;" onclick="showToast('查看详情：品牌加盟季·0元审核')">
           </div>
         </div>
         <div class="banner-dots" id="bannerDots">
@@ -854,12 +940,57 @@ body {
 
     <!-- ==================== 闲置社区 ==================== -->
     <div class="page" id="page-idle">
+      <!-- Idle Search Bar -->
+      <div class="idle-search-bar" id="idleSearchBar">
+        <div class="idle-search-wrap">
+          <input type="text" id="idleSearchInput" placeholder="搜索闲置物品关键词..." onkeydown="if(event.key==='Enter')doIdleSearch()">
+          <button class="idle-search-btn" onclick="doIdleSearch()">搜索</button>
+        </div>
+      </div>
       <div class="cat-scroll" id="idleCats">
         <div class="cat-tab active" data-cat="all" onclick="switchIdleCat(this, 'all')">全部</div>
         <div class="cat-tab" data-cat="equip" onclick="switchIdleCat(this, 'equip')">餐饮设备</div>
         <div class="cat-tab" data-cat="material" onclick="switchIdleCat(this, 'material')">物料耗材</div>
         <div class="cat-tab" data-cat="resource" onclick="switchIdleCat(this, 'resource')">经营资源</div>
         <div class="cat-tab" data-cat="other" onclick="switchIdleCat(this, 'other')">其他闲置</div>
+      </div>
+      <!-- Idle Filter Bar -->
+      <div class="idle-filter-bar" id="idleFilterBar">
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-region" onclick="toggleIdleFilterDropdown('idle-region')">
+            区域 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-price" onclick="toggleIdleFilterDropdown('idle-price')">
+            价格 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-time" onclick="toggleIdleFilterDropdown('idle-time')">
+            发布时间 <span class="arrow">▾</span>
+          </div>
+        </div>
+      </div>
+      <div class="idle-filter-overlay" id="idleFilterOverlay" onclick="closeAllIdleDropdowns()"></div>
+      <div class="idle-filter-panel" id="idleFilterPanel-region">
+        <div class="idle-poi-row">
+          <div class="idle-poi-col" id="idlePoiProvince" onclick="selectIdleProvince('湖南省')"></div>
+          <div class="idle-poi-col" id="idlePoiCity"></div>
+          <div class="idle-poi-col" id="idlePoiDistrict"></div>
+        </div>
+        <div class="idle-poi-actions">
+          <div class="idle-poi-btn reset" onclick="resetIdleRegion()">重置</div>
+          <div class="idle-poi-btn confirm" onclick="confirmIdleRegion()">确定</div>
+        </div>
+      </div>
+      <div class="idle-filter-panel idle-option-panel" id="idleFilterPanel-price">
+        <div class="idle-panel-option" data-value="asc" onclick="selectIdleFilter('idle-price','asc','价格升序')">价格升序</div>
+        <div class="idle-panel-option" data-value="desc" onclick="selectIdleFilter('idle-price','desc','价格降序')">价格降序</div>
+      </div>
+      <div class="idle-filter-panel idle-option-panel" id="idleFilterPanel-time">
+        <div class="idle-panel-option" data-value="new" onclick="selectIdleFilter('idle-time','new','最新发布')">最新发布</div>
+        <div class="idle-panel-option" data-value="old" onclick="selectIdleFilter('idle-time','old','最早发布')">最早发布</div>
       </div>
       <div id="idleCards"></div>
     </div>
@@ -1218,8 +1349,14 @@ let currentTab = 'home';
 let currentHomeCat = 'all';
 let currentIdleCat = 'all';
 let currentNewsCat = 'all';
-let currentCatListCat = 'all';   // which nav entry opened the cat-list
+
+let idleSearchKeyword = '';
+let idleFilters = { region:'all', price:'all', time:'all' };
+let idleRegionPick = { province:'', city:'', district:'' };
+let idleRegionPickWorking = { province:'', city:'', district:'' };
+
 let catListFilters = { region:'all', category:'all', type:'all', sort:'newest' };
+let currentCatListCat = 'all';
 let pubTodayCount = 0; // simulated daily publish count
 let photoCount = 0;
 
@@ -1666,6 +1803,33 @@ function renderIdleCards() {
   let data = idleData;
   if (currentIdleCat !== 'all') data = data.filter(d => d.cat === currentIdleCat);
 
+  // keyword search
+  if (idleSearchKeyword) {
+    var kw = idleSearchKeyword.trim().toLowerCase();
+    data = data.filter(function(d) {
+      return d.title.toLowerCase().indexOf(kw) !== -1 || d.location.toLowerCase().indexOf(kw) !== -1;
+    });
+  }
+
+  // region filter
+  if (idleFilters.region !== 'all') {
+    data = data.filter(function(d) { return d.location.indexOf(idleFilters.region) !== -1; });
+  }
+
+  // price sort
+  if (idleFilters.price === 'asc') {
+    data = data.sort(function(a, b) { return a.price - b.price; });
+  } else if (idleFilters.price === 'desc') {
+    data = data.sort(function(a, b) { return b.price - a.price; });
+  }
+
+  // time sort (mock: use time text ordering)
+  if (idleFilters.time === 'new') {
+    // already in default order, no change needed
+  } else if (idleFilters.time === 'old') {
+    data = data.reverse();
+  }
+
   if (data.length === 0) {
     document.getElementById('idleCards').innerHTML = '<div class="empty-state"><div class="icon">📦</div><div class="text">暂无闲置物品</div></div>';
     return;
@@ -1691,6 +1855,153 @@ function renderIdleCards() {
     </div>`;
   });
   document.getElementById('idleCards').innerHTML = html;
+}
+
+// ============ Idle Search ============
+function doIdleSearch() {
+  idleSearchKeyword = document.getElementById('idleSearchInput').value;
+  renderIdleCards();
+}
+
+// ============ Idle Filter ============
+function toggleIdleFilterDropdown(filterName) {
+  var panel = document.getElementById('idleFilterPanel-' + filterName.replace('idle-', ''));
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="' + filterName + '"]');
+  var overlay = document.getElementById('idleFilterOverlay');
+  var isOpen = panel.classList.contains('show');
+
+  closeAllIdleDropdowns();
+
+  if (!isOpen) {
+    panel.classList.add('show');
+    trigger.classList.add('active');
+    trigger.querySelector('.arrow').classList.add('up');
+    overlay.classList.add('show');
+
+    if (filterName === 'idle-region') {
+      renderIdleRegionColumns();
+    } else if (filterName === 'idle-price') {
+      buildIdleOptionPanel('idle-price', 'idle-panel-option', idleFilters.price, 'all', 'idle-price', 'all');
+    } else if (filterName === 'idle-time') {
+      buildIdleOptionPanel('idle-time', 'idle-panel-option', idleFilters.time, 'all', 'idle-time', 'all');
+    }
+  }
+}
+
+function closeAllIdleDropdowns() {
+  document.querySelectorAll('.idle-filter-panel').forEach(function(d) { d.classList.remove('show'); });
+  document.querySelectorAll('.idle-filter-trigger').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.idle-filter-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+  document.getElementById('idleFilterOverlay').classList.remove('show');
+}
+
+function selectIdleFilter(filterName, value, label) {
+  var key = filterName.replace('idle-', '');
+  idleFilters[key] = value;
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="' + filterName + '"]');
+  var defaultLabels = { 'idle-price': '价格', 'idle-time': '发布时间' };
+  var defaultVals = { 'idle-price': 'all', 'idle-time': 'all' };
+  var def = defaultLabels[filterName];
+  trigger.childNodes[0].nodeValue = value === defaultVals[filterName] ? def + ' ' : label + ' ';
+  closeAllIdleDropdowns();
+  renderIdleCards();
+}
+
+function updateIdleTriggerLabel(filterName, label) {
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="idle-' + filterName + '"]');
+  if (!trigger) return;
+  var defaultLabels = { region: '区域', price: '价格', time: '发布时间' };
+  var def = defaultLabels[filterName];
+  trigger.childNodes[0].nodeValue = (label === 'all' || label === '') ? def + ' ' : label + ' ';
+}
+
+function buildIdleOptionPanel(filterName, optionClass, currentValue, defaultValue, filterKey, defaultValueLabel) {
+  var panel = document.getElementById('idleFilterPanel-' + filterKey.replace('idle-', ''));
+  var options = [];
+  if (filterKey === 'idle-price') {
+    options = [{ value: 'all', label: '不限' }, { value: 'asc', label: '价格升序' }, { value: 'desc', label: '价格降序' }];
+  } else if (filterKey === 'idle-time') {
+    options = [{ value: 'all', label: '不限' }, { value: 'new', label: '最新发布' }, { value: 'old', label: '最早发布' }];
+  }
+  var html = '';
+  options.forEach(function(opt) {
+    var sel = currentValue === opt.value ? ' selected' : '';
+    html += '<div class="' + optionClass + sel + '" data-value="' + opt.value + '" onclick="selectIdleFilter(\'' + filterKey + '\',\'' + opt.value + '\',\'' + opt.label + '\')">' + opt.label + '</div>';
+  });
+  panel.innerHTML = html;
+}
+
+function renderIdleRegionColumns() {
+  var provinces = ['湖南省'];
+  var cities = { '湖南省': ['长沙市', '株洲市', '湘潭市'] };
+  var districts = {
+    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '全市'],
+    '株洲市': ['不限', '芦淞区', '天元区', '石峰区', '荷塘区', '全市'],
+    '湘潭市': ['不限', '雨湖区', '岳塘区', '湘乡市', '韶山市', '全市']
+  };
+  var provCol = document.getElementById('idlePoiProvince');
+  var cityCol = document.getElementById('idlePoiCity');
+  var distCol = document.getElementById('idlePoiDistrict');
+
+  provCol.innerHTML = provinces.map(function(p) {
+    var sel = p === idleRegionPickWorking.province ? ' selected' : '';
+    return '<div class="idle-poi-item' + sel + '" onclick="selectIdleProvince(\'' + p + '\')">' + p + '</div>';
+  }).join('');
+
+  if (idleRegionPickWorking.province) {
+    var cityList = cities[idleRegionPickWorking.province] || [];
+    cityCol.innerHTML = cityList.map(function(c) {
+      var sel = c === idleRegionPickWorking.city ? ' selected' : '';
+      return '<div class="idle-poi-item' + sel + '" onclick="selectIdleCity(\'' + c + '\')">' + c + '</div>';
+    }).join('');
+  } else {
+    cityCol.innerHTML = '';
+  }
+
+  if (idleRegionPickWorking.city) {
+    var distList = districts[idleRegionPickWorking.city] || [];
+    distCol.innerHTML = distList.map(function(d) {
+      var sel = d === idleRegionPickWorking.district ? ' selected' : '';
+      return '<div class="idle-poi-item' + sel + '" onclick="selectIdleDistrict(\'' + d + '\')">' + d + '</div>';
+    }).join('');
+  } else {
+    distCol.innerHTML = '';
+  }
+}
+
+function selectIdleProvince(province) {
+  idleRegionPickWorking = { province: province, city: '', district: '' };
+  renderIdleRegionColumns();
+}
+function selectIdleCity(city) {
+  idleRegionPickWorking = { province: idleRegionPickWorking.province, city: city, district: '' };
+  renderIdleRegionColumns();
+}
+function selectIdleDistrict(district) {
+  idleRegionPickWorking = { province: idleRegionPickWorking.province, city: idleRegionPickWorking.city, district: district };
+  renderIdleRegionColumns();
+}
+function confirmIdleRegion() {
+  idleRegionPick = JSON.parse(JSON.stringify(idleRegionPickWorking));
+  if (idleRegionPick.city) {
+    if (idleRegionPick.district && idleRegionPick.district !== '不限') {
+      idleFilters.region = idleRegionPick.city + ' · ' + idleRegionPick.district;
+      updateIdleTriggerLabel('region', idleRegionPick.city + ' · ' + idleRegionPick.district);
+    } else {
+      idleFilters.region = idleRegionPick.city;
+      updateIdleTriggerLabel('region', idleRegionPick.city);
+    }
+  }
+  closeAllIdleDropdowns();
+  renderIdleCards();
+}
+function resetIdleRegion() {
+  idleRegionPickWorking = { province: '', city: '', district: '' };
+  renderIdleRegionColumns();
+  idleFilters.region = 'all';
+  updateIdleTriggerLabel('region', 'all');
+  closeAllIdleDropdowns();
+  renderIdleCards();
 }
 
 // ============ Idle Detail ============
@@ -1731,9 +2042,9 @@ function renderIdleDetailPage(item) {
       <button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast('解锁成功！完整号码：13987654321')">解锁查看完整号码 ¥1.00</button>
     </div>
     <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="toggleIdleLike(this)">♡ 点赞</span>
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已收藏该闲置物品')">☆ 收藏</span>
       <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
-      <span style="cursor:pointer;font-size:var(--fs-body);color:#ea580c;font-weight:600" onclick="showToast('已发送咨询消息给卖家')">💬 聊一聊</span>
     </div>`;
 
   document.getElementById('idleDetailBody').innerHTML = html;
@@ -2017,6 +2328,22 @@ function toggleFav(el, id) {
     item.userFaved = true;
     el.innerHTML = '★ ' + (item.favorites + 1);
     showToast('已收藏');
+  }
+}
+
+function toggleIdleLike(el) {
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    el.innerHTML = '♡ 点赞';
+    el.style.color = '';
+    el.style.fontWeight = '';
+    showToast('已取消点赞');
+  } else {
+    el.classList.add('liked');
+    el.innerHTML = '❤ 点赞';
+    el.style.color = '#ef4444';
+    el.style.fontWeight = '600';
+    showToast('已点赞');
   }
 }
 
