@@ -153,6 +153,57 @@ body {
 }
 .search-input-wrap input::placeholder { color: var(--text-muted); }
 
+/* City locator in search bar */
+.city-locator {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  padding-right: 16px; border-right: 2px solid #e5e7eb; cursor: pointer;
+  font-size: var(--fs-body); font-weight: 500; color: var(--text);
+  white-space: nowrap; user-select: none;
+}
+.city-locator .loc-icon { font-size: 32px; }
+.city-locator .loc-arrow { font-size: 20px; color: var(--text-muted); margin-left: -2px; }
+
+/* City list page */
+.city-page-header {
+  padding: 20px 32px; background: #fff; border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+}
+.city-page-header .current-city {
+  font-size: var(--fs-body); color: var(--text-muted);
+}
+.city-page-header .current-city b {
+  color: var(--primary); margin-left: 4px;
+}
+.city-list-wrap {
+  display: flex; flex: 1; overflow: hidden;
+}
+.city-list-scroll {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.city-group { padding: 0 32px 24px; }
+.city-group .group-letter {
+  font-size: var(--fs-section); font-weight: 700; color: var(--text);
+  padding: 24px 0 12px; position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.city-group .city-item {
+  padding: 16px 0; font-size: var(--fs-body); color: var(--text);
+  border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: color 0.15s;
+}
+.city-group .city-item:active { color: var(--primary); }
+.city-group .city-item.selected { color: var(--primary); font-weight: 600; }
+
+/* Letter index bar */
+.letter-index {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 40px; padding: 8px 0; gap: 2px; flex-shrink: 0;
+}
+.letter-index .letter-dot {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-mini); color: var(--text-muted); cursor: pointer;
+  border-radius: 8px; transition: all 0.15s;
+}
+.letter-index .letter-dot:active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
+
 /* Category Tabs - horizontal scroll */
 .cat-scroll {
   display: flex; gap: 0; background: #fff; overflow-x: auto;
@@ -870,7 +921,12 @@ body {
       <div class="home-top-wrap">
       <!-- Search -->
       <div class="search-bar">
-        <div class="search-input-wrap" onclick="openSearch()" style="cursor:pointer">
+        <div class="search-input-wrap">
+          <span class="city-locator" onclick="openCityList()" id="cityLocator">
+            <span class="loc-icon">📍</span>
+            <span id="currentCityName">长沙</span>
+            <span class="loc-arrow">▾</span>
+          </span>
           <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
         </div>
@@ -943,6 +999,19 @@ body {
 
       <!-- Info Cards -->
       <div id="homeCards"></div>
+    </div>
+
+    <!-- ==================== 城市列表 ==================== -->
+    <div class="page" id="page-city">
+      <div class="city-page-header">
+        <span class="current-city">当前定位：<b id="cityCurrentShow">长沙</b></span>
+      </div>
+      <div class="city-list-wrap">
+        <div class="city-list-scroll" id="cityListScroll">
+          <div id="cityGroups"></div>
+        </div>
+        <div class="letter-index" id="letterIndex"></div>
+      </div>
     </div>
 
     <!-- ==================== 搜索页 ==================== -->
@@ -1441,9 +1510,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city') {
     document.getElementById('navBack').style.display = 'block';
   } else {
     document.getElementById('navBack').style.display = 'none';
@@ -1456,14 +1525,91 @@ function switchTab(page) {
   if (page === 'publish') updatePublishRemain();
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
+  if (page === 'city') renderCityPage();
 }
 
 var previousTab = 'home';
 
+// ============ City Select ============
+var currentCity = '长沙';
+var cityGroups = [
+  { letter:'A', cities:['安阳','安康','安庆','鞍山','安顺'] },
+  { letter:'B', cities:['北京','保定','包头','蚌埠','滨州','宝鸡','亳州'] },
+  { letter:'C', cities:['长沙','成都','重庆','长春','常州','滁州','巢湖','沧州','郴州','常德'] },
+  { letter:'D', cities:['大连','东莞','德阳','德州','大同','大庆','丹东'] },
+  { letter:'E', cities:['鄂尔多斯','恩施'] },
+  { letter:'F', cities:['福州','佛山','阜阳','抚顺','抚州'] },
+  { letter:'G', cities:['广州','贵阳','桂林','赣州','广元','广安'] },
+  { letter:'H', cities:['杭州','合肥','哈尔滨','呼和浩特','海口','惠州','衡阳','怀化','湖州','淮安','邯郸','菏泽'] },
+  { letter:'J', cities:['济南','嘉兴','金华','九江','吉林','济宁','焦作'] },
+  { letter:'K', cities:['昆明','开封'] },
+  { letter:'L', cities:['兰州','洛阳','柳州','娄底','临沂','聊城','丽江','临汾'] },
+  { letter:'M', cities:['绵阳','茂名','梅州','牡丹江'] },
+  { letter:'N', cities:['南京','宁波','南宁','南昌','南通','南充','南阳'] },
+  { letter:'P', cities:['莆田','平顶山','盘锦'] },
+  { letter:'Q', cities:['青岛','泉州','秦皇岛','齐齐哈尔','清远'] },
+  { letter:'R', cities:['日照'] },
+  { letter:'S', cities:['上海','深圳','苏州','沈阳','石家庄','汕头','韶关','邵阳','十堰','商丘','宿迁','绍兴'] },
+  { letter:'T', cities:['天津','太原','唐山','台州','泰安'] },
+  { letter:'W', cities:['武汉','无锡','温州','芜湖','渭南','威海','潍坊'] },
+  { letter:'X', cities:['西安','厦门','徐州','襄阳','湘潭','新乡','许昌','西宁','咸阳','新余'] },
+  { letter:'Y', cities:['银川','岳阳','宜昌','烟台','益阳','永州','盐城','扬州','运城'] },
+  { letter:'Z', cities:['郑州','珠海','株洲','驻马店','张家界','遵义','中山','淄博','湛江','漳州'] }
+];
+
+function openCityList() {
+  var prev = currentTab;
+  if (prev !== 'home' && prev !== 'city') previousTab = prev;
+  else if (prev === 'city') previousTab = 'home';
+  else previousTab = currentTab;
+  switchTab('city');
+}
+
+function renderCityPage() {
+  var html = '';
+  var letters = [];
+  cityGroups.forEach(function(g) {
+    letters.push(g.letter);
+    html += '<div class="city-group" id="cityGroup_' + g.letter + '">';
+    html += '<div class="group-letter">&nbsp;' + g.letter + '</div>';
+    g.cities.forEach(function(c) {
+      var sel = c === currentCity ? ' selected' : '';
+      html += '<div class="city-item' + sel + '" onclick="selectCity(\'' + c + '\')">' + c + '</div>';
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('cityGroups').innerHTML = html;
+  document.getElementById('cityCurrentShow').textContent = currentCity;
+
+  // Render letter index
+  var idxHtml = '';
+  letters.forEach(function(l) {
+    idxHtml += '<div class="letter-dot" onclick="scrollToCityGroup(\'' + l + '\')">' + l + '</div>';
+  });
+  document.getElementById('letterIndex').innerHTML = idxHtml;
+}
+
+function selectCity(city) {
+  currentCity = city;
+  document.getElementById('currentCityName').textContent = city;
+  document.getElementById('cityCurrentShow').textContent = city;
+  // Update selected state
+  document.querySelectorAll('.city-item').forEach(function(el) {
+    el.classList.toggle('selected', el.textContent === city);
+  });
+  showToast('已切换至：' + city);
+}
+
+function scrollToCityGroup(letter) {
+  var el = document.getElementById('cityGroup_' + letter);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
 function goBack() {
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
