@@ -411,7 +411,7 @@ body {
 .comment-item .ci-actions { margin-top: 10px; display: flex; align-items: center; gap: 16px; }
 .comment-item .ci-like { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 .comment-item .ci-like.active { color: #ef4444; }
-.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-mini); color: #3b82f6; display: flex; align-items: center; gap: 4px; }
+.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-caption); color: #3b82f6; display: flex; align-items: center; gap: 4px; }
 .comment-item .ci-reply:active { opacity: 0.7; }
 
 /* Reply items */
@@ -429,7 +429,7 @@ body {
 .reply-item .ri-time { font-size: var(--fs-mini); color: var(--text-muted); }
 .reply-item .ri-content { font-size: var(--fs-caption); color: var(--text-secondary); line-height: 1.5; }
 .reply-item .ri-actions { margin-top: 8px; }
-.reply-item .ri-reply { cursor: pointer; font-size: 11px; color: #3b82f6; }
+.reply-item .ri-reply { cursor: pointer; font-size: var(--fs-caption); color: #3b82f6; }
 
 /* Reply input area (inside comment) */
 .reply-input-wrap { display: flex; gap: 10px; margin-top: 12px; padding-left: 52px; }
@@ -3080,7 +3080,7 @@ function renderReplies(replies, commentId) {
       '<div class="ri-avatar' + (r.isAuthor ? ' ri-author' : '') + '">' + r.avatar + '</div>' +
       '<div class="ri-body">' +
         '<div class="ri-header">' +
-          '<span class="ri-nickname">' + r.nickname + (r.isAuthor ? ' <span style="font-size:10px;color:var(--primary);font-weight:400">(作者)</span>' : '') + '</span>' +
+          '<span class="ri-nickname">' + r.nickname + (r.isAuthor ? ' <span style="font-size:var(--fs-caption);color:var(--primary);font-weight:400">(作者)</span>' : '') + '</span>' +
           '<span class="ri-time">' + r.time + '</span>' +
         '</div>' +
         '<div class="ri-content">' + r.content + '</div>' +
