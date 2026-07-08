@@ -813,6 +813,32 @@ body {
 .mp-btn.danger { color: var(--danger); }
 .mp-empty { text-align: center; padding: 80px 32px; font-size: var(--fs-caption); color: var(--text-muted); }
 
+/* Notification Page */
+.notif-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 24px 32px 12px; background: #fff; }
+.notif-header-title { font-size: var(--fs-section); font-weight: 700; color: var(--text); }
+.notif-mark-all { font-size: var(--fs-caption); color: var(--primary); cursor: pointer; }
+.notif-list { padding: 0 32px 32px; }
+.notif-item { display: flex; align-items: flex-start; gap: 16px; padding: 24px; background: #fff; border-radius: 16px; margin-top: 12px; cursor: pointer; transition: background 0.2s; position: relative; }
+.notif-item:first-child { margin-top: 0; }
+.notif-item:active { background: #f9fafb; }
+.notif-item.unread { background: #eff6ff; }
+.notif-item.unread:active { background: #dbeafe; }
+.notif-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--danger); flex-shrink: 0; margin-top: 6px; display: none; }
+.notif-item.unread .notif-dot { display: block; }
+.notif-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: var(--fs-body); font-weight: 600; flex-shrink: 0; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-nickname { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); }
+.notif-action { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 4px; }
+.notif-content { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 6px; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-post-title { font-size: var(--fs-caption-sm); color: var(--primary); margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-time { font-size: var(--fs-caption-sm); color: var(--text-muted); margin-top: 6px; }
+.notif-empty { text-align: center; padding: 100px 32px; font-size: var(--fs-body-sm); color: var(--text-muted); }
+.notif-empty-icon { font-size: 80px; margin-bottom: 20px; }
+
+/* Tab Badge */
+.tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
+.tab-badge.show { display: flex; }
+
 /* Confirm Dialog */
 .confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
 .confirm-overlay.show { display: flex; }
@@ -1598,10 +1624,10 @@ body {
           <span class="menu-text">我的发布</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('暂无未读消息')">
+        <div class="menu-item" onclick="openNotifications()">
           <span class="menu-icon">🔔</span>
           <span class="menu-text">消息通知</span>
-          <span class="menu-badge" style="display:none">0</span>
+          <span class="menu-badge" id="menuNotifBadge">3</span>
           <span class="menu-arrow">›</span>
         </div>
         <div class="menu-item" onclick="showToast('查看我的收藏列表')">
@@ -1728,6 +1754,15 @@ body {
       </div>
       <div class="my-posts-list" id="myPostsList"></div>
     </div>
+
+    <!-- ==================== 消息通知 ==================== -->
+    <div class="page" id="page-notifications">
+      <div class="notif-header-bar">
+        <span class="notif-header-title">消息通知</span>
+        <span class="notif-mark-all" onclick="markAllNotificationsRead()">全部已读</span>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
   </div>
 
   <!-- Bottom Tab Bar -->
@@ -1751,6 +1786,7 @@ body {
     <div class="tab-item" data-page="me" onclick="switchTab('me')">
       <span class="tab-icon">👤</span>
       <span class="tab-label">我的</span>
+      <span class="tab-badge show" id="tabMeBadge">3</span>
     </div>
   </div>
 
@@ -1902,9 +1938,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1924,6 +1960,7 @@ function switchTab(page) {
   if (page === 'balance-detail') renderBalanceDetail();
   if (page === 'recharge') renderRechargePage();
   if (page === 'payment') renderPaymentPage();
+  if (page === 'notifications') renderNotifications();
 }
 
 var previousTab = 'home';
@@ -2130,6 +2167,102 @@ function confirmPayment() {
   }, 1500);
 }
 
+// ============ Notifications ============
+var notificationsData = [
+  { id:1, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'comment', commentId:1, userAvatar:'张', userNickname:'张老板', action:'评论了你的帖子', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', time:'30分钟前', read:false },
+  { id:2, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'reply', commentId:1, replyId:101, userAvatar:'湖', userNickname:'湖南大学餐饮部', action:'回复了你的评论', content:'在三楼食堂西区，最小的15㎡的还在，面食类可以经营的。', time:'20分钟前', read:false },
+  { id:3, postId:4, postType:'detail', postTitle:'中南大学校内商业街档口转让', type:'comment', commentId:1, userAvatar:'刘', userNickname:'奶茶小哥', action:'评论了你的帖子', content:'转让费大概多少？设备都包哪些？', time:'3小时前', read:false },
+  { id:4, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'reply', commentId:1, replyId:102, userAvatar:'张', userNickname:'张老板', action:'回复了你的评论', content:'好的，我下午过去看看行吗？', time:'10分钟前', read:true },
+  { id:5, postId:4, postType:'detail', postTitle:'中南大学校内商业街档口转让', type:'comment', commentId:2, userAvatar:'赵', userNickname:'赵姐', action:'评论了你的帖子', content:'请问租金一个月多少？合同还有几年？', time:'5小时前', read:true },
+  { id:6, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'comment', commentId:2, userAvatar:'李', userNickname:'李师傅', action:'评论了你的帖子', content:'请问进场费还要另外交吗？押金多少？', time:'1小时前', read:true },
+];
+
+function getUnreadCount() {
+  return notificationsData.filter(function(n) { return !n.read; }).length;
+}
+
+function updateUnreadBadge() {
+  var count = getUnreadCount();
+  var menuBadge = document.getElementById('menuNotifBadge');
+  var tabBadge = document.getElementById('tabMeBadge');
+  if (count > 0) {
+    if (menuBadge) { menuBadge.style.display = 'inline-block'; menuBadge.textContent = count; }
+    if (tabBadge) { tabBadge.classList.add('show'); tabBadge.textContent = count; }
+  } else {
+    if (menuBadge) { menuBadge.style.display = 'none'; }
+    if (tabBadge) { tabBadge.classList.remove('show'); }
+  }
+}
+
+function openNotifications() {
+  previousTab = currentTab;
+  currentTab = 'notifications';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-notifications').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var homeTab = document.querySelector('.tab-item[data-page="home"]');
+  if (homeTab) homeTab.classList.add('active');
+  document.getElementById('navTitle').textContent = '消息通知';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderNotifications();
+}
+
+function renderNotifications() {
+  var html = '';
+  if (notificationsData.length === 0) {
+    html = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div><div>暂无消息通知</div></div>';
+  } else {
+    notificationsData.forEach(function(n) {
+      var unreadClass = n.read ? '' : ' unread';
+      var icon = n.type === 'reply' ? '💬' : '📝';
+      html += '<div class="notif-item' + unreadClass + '" onclick="openNotifDetail(' + n.id + ')" id="notif-' + n.id + '">';
+      html += '<div class="notif-dot"></div>';
+      html += '<div class="notif-avatar">' + n.userAvatar + '</div>';
+      html += '<div class="notif-body">';
+      html += '<div class="notif-nickname">' + n.userNickname + '</div>';
+      html += '<div class="notif-action">' + icon + ' ' + n.action + '</div>';
+      html += '<div class="notif-content">' + n.content + '</div>';
+      html += '<div class="notif-post-title">📌 ' + n.postTitle + '</div>';
+      html += '<div class="notif-time">' + n.time + '</div>';
+      html += '</div></div>';
+    });
+  }
+  document.getElementById('notifList').innerHTML = html;
+  updateUnreadBadge();
+}
+
+function markAllNotificationsRead() {
+  notificationsData.forEach(function(n) { n.read = true; });
+  renderNotifications();
+  showToast('已全部标记为已读');
+}
+
+function openNotifDetail(notifId) {
+  var n = notificationsData.find(function(item) { return item.id === notifId; });
+  if (!n) return;
+  // Mark as read
+  if (!n.read) { n.read = true; renderNotifications(); }
+  // Open the post detail page
+  var item = mockData.find(function(d) { return d.id === n.postId; });
+  if (!item) return;
+  previousTab = currentTab;
+  renderDetailPage(item);
+  switchTab('detail');
+  // Scroll to comment section after a short delay to allow DOM to render
+  setTimeout(function() {
+    var commentEl = document.querySelector('.comment-item[data-cid="' + n.commentId + '"]');
+    if (commentEl) {
+      commentEl.scrollIntoView({ behavior:'smooth', block:'center' });
+      // Highlight briefly
+      commentEl.style.transition = 'background 0.3s';
+      commentEl.style.background = '#fef3c7';
+      setTimeout(function() { commentEl.style.background = ''; }, 2000);
+    }
+  }, 300);
+}
+
 // ============ City Select ============
 var currentCity = '长沙';
 var cityGroups = [
@@ -2237,7 +2370,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
