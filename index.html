@@ -2478,7 +2478,6 @@ function renderPaymentPage() {
     usePoints = false;
     currentPointsToUse = 0;
     document.getElementById('pointsToggle').classList.remove('on');
-    document.getElementById('pointsCardBody').classList.remove('show');
     methodSection.classList.remove('hidden');
   }
 
@@ -2487,18 +2486,12 @@ function renderPaymentPage() {
 
 function updatePointsDeductionDisplay() {
   var deductAmount = currentPointsToUse / pointsDeductRatio;
-  document.getElementById('pointsUseVal').textContent = currentPointsToUse;
-
   var remaining = paymentContext.amount - deductAmount;
   if (remaining < 0) remaining = 0;
 
   if (deductAmount >= paymentContext.amount) {
-    document.getElementById('pointsResultText').textContent = '积分全额抵扣, 实付 ¥0.00';
-    document.getElementById('pointsResult').querySelector('.pr-tag').textContent = '全额抵扣';
     document.getElementById('paymentMethodSection').classList.add('hidden');
   } else {
-    document.getElementById('pointsResultText').textContent = '已抵扣 ¥' + deductAmount.toFixed(2) + ', 还需支付 ¥' + remaining.toFixed(2);
-    document.getElementById('pointsResult').querySelector('.pr-tag').textContent = '部分抵扣';
     document.getElementById('paymentMethodSection').classList.remove('hidden');
   }
 
