@@ -843,6 +843,18 @@ body {
 #page-favorites .empty-state,
 #page-browsing-history .empty-state { padding: 100px 24px; }
 
+/* ==================== 付费订单中心 ==================== */
+.order-list { padding: 8px 0 32px; }
+.order-item { background: #fff; margin: 16px 24px; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.order-item:last-child { margin-bottom: 0; }
+.order-item .oi-reason { font-size: var(--fs-body); color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+.order-item .oi-meta { display: flex; align-items: center; gap: 16px; font-size: var(--fs-mini); color: var(--text-muted); }
+.order-item .oi-meta .oi-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.order-item .oi-amount { margin-top: 12px; font-size: var(--fs-section); font-weight: 700; }
+.order-item .oi-amount.income { color: #16a34a; }
+.order-item .oi-amount.expense { color: #dc2626; }
+#page-orders .empty-state { padding: 100px 24px; }
+
 /* Tab Badge */
 .tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
 .tab-badge.show { display: flex; }
@@ -1651,7 +1663,7 @@ body {
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" onclick="showToast('查看所有付费订单')">
+        <div class="menu-item" onclick="openOrders()">
           <span class="menu-icon">💳</span>
           <span class="menu-text">付费订单中心</span>
           <span class="menu-right">查看详情</span>
@@ -1780,6 +1792,11 @@ body {
     <!-- ==================== 浏览足迹 ==================== -->
     <div class="page" id="page-browsing-history">
       <div class="bh-list" id="bhList"></div>
+    </div>
+
+    <!-- ==================== 付费订单中心 ==================== -->
+    <div class="page" id="page-orders">
+      <div class="order-list" id="orderList"></div>
     </div>
   </div>
 
@@ -1956,9 +1973,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1981,6 +1998,7 @@ function switchTab(page) {
   if (page === 'notifications') renderNotifications();
   if (page === 'favorites') renderFavorites();
   if (page === 'browsing-history') renderBrowsingHistory();
+  if (page === 'orders') renderOrders();
 }
 
 var previousTab = 'home';
@@ -2071,6 +2089,53 @@ var balanceData = [
     { type:'expense', icon:'💰', reason:'付费发帖', time:'2026-07-04 18:30', amount:'-15.00' }
   ]}
 ];
+
+// ============ 付费订单中心 ============
+var orderData = [
+  { reason:'充值余额', time:'2026-07-08 09:00', method:'微信支付', amount:'+100.00', type:'income' },
+  { reason:'解锁联系方式', time:'2026-07-08 10:15', method:'余额支付', amount:'-5.00', type:'expense' },
+  { reason:'发帖置顶推广', time:'2026-07-08 14:20', method:'余额支付', amount:'-10.00', type:'expense' },
+  { reason:'充值余额', time:'2026-07-07 08:30', method:'微信支付', amount:'+50.00', type:'income' },
+  { reason:'解锁联系方式', time:'2026-07-07 11:30', method:'余额支付', amount:'-5.00', type:'expense' },
+  { reason:'付费发帖', time:'2026-07-07 16:45', method:'余额支付', amount:'-15.00', type:'expense' },
+  { reason:'充值余额', time:'2026-07-04 12:00', method:'微信支付', amount:'+200.00', type:'income' },
+  { reason:'付费发帖', time:'2026-07-04 18:30', method:'余额支付', amount:'-15.00', type:'expense' }
+];
+
+function openOrders() {
+  previousTab = 'me';
+  currentTab = 'orders';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-orders').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '付费订单中心';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderOrders();
+}
+
+function renderOrders() {
+  var html = '';
+  if (orderData.length === 0) {
+    html = '<div class="empty-state"><div class="icon">💳</div><div class="text">暂无交易记录</div></div>';
+  } else {
+    orderData.forEach(function(item) {
+      var cls = item.type === 'income' ? 'income' : 'expense';
+      html +=
+      '<div class="order-item">' +
+        '<div class="oi-reason">' + item.reason + '</div>' +
+        '<div class="oi-meta">' +
+          '<span>' + item.time + '</span>' +
+          '<span class="oi-dot"></span>' +
+          '<span>' + item.method + '</span>' +
+        '</div>' +
+        '<div class="oi-amount ' + cls + '">' + item.amount + '</div>' +
+      '</div>';
+    });
+  }
+  document.getElementById('orderList').innerHTML = html;
+}
 
 function openBalanceDetail() {
   previousTab = currentTab;
@@ -2451,7 +2516,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
