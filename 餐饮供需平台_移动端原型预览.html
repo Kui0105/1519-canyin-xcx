@@ -811,12 +811,6 @@ body {
 .points-info-row .pir-label { font-size: var(--fs-caption); color: var(--text-secondary); }
 .points-info-row .pir-value { font-size: var(--fs-caption); color: var(--text); font-weight: 600; }
 .points-info-row .pir-value.highlight { color: #f59e0b; }
-.points-slider-row { margin-bottom: 12px; }
-.points-slider-row .psr-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.points-slider-row .psr-label { font-size: var(--fs-caption-sm); color: var(--text-muted); }
-.points-slider-row .psr-max { font-size: var(--fs-caption-sm); color: #f59e0b; cursor: pointer; font-weight: 500; }
-.points-slider-row input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: #e5e7eb; border-radius: 3px; outline: none; }
-.points-slider-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #f59e0b; cursor: pointer; box-shadow: 0 2px 6px rgba(245,158,11,0.3); }
 .points-result { background: #fffbeb; border-radius: 12px; padding: 16px; text-align: center; }
 .points-result .pr-tag { display: inline-block; background: #fef3c7; color: #92400e; font-size: var(--fs-caption-sm); font-weight: 600; padding: 2px 12px; border-radius: 4px; margin-bottom: 8px; }
 .points-result .pr-remaining { font-size: var(--fs-caption); color: var(--text-secondary); }
@@ -1853,13 +1847,6 @@ body {
               <span class="pir-label">使用积分</span>
               <span class="pir-value highlight" id="pointsUseVal">0</span>
             </div>
-            <div class="points-slider-row">
-              <div class="psr-label-row">
-                <span class="psr-label">抵扣金额</span>
-                <span class="psr-max" id="pointsMaxBtn" onclick="useMaxPoints()">全部抵扣 →</span>
-              </div>
-              <input type="range" min="0" max="100" value="0" step="1" id="pointsSlider" oninput="onPointsSliderChange()">
-            </div>
             <div class="points-result" id="pointsResult">
               <div class="pr-tag">积分抵扣</div>
               <div class="pr-full" id="pointsResultText">已抵扣 ¥0.00</div>
@@ -2496,19 +2483,14 @@ function renderPaymentPage() {
   if (isUnlock) {
     pointsSection.classList.add('show');
     usePoints = true; // auto-enable for unlock
-    currentPointsToUse = 0;
+    // Use max possible points
+    var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
+    currentPointsToUse = Math.min(needPoints, userPoints);
 
     // Update points balance display
     var maxDeductible = userPoints / pointsDeductRatio;
     document.getElementById('pointsBalanceText').textContent =
       '当前积分: ' + userPoints + ' (可抵 ¥' + maxDeductible.toFixed(2) + ')';
-
-    // Set slider max
-    var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
-    var sliderMax = Math.min(needPoints, userPoints);
-    var slider = document.getElementById('pointsSlider');
-    slider.max = sliderMax;
-    slider.value = 0;
 
     // Show toggle as ON
     var toggle = document.getElementById('pointsToggle');
@@ -2537,13 +2519,11 @@ function renderPaymentPage() {
 function updatePointsDeductionDisplay() {
   var deductAmount = currentPointsToUse / pointsDeductRatio;
   document.getElementById('pointsUseVal').textContent = currentPointsToUse;
-  document.getElementById('pointsSlider').value = currentPointsToUse;
 
   var remaining = paymentContext.amount - deductAmount;
   if (remaining < 0) remaining = 0;
 
   if (deductAmount >= paymentContext.amount) {
-    // Full deduction
     document.getElementById('pointsResultText').textContent = '积分全额抵扣, 实付 ¥0.00';
     document.getElementById('pointsResult').querySelector('.pr-tag').textContent = '全额抵扣';
     document.getElementById('paymentMethodSection').classList.add('hidden');
@@ -2579,8 +2559,8 @@ function togglePointsDeduction() {
   if (usePoints) {
     toggle.classList.add('on');
     body.classList.add('show');
-    currentPointsToUse = 0;
-    document.getElementById('pointsSlider').value = 0;
+    var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
+    currentPointsToUse = Math.min(needPoints, userPoints);
     updatePointsDeductionDisplay();
   } else {
     toggle.classList.remove('on');
@@ -2589,18 +2569,6 @@ function togglePointsDeduction() {
     document.getElementById('paymentMethodSection').classList.remove('hidden');
     updatePaymentButton();
   }
-}
-
-function onPointsSliderChange() {
-  currentPointsToUse = parseInt(document.getElementById('pointsSlider').value);
-  updatePointsDeductionDisplay();
-}
-
-function useMaxPoints() {
-  var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
-  currentPointsToUse = Math.min(needPoints, userPoints);
-  document.getElementById('pointsSlider').value = currentPointsToUse;
-  updatePointsDeductionDisplay();
 }
 
 function selectPaymentMethod(method) {
