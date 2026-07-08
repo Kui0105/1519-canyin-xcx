@@ -787,6 +787,21 @@ body {
 .payment-submit-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; padding: 16px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 700; text-align: center; cursor: pointer; transition: all 0.2s; }
 .payment-submit-btn:active { opacity: 0.85; }
 
+/* My Posts Page */
+#page-my-posts .my-posts-list { padding: 16px 32px 32px; }
+.mp-item { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.mp-item:last-child { margin-bottom: 0; }
+.mp-status { display: inline-block; font-size: var(--fs-caption-sm); padding: 4px 16px; border-radius: 8px; }
+.mp-status.pending { color: var(--warning); background: var(--warning-light); }
+.mp-status.approved { color: var(--success); background: var(--success-light); }
+.mp-status.rejected { color: var(--danger); background: var(--danger-light); }
+.mp-title { font-size: var(--fs-body); color: var(--text); font-weight: 600; margin-top: 16px; }
+.mp-desc { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 8px; line-height: 1.5; }
+.mp-time { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 8px; }
+.mp-actions { display: flex; gap: 16px; margin-top: 16px; }
+.mp-btn { padding: 10px 24px; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-caption); cursor: pointer; }
+.mp-btn.danger { color: var(--danger); }
+
 /* Floating Button */
 .floating-cs {
   position: absolute; right: 32px; bottom: 200px; z-index: 50;
@@ -1551,14 +1566,14 @@ body {
           <div class="val">¥28.50</div>
           <div class="label">我的余额</div>
         </div>
-        <div class="wallet-item" onclick="showToast('共发布 3 条信息，2条已上架')">
+        <div class="wallet-item" onclick="openMyPosts()">
           <div class="val">3</div>
           <div class="label">发布数量</div>
         </div>
       </div>
 
       <div class="menu-section" style="margin-top:40px">
-        <div class="menu-item" onclick="showMyPosts()">
+        <div class="menu-item" onclick="openMyPosts()">
           <span class="menu-icon">📋</span>
           <span class="menu-text">我的发布</span>
           <span class="menu-arrow">›</span>
@@ -1682,6 +1697,11 @@ body {
         <div class="payment-submit-btn" id="paymentSubmitBtn" onclick="confirmPayment()">确认支付 ¥0.00</div>
       </div>
     </div>
+
+    <!-- ==================== 我的发布 ==================== -->
+    <div class="page" id="page-my-posts">
+      <div class="my-posts-list" id="myPostsList"></div>
+    </div>
   </div>
 
   <!-- Bottom Tab Bar -->
@@ -1725,11 +1745,6 @@ body {
 <!-- Detail Overlay -->
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="detail-panel" id="detailPanel"></div>
-</div>
-
-<!-- My Posts Overlay -->
-<div class="detail-overlay" id="mypostsOverlay" onclick="if(event.target===this)closeMyPosts()">
-  <div class="detail-panel" id="mypostsPanel"></div>
 </div>
 
 <!-- Feedback Overlay -->
@@ -2179,7 +2194,7 @@ function scrollToCityGroup(letter) {
 function goBack() {
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -3203,46 +3218,48 @@ function submitPublish() {
 }
 
 // ============ My Posts ============
-function showMyPosts() {
-  const html = `
-    <div class="detail-header">
-      <button class="close-btn" onclick="closeMyPosts()">✕</button>
-      <span class="title">我的发布</span>
-      <span style="width:48px"></span>
-    </div>
-    <div class="detail-body">
-      <div style="padding:16px 0">
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--warning);background:var(--warning-light);padding:4px 16px;border-radius:8px">审核中</span>
-          <div class="card-title" style="margin-top:16px">湖南大学食堂档口招商</div>
-          <div class="card-desc">刚刚提交，等待审核...</div>
-          <div style="font-size:var(--fs-caption);color:var(--text-muted);margin-top:8px">2026-07-07 10:25</div>
-        </div>
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--success);background:var(--success-light);padding:4px 16px;border-radius:8px">✓ 已上架</span>
-          <div class="card-title" style="margin-top:16px">招聘面点师傅</div>
-          <div class="card-desc">急招面点师傅2名...</div>
-          <div style="display:flex;gap:16px;margin-top:16px">
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('已刷新')">🔄 刷新</button>
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer;color:var(--danger)" onclick="showToast('已下架')">⬇ 下架</button>
-          </div>
-        </div>
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--danger);background:var(--danger-light);padding:4px 16px;border-radius:8px">审核驳回</span>
-          <div class="card-title" style="margin-top:16px">闲置冰柜转让</div>
-          <div class="card-desc" style="color:var(--danger)">驳回原因：图片模糊，请重新上传清晰图片</div>
-          <div style="display:flex;gap:16px;margin-top:16px">
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('进入编辑页面')">✏ 重新编辑</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  document.getElementById('mypostsPanel').innerHTML = html;
-  document.getElementById('mypostsOverlay').classList.add('show');
+function openMyPosts() {
+  previousTab = currentTab;
+  currentTab = 'my-posts';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-my-posts').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('navTitle').textContent = '我的发布';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderMyPosts();
 }
 
-function closeMyPosts() {
-  document.getElementById('mypostsOverlay').classList.remove('show');
+function renderMyPosts() {
+  var html = '';
+  // 审核中
+  html += '<div class="mp-item">';
+  html += '<span class="mp-status pending">审核中</span>';
+  html += '<div class="mp-title">湖南大学食堂档口招商</div>';
+  html += '<div class="mp-desc">刚刚提交，等待审核...</div>';
+  html += '<div class="mp-time">2026-07-07 10:25</div>';
+  html += '</div>';
+  // 已上架
+  html += '<div class="mp-item">';
+  html += '<span class="mp-status approved">✓ 已上架</span>';
+  html += '<div class="mp-title">招聘面点师傅</div>';
+  html += '<div class="mp-desc">急招面点师傅2名...</div>';
+  html += '<div class="mp-time">2026-07-06 15:30</div>';
+  html += '<div class="mp-actions">';
+  html += '<button class="mp-btn" onclick="showToast(\'已刷新\')">🔄 刷新</button>';
+  html += '<button class="mp-btn danger" onclick="showToast(\'已下架\')">⬇ 下架</button>';
+  html += '</div></div>';
+  // 审核驳回
+  html += '<div class="mp-item">';
+  html += '<span class="mp-status rejected">审核驳回</span>';
+  html += '<div class="mp-title">闲置冰柜转让</div>';
+  html += '<div class="mp-desc" style="color:var(--danger)">驳回原因：图片模糊，请重新上传清晰图片</div>';
+  html += '<div class="mp-time">2026-07-05 09:15</div>';
+  html += '<div class="mp-actions">';
+  html += '<button class="mp-btn" onclick="showToast(\'进入编辑页面\')">✏ 重新编辑</button>';
+  html += '</div></div>';
+  document.getElementById('myPostsList').innerHTML = html;
 }
 
 // ============ Feedback ============
