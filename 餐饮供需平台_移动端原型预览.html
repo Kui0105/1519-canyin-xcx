@@ -174,8 +174,23 @@ body {
 .city-page-header .current-city b {
   color: var(--primary); margin-left: 4px;
 }
+.city-page-header .hot-section {
+  padding-top: 16px; border-top: 1px solid #f3f4f6; margin-top: 16px;
+}
+.city-page-header .hot-title {
+  font-size: var(--fs-caption); color: var(--text-muted); margin-bottom: 12px;
+}
+.city-page-header .hot-tags {
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.hot-tag {
+  padding: 10px 24px; background: #f3f4f6; border-radius: 8px;
+  font-size: var(--fs-caption); color: var(--text); cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.hot-tag:active { background: var(--primary); color: #fff; }
 .city-list-wrap {
-  display: flex; flex: 1; overflow: hidden;
+  flex: 1; overflow: hidden; position: relative;
 }
 .city-list-scroll {
   flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -192,17 +207,19 @@ body {
 .city-group .city-item:active { color: var(--primary); }
 .city-group .city-item.selected { color: var(--primary); font-weight: 600; }
 
-/* Letter index bar */
+/* Letter index bar - fixed on right */
 .letter-index {
+  position: fixed; right: 8px; top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 40px; padding: 8px 0; gap: 2px; flex-shrink: 0;
+  width: 36px; padding: 8px 0; gap: 1px; z-index: 10;
 }
 .letter-index .letter-dot {
-  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
   font-size: var(--fs-mini); color: var(--text-muted); cursor: pointer;
-  border-radius: 8px; transition: all 0.15s;
+  border-radius: 50%; transition: all 0.15s;
 }
-.letter-index .letter-dot:active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
+.letter-index .letter-dot:active,
+.letter-index .letter-dot.active { color: #fff; font-weight: 700; background: var(--primary); }
 
 /* Category Tabs - horizontal scroll */
 .cat-scroll {
@@ -1005,13 +1022,17 @@ body {
     <div class="page" id="page-city">
       <div class="city-page-header">
         <span class="current-city">当前定位：<b id="cityCurrentShow">长沙</b></span>
+        <div class="hot-section" id="hotCitySection">
+          <div class="hot-title">热门城市</div>
+          <div class="hot-tags" id="hotCityTags"></div>
+        </div>
       </div>
       <div class="city-list-wrap">
         <div class="city-list-scroll" id="cityListScroll">
           <div id="cityGroups"></div>
         </div>
-        <div class="letter-index" id="letterIndex"></div>
       </div>
+      <div class="letter-index" id="letterIndex"></div>
     </div>
 
     <!-- ==================== 搜索页 ==================== -->
@@ -1568,6 +1589,14 @@ function openCityList() {
 }
 
 function renderCityPage() {
+  // Render hot cities
+  var hotCities = ['北京','上海','广州','深圳','杭州','成都','重庆','武汉','南京','天津'];
+  var hotHtml = '';
+  hotCities.forEach(function(c) {
+    hotHtml += '<span class="hot-tag" onclick="selectHotCity(\'' + c + '\')">' + c + '</span>';
+  });
+  document.getElementById('hotCityTags').innerHTML = hotHtml;
+
   var html = '';
   var letters = [];
   cityGroups.forEach(function(g) {
@@ -1601,6 +1630,11 @@ function selectCity(city) {
     el.classList.toggle('selected', el.textContent === city);
   });
   showToast('已切换至：' + city);
+}
+
+function selectHotCity(city) {
+  selectCity(city);
+  switchTab('home');
 }
 
 function scrollToCityGroup(letter) {
