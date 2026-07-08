@@ -374,6 +374,12 @@ body {
   padding: 12px 32px; border-radius: 12px; font-size: var(--fs-body);
 }
 .detail-bottom-bar .bar-btn.comment-btn:active { opacity: 0.85; }
+/* Bar input mode */
+.detail-bottom-bar .bar-input-wrap { display: flex; gap: 10px; flex: 1; align-items: center; padding: 0 4px; }
+.detail-bottom-bar .bar-input-wrap input { flex: 1; min-width: 0; padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; font-size: var(--fs-caption); outline: none; background: #fff; }
+.detail-bottom-bar .bar-input-wrap input:focus { border-color: var(--primary); }
+.detail-bottom-bar .bar-input-wrap button { padding: 12px 20px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 10px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.detail-bottom-bar .bar-input-wrap button:active { opacity: 0.85; }
 
 /* ============ Comment Section ============ */
 .comment-section { margin-top: 24px; border-top: 2px solid var(--border); padding-top: 24px; }
@@ -405,8 +411,8 @@ body {
 .comment-item .ci-actions { margin-top: 10px; display: flex; align-items: center; gap: 16px; }
 .comment-item .ci-like { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 .comment-item .ci-like.active { color: #ef4444; }
-.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-.comment-item .ci-reply:active { color: var(--primary); }
+.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-mini); color: #3b82f6; display: flex; align-items: center; gap: 4px; }
+.comment-item .ci-reply:active { opacity: 0.7; }
 
 /* Reply items */
 .reply-list { margin-top: 12px; padding-left: 52px; }
@@ -423,7 +429,7 @@ body {
 .reply-item .ri-time { font-size: 11px; color: var(--text-muted); }
 .reply-item .ri-content { font-size: var(--fs-mini); color: var(--text-secondary); line-height: 1.5; }
 .reply-item .ri-actions { margin-top: 8px; }
-.reply-item .ri-reply { cursor: pointer; font-size: 11px; color: var(--text-muted); }
+.reply-item .ri-reply { cursor: pointer; font-size: 11px; color: #3b82f6; }
 
 /* Reply input area (inside comment) */
 .reply-input-wrap { display: flex; gap: 10px; margin-top: 12px; padding-left: 52px; }
@@ -1376,7 +1382,7 @@ body {
       <div class="detail-bottom-bar" id="detailBottomBar">
         <span class="bar-btn" id="detailBarLike" onclick="toggleDetailLike(currentDetailId)">♡ 点赞</span>
         <span class="bar-btn" id="detailBarFav" onclick="toggleDetailFav(currentDetailId)">☆ 收藏</span>
-        <span class="bar-btn comment-btn" onclick="showCommentInput('detail')">💬 评论</span>
+        <span class="bar-btn comment-btn" onclick="showBarInput('detail','comment')">评论</span>
       </div>
     </div>
 
@@ -1431,7 +1437,7 @@ body {
       <div class="detail-bottom-bar" id="idleDetailBar">
         <span class="bar-btn" id="idleBarLike" onclick="toggleIdleLike(this)">♡ 点赞</span>
         <span class="bar-btn" id="idleBarFav" onclick="toggleIdleDetailFav(currentIdleDetailId)">☆ 收藏</span>
-        <span class="bar-btn comment-btn" onclick="showCommentInput('detail')">💬 评论</span>
+        <span class="bar-btn comment-btn" id="idleBarCommentBtn" onclick="showBarInput('idle','comment')">评论</span>
       </div>
     </div>
 
@@ -2945,161 +2951,88 @@ function hasSensitiveWord(text) {
 // Current reply target
 var currentReplyTarget = null; // { commentId: number, replyTo: 'comment' | replyId }
 
-function showCommentInput(type) {
-  // Remove any existing reply inputs
-  document.querySelectorAll('.reply-input-wrap').forEach(function(el) { el.remove(); });
+// === Bar input: replaces bottom bar with input + confirm button ===
+function showBarInput(type, mode) {
+  /* type: 'detail' | 'idle',  mode: 'comment' | 'reply' */
   currentReplyTarget = null;
-
-  var sectionId = type === 'detail' ? 'detailPageBody' : 'idleDetailBody';
-  var commentSection = document.querySelector('#' + sectionId + ' .comment-section');
-  if (!commentSection) return;
-
-  // Check if input already exists
-  var existing = commentSection.querySelector('.comment-input-wrap');
-  if (existing) {
-    existing.querySelector('input').focus();
-    return;
-  }
-
-  var inputHtml = '<div class="comment-input-wrap" id="commentInputWrap">' +
-    '<input type="text" id="commentInputText" placeholder="请输入评论内容" maxlength="200" onkeydown="if(event.key===\'Enter\')submitComment(\'' + type + '\')">' +
-    '<button onclick="submitComment(\'' + type + '\')">发表</button>' +
+  currentPostType = type;
+  var barId = type === 'detail' ? 'detailBottomBar' : 'idleDetailBar';
+  var bar = document.getElementById(barId);
+  if (!bar) return;
+  if (bar.querySelector('.bar-input-wrap')) { bar.querySelector('input').focus(); return; }
+  bar.setAttribute('data-original', bar.innerHTML);
+  var placeholder = mode === 'comment' ? '请输入评论内容' : '请输入回复内容';
+  var btnText = mode === 'comment' ? '发表' : '回复';
+  var handler = mode === 'comment' ? 'submitBarComment()' : 'submitBarReply()';
+  bar.innerHTML = '<div class="bar-input-wrap">' +
+    '<input type="text" id="barInputText" placeholder="' + placeholder + '" maxlength="200" onkeydown="if(event.key===\'Enter\')' + handler + '">' +
+    '<button onclick="' + handler + '">' + btnText + '</button>' +
     '</div>';
-
-  // Insert after cs-title or at top of comment section
-  var csTitle = commentSection.querySelector('.cs-title');
-  if (csTitle) {
-    csTitle.insertAdjacentHTML('afterend', inputHtml);
-  } else {
-    commentSection.insertAdjacentHTML('afterbegin', inputHtml);
-  }
-
-  setTimeout(function() {
-    var inp = document.getElementById('commentInputText');
-    if (inp) inp.focus();
-  }, 100);
+  setTimeout(function() { var inp = document.getElementById('barInputText'); if (inp) inp.focus(); }, 100);
 }
 
-function submitComment(type) {
-  var inp = document.getElementById('commentInputText');
+function showReplyInput(commentId, replyToId) {
+  currentReplyTarget = { commentId: commentId, replyTo: replyToId || 'comment' };
+  showBarInput(currentPostType, 'reply');
+}
+
+function submitBarComment() {
+  var inp = document.getElementById('barInputText');
   if (!inp) return;
   var text = inp.value.trim();
   if (!text) { showToast('请输入评论内容'); return; }
   if (text.length < 2) { showToast('评论内容至少2个字符'); return; }
   if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
-
-  // Get the post item
-  var postId, item, dataArr;
-  if (type === 'detail') {
-    postId = currentDetailId;
-    item = mockData.find(function(d) { return d.id === postId; });
-  } else {
-    postId = currentIdleDetailId;
-    item = idleData.find(function(d) { return d.id === postId; });
-  }
+  var item = findCurrentPost();
   if (!item) return;
-
   if (!item.comments) item.comments = [];
-  var newId = Date.now();
   item.comments.push({
-    id: newId, avatar: '我', nickname: '当前用户', time: '刚刚',
+    id: Date.now(), avatar: '我', nickname: '当前用户', time: '刚刚',
     content: text, liked: false, likes: 0, replies: [], isAuthor: false
   });
-
-  // Remove input
-  var wrap = document.getElementById('commentInputWrap');
-  if (wrap) wrap.remove();
-
-  // Re-render
-  if (type === 'detail') {
-    var detailItem = mockData.find(function(d) { return d.id === postId; });
-    renderDetailPage(detailItem);
-  } else {
-    var idleItem = idleData.find(function(d) { return d.id === postId; });
-    renderIdleDetailPage(idleItem);
-  }
+  restoreAndReRender();
   showToast('评论发表成功');
 }
 
-function showReplyInput(commentId, replyToId) {
-  // Remove any existing reply input
-  document.querySelectorAll('.reply-input-wrap').forEach(function(el) { el.remove(); });
-  // Remove comment input wrap too
-  var ciw = document.getElementById('commentInputWrap');
-  if (ciw) ciw.remove();
-
-  currentReplyTarget = { commentId: commentId, replyTo: replyToId || 'comment' };
-
-  // Find the comment item
-  var commentItem = document.querySelector('[data-cid="' + commentId + '"]');
-  if (!commentItem) return;
-
-  var placeholder = replyToId ? '请输入回复内容' : '请输入回复内容';
-  var inputHtml = '<div class="reply-input-wrap" id="replyInputWrap">' +
-    '<input type="text" id="replyInputText" placeholder="请输入回复内容" maxlength="200" onkeydown="if(event.key===\'Enter\')submitReply()">' +
-    '<button onclick="submitReply()">回复</button>' +
-    '</div>';
-
-  // Insert at the end of the comment item (after reply list or main content)
-  commentItem.insertAdjacentHTML('beforeend', inputHtml);
-
-  setTimeout(function() {
-    var inp = document.getElementById('replyInputText');
-    if (inp) inp.focus();
-  }, 100);
-}
-
-function submitReply() {
-  var inp = document.getElementById('replyInputText');
+function submitBarReply() {
+  var inp = document.getElementById('barInputText');
   if (!inp) return;
   var text = inp.value.trim();
   if (!text) { showToast('请输入回复内容'); return; }
-  if (text.length < 1) { showToast('回复内容不能为空'); return; }
   if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
-
   if (!currentReplyTarget) return;
   var commentId = currentReplyTarget.commentId;
-
-  // Find the post and comment
-  var postId = currentPostType === 'detail' ? currentDetailId : currentIdleDetailId;
-  var item = currentPostType === 'detail'
-    ? mockData.find(function(d) { return d.id === postId; })
-    : idleData.find(function(d) { return d.id === postId; });
+  var item = findCurrentPost();
   if (!item || !item.comments) return;
-
   var comment = item.comments.find(function(c) { return c.id === commentId; });
   if (!comment) return;
-
   if (!comment.replies) comment.replies = [];
-
   var targetNickname = '';
   if (currentReplyTarget.replyTo !== 'comment') {
-    // Replying to a specific reply
     var targetReply = comment.replies.find(function(r) { return r.id === currentReplyTarget.replyTo; });
     if (targetReply) targetNickname = targetReply.nickname;
-  } else {
-    targetNickname = comment.nickname;
-  }
-
-  var newReplyId = Date.now();
+  } else { targetNickname = comment.nickname; }
   comment.replies.push({
-    id: newReplyId, avatar: '我', nickname: '当前用户', time: '刚刚',
-    content: (targetNickname ? '@' + targetNickname + ' ' : '') + text,
-    isAuthor: false
+    id: Date.now(), avatar: '我', nickname: '当前用户', time: '刚刚',
+    content: (targetNickname ? '@' + targetNickname + ' ' : '') + text, isAuthor: false
   });
-
-  // Remove input
-  var wrap = document.getElementById('replyInputWrap');
-  if (wrap) wrap.remove();
   currentReplyTarget = null;
-
-  // Re-render
-  if (currentPostType === 'detail') {
-    renderDetailPage(item);
-  } else {
-    renderIdleDetailPage(item);
-  }
+  restoreAndReRender();
   showToast('回复成功');
+}
+
+function findCurrentPost() {
+  var postId = currentPostType === 'detail' ? currentDetailId : currentIdleDetailId;
+  return currentPostType === 'detail'
+    ? mockData.find(function(d) { return d.id === postId; })
+    : idleData.find(function(d) { return d.id === postId; });
+}
+
+function restoreAndReRender() {
+  var item = findCurrentPost();
+  if (!item) return;
+  if (currentPostType === 'detail') { renderDetailPage(item); }
+  else { renderIdleDetailPage(item); }
 }
 
 function renderComments(comments) {
@@ -3120,7 +3053,7 @@ function renderComments(comments) {
           '<div class="ci-content">' + c.content + '</div>' +
           '<div class="ci-actions">' +
             '<span class="ci-like' + (c.liked ? ' active' : '') + '" onclick="toggleCommentLike(this,' + c.id + ')">' + (c.liked ? '❤' : '♡') + ' <span class="ci-like-count">' + c.likes + '</span></span>' +
-            '<span class="ci-reply" onclick="showReplyInput(' + c.id + ')">💬 回复</span>' +
+            '<span class="ci-reply" onclick="showReplyInput(' + c.id + ')">回复</span>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -3144,7 +3077,7 @@ function renderReplies(replies, commentId) {
         '</div>' +
         '<div class="ri-content">' + r.content + '</div>' +
         '<div class="ri-actions">' +
-          '<span class="ri-reply" onclick="showReplyInput(' + commentId + ',' + r.id + ')">💬 回复</span>' +
+          '<span class="ri-reply" onclick="showReplyInput(' + commentId + ',' + r.id + ')">回复</span>' +
         '</div>' +
       '</div>' +
     '</div>';
