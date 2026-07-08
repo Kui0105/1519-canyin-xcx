@@ -335,7 +335,7 @@ body {
 .detail-body { padding: 32px; }
 #page-detail .detail-body { padding: 24px 32px 160px; }
 /* News detail */
-#page-news-detail .detail-body { padding: 0 0 120px; }
+#page-news-detail .detail-body { padding: 0 0 32px; }
 .news-detail-header { padding: 32px 32px 24px; background: #fff; border-bottom: 2px solid var(--border); }
 .news-detail-header .nd-cat { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: var(--fs-caption-sm); margin-bottom: 16px; }
 .news-detail-header .nd-cat.policy { background: #dbeafe; color: #2563eb; }
@@ -345,12 +345,6 @@ body {
 .news-detail-content { padding: 32px; }
 .news-detail-content p { font-size: var(--fs-body); color: var(--text); line-height: 1.9; margin-bottom: 20px; text-indent: 2em; }
 .news-detail-content p strong { display: block; font-size: var(--fs-section); color: var(--text); margin-bottom: 12px; text-indent: 0; }
-.news-detail-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; z-index: 100; }
-.news-detail-bar .ndb-left { display: flex; align-items: center; gap: 32px; font-size: var(--fs-caption); color: var(--text-muted); }
-.news-detail-bar .ndb-left span { cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.news-detail-bar .ndb-left span.liked { color: #ef4444; font-weight: 600; }
-.news-detail-bar .ndb-left span.favorited { color: #f59e0b; font-weight: 600; }
-.news-detail-bar .ndb-share { padding: 12px 32px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: var(--fs-caption); cursor: pointer; }
 .detail-body .detail-img-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
   margin: 24px 0;
@@ -2399,15 +2393,11 @@ function renderNewsCards() {
 
 // ============ News Detail ============
 let currentNewsDetail = null;
-let newsDetailLiked = false;
-let newsDetailFaved = false;
 
 function openNewsDetail(id) {
   var item = newsData.find(function(d) { return d.id === id; });
   if (!item) return;
   currentNewsDetail = item;
-  newsDetailLiked = false;
-  newsDetailFaved = false;
   renderNewsDetail();
   var prev = currentTab;
   if (!['news', 'news-detail'].includes(prev)) previousTab = prev;
@@ -2428,34 +2418,7 @@ function renderNewsDetail() {
         '<span>' + item.time + '</span>' +
       '</div>' +
     '</div>' +
-    '<div class="news-detail-content">' + item.content + '</div>' +
-    '<div class="news-detail-bar" id="newsDetailBar">' +
-      '<div class="ndb-left">' +
-        '<span id="ndbLike" onclick="toggleNewsLike()">' + (newsDetailLiked ? '❤' : '♡') + ' 点赞</span>' +
-        '<span id="ndbFav" onclick="toggleNewsFav()">' + (newsDetailFaved ? '★' : '☆') + ' 收藏</span>' +
-      '</div>' +
-      '<button class="ndb-share" onclick="showToast(\'已复制分享链接\')">分享</button>' +
-    '</div>';
-}
-
-function toggleNewsLike() {
-  newsDetailLiked = !newsDetailLiked;
-  var el = document.getElementById('ndbLike');
-  if (el) {
-    el.innerHTML = (newsDetailLiked ? '❤' : '♡') + ' 点赞';
-    if (newsDetailLiked) { el.classList.add('liked'); } else { el.classList.remove('liked'); }
-  }
-  showToast(newsDetailLiked ? '已点赞' : '已取消点赞');
-}
-
-function toggleNewsFav() {
-  newsDetailFaved = !newsDetailFaved;
-  var el = document.getElementById('ndbFav');
-  if (el) {
-    el.innerHTML = (newsDetailFaved ? '★' : '☆') + ' 收藏';
-    if (newsDetailFaved) { el.classList.add('favorited'); } else { el.classList.remove('favorited'); }
-  }
-  showToast(newsDetailFaved ? '已收藏' : '已取消收藏');
+    '<div class="news-detail-content">' + item.content + '</div>';
 }
 
 // ============ Detail View ============
