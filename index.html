@@ -791,6 +791,39 @@ body {
 .payment-submit-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; padding: 16px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 700; text-align: center; cursor: pointer; transition: all 0.2s; }
 .payment-submit-btn:active { opacity: 0.85; }
 #page-payment { padding-bottom: 120px; }
+/* +++++ 积分抵扣区域 +++++ */
+.points-section { padding: 0 32px 24px; display: none; }
+.points-section.show { display: block; }
+.points-card { background: #fff; border-radius: 16px; padding: 24px; border: 2px solid #fbbf24; }
+.points-card-header { display: flex; align-items: center; justify-content: space-between; }
+.points-card-header .psh-left { display: flex; align-items: center; gap: 12px; }
+.points-card-header .psh-icon { font-size: 32px; }
+.points-card-header .psh-title { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); }
+.points-card-header .psh-subtitle { font-size: var(--fs-mini); color: var(--text-muted); }
+/* toggle switch */
+.ps-toggle { width: 52px; height: 28px; border-radius: 14px; background: #d1d5db; position: relative; cursor: pointer; transition: background 0.25s; flex-shrink: 0; }
+.ps-toggle.on { background: #f59e0b; }
+.ps-toggle::after { content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+.ps-toggle.on::after { left: 26px; }
+.points-card-body { margin-top: 16px; padding-top: 16px; border-top: 1px solid #fef3c7; display: none; }
+.points-card-body.show { display: block; }
+.points-info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.points-info-row .pir-label { font-size: var(--fs-caption); color: var(--text-secondary); }
+.points-info-row .pir-value { font-size: var(--fs-caption); color: var(--text); font-weight: 600; }
+.points-info-row .pir-value.highlight { color: #f59e0b; }
+.points-slider-row { margin-bottom: 12px; }
+.points-slider-row .psr-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.points-slider-row .psr-label { font-size: var(--fs-caption-sm); color: var(--text-muted); }
+.points-slider-row .psr-max { font-size: var(--fs-caption-sm); color: #f59e0b; cursor: pointer; font-weight: 500; }
+.points-slider-row input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: #e5e7eb; border-radius: 3px; outline: none; }
+.points-slider-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #f59e0b; cursor: pointer; box-shadow: 0 2px 6px rgba(245,158,11,0.3); }
+.points-result { background: #fffbeb; border-radius: 12px; padding: 16px; text-align: center; }
+.points-result .pr-tag { display: inline-block; background: #fef3c7; color: #92400e; font-size: var(--fs-caption-sm); font-weight: 600; padding: 2px 12px; border-radius: 4px; margin-bottom: 8px; }
+.points-result .pr-remaining { font-size: var(--fs-caption); color: var(--text-secondary); }
+.points-result .pr-remaining .pr-amount { font-size: var(--fs-body-sm); font-weight: 700; color: var(--text); }
+.points-result .pr-full { font-size: var(--fs-caption); color: #92400e; font-weight: 600; }
+/* payment method section hidden when full points deduction */
+.payment-method-section.hidden { display: none; }
 
 /* My Posts Page */
 .mp-tabs { display: flex; gap: 0; padding: 0; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -1802,7 +1835,39 @@ body {
         <div class="payment-amount-val" id="paymentAmountVal">¥0.00</div>
         <div class="payment-amount-reason" id="paymentReason">—</div>
       </div>
-      <div class="payment-method-section">
+      <!-- 积分抵扣（仅解锁手机号时显示） -->
+      <div class="points-section" id="pointsSection">
+        <div class="points-card">
+          <div class="points-card-header">
+            <div class="psh-left">
+              <span class="psh-icon">🪙</span>
+              <div>
+                <div class="psh-title">积分抵扣</div>
+                <div class="psh-subtitle" id="pointsBalanceText">当前积分: 800 (可抵 ¥8.00)</div>
+              </div>
+            </div>
+            <div class="ps-toggle" id="pointsToggle" onclick="togglePointsDeduction()"></div>
+          </div>
+          <div class="points-card-body" id="pointsCardBody">
+            <div class="points-info-row">
+              <span class="pir-label">使用积分</span>
+              <span class="pir-value highlight" id="pointsUseVal">0</span>
+            </div>
+            <div class="points-slider-row">
+              <div class="psr-label-row">
+                <span class="psr-label">抵扣金额</span>
+                <span class="psr-max" id="pointsMaxBtn" onclick="useMaxPoints()">全部抵扣 →</span>
+              </div>
+              <input type="range" min="0" max="100" value="0" step="1" id="pointsSlider" oninput="onPointsSliderChange()">
+            </div>
+            <div class="points-result" id="pointsResult">
+              <div class="pr-tag">积分抵扣</div>
+              <div class="pr-full" id="pointsResultText">已抵扣 ¥0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="payment-method-section" id="paymentMethodSection">
         <div class="payment-method-title">选择支付方式</div>
         <div class="payment-method-item selected" id="paymentMethodBalance" onclick="selectPaymentMethod('balance')">
           <div class="pm-left">
@@ -2123,6 +2188,11 @@ let pubTodayCount = 0; // simulated daily publish count
 let paymentContext = { amount:0, reason:'', source:'' }; // payment flow context
 let selectedPaymentMethod = 'balance'; // default payment method
 let photoCount = 0;
+// Points deduction state
+let userPoints = 800; // 用户当前积分
+let pointsDeductRatio = 100; // 100积分 = ¥1
+let usePoints = false; // 是否使用积分抵扣
+let currentPointsToUse = 0; // 当前选择使用的积分数量
 
 // ============ Navigation ============
 function switchTab(page) {
@@ -2413,11 +2483,124 @@ function goToPayment(amount, reason, source) {
 function renderPaymentPage() {
   document.getElementById('paymentAmountVal').textContent = '¥' + paymentContext.amount.toFixed(2);
   document.getElementById('paymentReason').textContent = paymentContext.reason;
-  document.getElementById('paymentSubmitBtn').textContent = '确认支付 ¥' + paymentContext.amount.toFixed(2);
   // Reset method selection to default (balance)
   selectedPaymentMethod = 'balance';
   document.querySelectorAll('.payment-method-item').forEach(function(el) { el.classList.remove('selected'); });
   document.getElementById('paymentMethodBalance').classList.add('selected');
+
+  // Points deduction: only for unlock sources
+  var isUnlock = paymentContext.source === 'unlock-idle' || paymentContext.source === 'unlock-detail';
+  var pointsSection = document.getElementById('pointsSection');
+  var methodSection = document.getElementById('paymentMethodSection');
+
+  if (isUnlock) {
+    pointsSection.classList.add('show');
+    usePoints = true; // auto-enable for unlock
+    currentPointsToUse = 0;
+
+    // Update points balance display
+    var maxDeductible = userPoints / pointsDeductRatio;
+    document.getElementById('pointsBalanceText').textContent =
+      '当前积分: ' + userPoints + ' (可抵 ¥' + maxDeductible.toFixed(2) + ')';
+
+    // Set slider max
+    var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
+    var sliderMax = Math.min(needPoints, userPoints);
+    var slider = document.getElementById('pointsSlider');
+    slider.max = sliderMax;
+    slider.value = 0;
+
+    // Show toggle as ON
+    var toggle = document.getElementById('pointsToggle');
+    toggle.classList.add('on');
+
+    // Show body
+    document.getElementById('pointsCardBody').classList.add('show');
+
+    // Update display
+    updatePointsDeductionDisplay();
+
+    // Ensure methods are visible initially
+    methodSection.classList.remove('hidden');
+  } else {
+    pointsSection.classList.remove('show');
+    usePoints = false;
+    currentPointsToUse = 0;
+    document.getElementById('pointsToggle').classList.remove('on');
+    document.getElementById('pointsCardBody').classList.remove('show');
+    methodSection.classList.remove('hidden');
+  }
+
+  updatePaymentButton();
+}
+
+function updatePointsDeductionDisplay() {
+  var deductAmount = currentPointsToUse / pointsDeductRatio;
+  document.getElementById('pointsUseVal').textContent = currentPointsToUse;
+  document.getElementById('pointsSlider').value = currentPointsToUse;
+
+  var remaining = paymentContext.amount - deductAmount;
+  if (remaining < 0) remaining = 0;
+
+  if (deductAmount >= paymentContext.amount) {
+    // Full deduction
+    document.getElementById('pointsResultText').textContent = '积分全额抵扣, 实付 ¥0.00';
+    document.getElementById('pointsResult').querySelector('.pr-tag').textContent = '全额抵扣';
+    document.getElementById('paymentMethodSection').classList.add('hidden');
+  } else {
+    document.getElementById('pointsResultText').textContent = '已抵扣 ¥' + deductAmount.toFixed(2) + ', 还需支付 ¥' + remaining.toFixed(2);
+    document.getElementById('pointsResult').querySelector('.pr-tag').textContent = '部分抵扣';
+    document.getElementById('paymentMethodSection').classList.remove('hidden');
+  }
+
+  updatePaymentButton();
+}
+
+function updatePaymentButton() {
+  var deductAmount = currentPointsToUse / pointsDeductRatio;
+  var remaining = paymentContext.amount - deductAmount;
+  if (remaining < 0) remaining = 0;
+
+  var btn = document.getElementById('paymentSubmitBtn');
+  if (usePoints && remaining === 0) {
+    btn.textContent = '确认抵扣 (积分全额抵扣)';
+  } else if (usePoints && remaining > 0) {
+    btn.textContent = '确认支付 ¥' + remaining.toFixed(2) + ' (已抵 ¥' + deductAmount.toFixed(2) + ')';
+  } else {
+    btn.textContent = '确认支付 ¥' + paymentContext.amount.toFixed(2);
+  }
+}
+
+function togglePointsDeduction() {
+  usePoints = !usePoints;
+  var toggle = document.getElementById('pointsToggle');
+  var body = document.getElementById('pointsCardBody');
+
+  if (usePoints) {
+    toggle.classList.add('on');
+    body.classList.add('show');
+    currentPointsToUse = 0;
+    document.getElementById('pointsSlider').value = 0;
+    updatePointsDeductionDisplay();
+  } else {
+    toggle.classList.remove('on');
+    body.classList.remove('show');
+    currentPointsToUse = 0;
+    document.getElementById('paymentMethodSection').classList.remove('hidden');
+    updatePaymentButton();
+  }
+}
+
+function onPointsSliderChange() {
+  currentPointsToUse = parseInt(document.getElementById('pointsSlider').value);
+  updatePointsDeductionDisplay();
+}
+
+function useMaxPoints() {
+  var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
+  currentPointsToUse = Math.min(needPoints, userPoints);
+  document.getElementById('pointsSlider').value = currentPointsToUse;
+  updatePointsDeductionDisplay();
 }
 
 function selectPaymentMethod(method) {
@@ -2428,8 +2611,25 @@ function selectPaymentMethod(method) {
 }
 
 function confirmPayment() {
+  var deductAmount = usePoints ? (currentPointsToUse / pointsDeductRatio) : 0;
+  var remaining = paymentContext.amount - deductAmount;
+  if (remaining < 0) remaining = 0;
+
   var methodNames = { balance: '余额支付', wechat: '微信支付', combo: '组合支付' };
-  showToast('支付成功！使用' + methodNames[selectedPaymentMethod]);
+  var toastMsg;
+
+  if (usePoints && remaining === 0) {
+    // Full points deduction
+    toastMsg = '积分全额抵扣成功！消耗 ' + currentPointsToUse + ' 积分';
+    userPoints -= currentPointsToUse;
+  } else if (usePoints && remaining > 0) {
+    // Partial points + payment method
+    toastMsg = '支付成功！积分抵扣 ¥' + deductAmount.toFixed(2) + ' + ' + methodNames[selectedPaymentMethod] + ' ¥' + remaining.toFixed(2);
+    userPoints -= currentPointsToUse;
+  } else {
+    toastMsg = '支付成功！使用' + methodNames[selectedPaymentMethod];
+  }
+  showToast(toastMsg);
 
   if (paymentContext.source === 'recharge') {
     balanceData[0].items.unshift({ type:'income', icon:'💳', reason:'充值余额', time:new Date().toISOString().slice(0,16).replace('T',' '), amount:'+' + paymentContext.amount.toFixed(2) });
@@ -2438,7 +2638,6 @@ function confirmPayment() {
       renderBalanceDetail();
     }, 1500);
   } else if (paymentContext.source === 'publish-pin') {
-    // Paid for pin promotion, now submit the post
     pubTodayCount++;
     updatePublishRemain();
     showToast('置顶推广已生效，帖子发布成功！');
