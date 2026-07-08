@@ -742,6 +742,32 @@ body {
 .bl-item .bl-amount { font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0; }
 .bl-item .bl-amount.income { color: #16a34a; }
 .bl-item .bl-amount.expense { color: #dc2626; }
+/* +++++ 充值页面 +++++ */
+.recharge-balance-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 28px 32px; background: #fff; border-bottom: 1px solid var(--border); }
+.recharge-balance-bar .recharge-balance-label { font-size: var(--fs-caption); color: var(--text-secondary); }
+.recharge-balance-bar .recharge-balance-val { font-size: var(--fs-section); font-weight: 700; color: var(--primary); }
+.recharge-section { padding: 24px 32px; }
+.recharge-section-title { font-size: var(--fs-caption); color: var(--text-secondary); margin-bottom: 16px; font-weight: 500; }
+.recharge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.rg-item { background: #fff; border: 2px solid var(--border); border-radius: 16px; padding: 24px 0; text-align: center; font-size: var(--fs-section); font-weight: 700; color: var(--primary); cursor: pointer; transition: all 0.2s; }
+.rg-item:active { transform: scale(0.97); }
+.rg-item.selected { border-color: var(--primary); background: var(--primary-light); }
+.recharge-custom-wrap { display: flex; align-items: center; margin-top: 24px; gap: 12px; }
+.recharge-custom-label { font-size: var(--fs-caption); color: var(--text-secondary); white-space: nowrap; }
+.recharge-custom-input-box { flex: 1; display: flex; align-items: center; background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 0 16px; height: 56px; }
+.recharge-custom-input-box:focus-within { border-color: var(--primary); }
+.recharge-custom-unit { font-size: var(--fs-body); color: var(--text); font-weight: 600; }
+.recharge-custom-input { flex: 1; border: none; outline: none; font-size: var(--fs-body); padding: 0 8px; color: var(--text); background: transparent; }
+.recharge-custom-input::placeholder { color: var(--text-muted); }
+.recharge-notice { margin-top: 32px; background: #fff; border-radius: 16px; padding: 20px 24px; }
+.recharge-notice-title { font-size: var(--fs-caption); color: var(--text); font-weight: 600; margin-bottom: 12px; }
+.recharge-notice-text { font-size: var(--fs-mini); color: var(--text-muted); line-height: 1.8; }
+.recharge-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; padding: 16px 32px 24px; display: flex; align-items: center; gap: 16px; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 10; box-sizing: border-box; }
+.recharge-bottom-bar .recharge-bottom-info { flex: 1; font-size: var(--fs-caption); color: var(--text-secondary); }
+.recharge-bottom-bar .recharge-bottom-amount { font-weight: 700; color: var(--danger); font-size: var(--fs-section); }
+.recharge-submit-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; padding: 14px 32px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.recharge-submit-btn:active { opacity: 0.85; }
+#page-recharge .page-inner { padding-bottom: 120px; }
 
 /* Floating Button */
 .floating-cs {
@@ -1571,9 +1597,48 @@ body {
       <div class="balance-header">
         <div class="balance-total-label">当前余额</div>
         <div class="balance-total-val" id="balanceTotalVal">¥28.50</div>
-        <div class="balance-recharge-btn" onclick="showToast('充值功能开发中，敬请期待')">充值</div>
+        <div class="balance-recharge-btn" onclick="openRechargePage()">充值</div>
       </div>
       <div class="balance-list" id="balanceList"></div>
+    </div>
+
+    <!-- ==================== 充值页面 ==================== -->
+    <div class="page" id="page-recharge">
+      <div class="recharge-balance-bar">
+        <span class="recharge-balance-label">当前余额</span>
+        <span class="recharge-balance-val" id="rechargeBalanceVal">¥28.50</span>
+      </div>
+      <div class="recharge-section">
+        <div class="recharge-section-title">选择充值金额</div>
+        <div class="recharge-grid" id="rechargeGrid">
+          <div class="rg-item" data-amount="10" onclick="selectRechargeAmount(this)">¥10.00</div>
+          <div class="rg-item" data-amount="30" onclick="selectRechargeAmount(this)">¥30.00</div>
+          <div class="rg-item" data-amount="50" onclick="selectRechargeAmount(this)">¥50.00</div>
+          <div class="rg-item" data-amount="100" onclick="selectRechargeAmount(this)">¥100.00</div>
+          <div class="rg-item" data-amount="200" onclick="selectRechargeAmount(this)">¥200.00</div>
+          <div class="rg-item" data-amount="500" onclick="selectRechargeAmount(this)">¥500.00</div>
+        </div>
+        <div class="recharge-custom-wrap">
+          <span class="recharge-custom-label">自定义金额</span>
+          <div class="recharge-custom-input-box">
+            <span class="recharge-custom-unit">¥</span>
+            <input type="number" class="recharge-custom-input" id="rechargeCustomInput" placeholder="输入金额" min="1" step="0.01" oninput="onCustomAmountInput()">
+          </div>
+        </div>
+        <div class="recharge-notice">
+          <div class="recharge-notice-title">充值说明</div>
+          <div class="recharge-notice-text">1. 充值金额仅限在本平台使用，不支持提现或转账；</div>
+          <div class="recharge-notice-text">2. 充值成功后余额立即到账，可在余额明细中查看记录；</div>
+          <div class="recharge-notice-text">3. 如遇充值问题请联系客服：400-XXX-XXXX。</div>
+        </div>
+      </div>
+      <div class="recharge-bottom-bar">
+        <div class="recharge-bottom-info" id="rechargeBottomInfo">
+          <span>已选金额：</span>
+          <span class="recharge-bottom-amount" id="rechargeSelectedAmount">¥0.00</span>
+        </div>
+        <div class="recharge-submit-btn" id="rechargeSubmitBtn" onclick="confirmRecharge()">确认充值</div>
+      </div>
     </div>
   </div>
 
@@ -1743,9 +1808,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1763,6 +1828,7 @@ function switchTab(page) {
   if (page === 'city') renderCityPage();
   if (page === 'points-detail') renderPointsDetail();
   if (page === 'balance-detail') renderBalanceDetail();
+  if (page === 'recharge') renderRechargePage();
 }
 
 var previousTab = 'home';
@@ -1888,6 +1954,62 @@ function renderBalanceDetail() {
   document.getElementById('balanceList').innerHTML = html;
 }
 
+// ============ Recharge Page ============
+var selectedRechargeAmount = 0;
+
+function openRechargePage() {
+  selectedRechargeAmount = 0;
+  previousTab = currentTab;
+  renderRechargePage();
+  switchTab('recharge');
+}
+
+function renderRechargePage() {
+  // Update balance display
+  var total = 0;
+  balanceData.forEach(function(day) {
+    day.items.forEach(function(item) { total += parseFloat(item.amount); });
+  });
+  document.getElementById('rechargeBalanceVal').textContent = '¥' + total.toFixed(2);
+  // Reset selection
+  document.querySelectorAll('.rg-item').forEach(function(el) { el.classList.remove('selected'); });
+  document.getElementById('rechargeCustomInput').value = '';
+  updateRechargeBottom();
+}
+
+function selectRechargeAmount(el) {
+  document.querySelectorAll('.rg-item').forEach(function(e) { e.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedRechargeAmount = parseFloat(el.getAttribute('data-amount'));
+  document.getElementById('rechargeCustomInput').value = '';
+  updateRechargeBottom();
+}
+
+function onCustomAmountInput() {
+  var val = document.getElementById('rechargeCustomInput').value;
+  document.querySelectorAll('.rg-item').forEach(function(e) { e.classList.remove('selected'); });
+  selectedRechargeAmount = parseFloat(val) || 0;
+  updateRechargeBottom();
+}
+
+function updateRechargeBottom() {
+  document.getElementById('rechargeSelectedAmount').textContent = '¥' + selectedRechargeAmount.toFixed(2);
+  var btn = document.getElementById('rechargeSubmitBtn');
+  if (selectedRechargeAmount > 0) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+function confirmRecharge() {
+  if (selectedRechargeAmount <= 0) { showToast('请选择充值金额'); return; }
+  showToast('确认充值 ¥' + selectedRechargeAmount.toFixed(2) + '，模拟支付成功！');
+  setTimeout(function() { switchTab('balance-detail'); renderBalanceDetail(); }, 1500);
+}
+
 // ============ City Select ============
 var currentCity = '长沙';
 var cityGroups = [
@@ -1989,7 +2111,7 @@ function scrollToCityGroup(letter) {
 function goBack() {
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
