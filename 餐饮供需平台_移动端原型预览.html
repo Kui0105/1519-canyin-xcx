@@ -788,21 +788,38 @@ body {
 .payment-submit-btn:active { opacity: 0.85; }
 
 /* My Posts Page */
-.mp-tabs { display: flex; gap: 0; padding: 0 32px; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.mp-tabs { display: flex; gap: 0; padding: 0; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .mp-tabs::-webkit-scrollbar { display: none; }
-.mp-tab { flex-shrink: 0; padding: 16px 28px; font-size: var(--fs-body-sm); color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.mp-tab { flex: 1; min-width: 0; padding: 16px 0; font-size: var(--fs-body-sm); color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; text-align: center; white-space: nowrap; }
 .mp-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
 #page-my-posts .my-posts-list { padding: 16px 32px 32px; }
 .mp-item { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .mp-item:last-child { margin-bottom: 0; }
 .mp-title { font-size: var(--fs-body); color: var(--text); font-weight: 600; }
-.mp-desc { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 8px; line-height: 1.5; }
-.mp-desc-danger { color: var(--danger); }
-.mp-time { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 8px; }
-.mp-actions { display: flex; gap: 16px; margin-top: 16px; }
+.mp-content { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 8px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.mp-content-danger { color: var(--danger); }
+.mp-images { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.mp-images::-webkit-scrollbar { display: none; }
+.mp-img { width: 140px; height: 100px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #e5e7eb; }
+.mp-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.mp-time { font-size: var(--fs-caption-sm); color: var(--text-muted); }
+.mp-status-tag { font-size: var(--fs-caption-sm); padding: 4px 12px; border-radius: 6px; font-weight: 500; }
+.mp-status-tag.pending { color: var(--warning); background: var(--warning-light); }
+.mp-status-tag.published { color: var(--success); background: var(--success-light); }
+.mp-status-tag.rejected { color: var(--danger); background: var(--danger-light); }
+.mp-actions { display: flex; gap: 16px; margin-top: 12px; }
 .mp-btn { padding: 10px 24px; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-caption); cursor: pointer; }
 .mp-btn.danger { color: var(--danger); }
 .mp-empty { text-align: center; padding: 80px 32px; font-size: var(--fs-caption); color: var(--text-muted); }
+
+/* Confirm Dialog */
+.confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.confirm-overlay.show { display: flex; }
+.confirm-box { width: 560px; background: #fff; border-radius: 20px; padding: 40px 32px 24px; text-align: center; }
+.confirm-msg { font-size: var(--fs-body); color: var(--text); margin-bottom: 28px; line-height: 1.6; }
+.confirm-btns { display: flex; gap: 16px; }
+.confirm-btn { flex: 1; padding: 14px 0; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-body-sm); cursor: pointer; }
+.confirm-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
 
 /* Floating Button */
 .floating-cs {
@@ -1753,6 +1770,17 @@ body {
 <!-- Detail Overlay -->
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-msg" id="confirmMsg"></div>
+    <div class="confirm-btns">
+      <button class="confirm-btn" onclick="closeConfirm()">取消</button>
+      <button class="confirm-btn primary" id="confirmOkBtn" onclick="">确认</button>
+    </div>
+  </div>
 </div>
 
 <!-- Feedback Overlay -->
@@ -3227,18 +3255,16 @@ function submitPublish() {
 
 // ============ My Posts ============
 var myPostsData = [
-  { id:1, status:'pending', title:'湖南大学食堂档口招商', desc:'刚刚提交，等待审核...', time:'2026-07-07 10:25', actions:[] },
-  { id:2, status:'published', title:'招聘面点师傅', desc:'急招面点师傅2名...', time:'2026-07-06 15:30', actions:[
-    { label:'🔄 刷新', cls:'', toast:'已刷新' },
-    { label:'⬇ 下架', cls:'danger', toast:'已下架' }
+  { id:1, status:'pending', title:'湖南大学食堂档口招商', content:'湖南大学天马学生食堂一楼档口对外招商，面积20㎡，适合做快餐、小吃等品类，水电齐全，客流量大，月租面议。', images:['',''], time:'2026-07-07 10:25', actions:[] },
+  { id:2, status:'published', title:'招聘面点师傅', content:'急招面点师傅2名，要求3年以上白案经验，会做包子、馒头、花卷等，月薪5000-8000，包吃住。', images:['','',''], time:'2026-07-06 15:30', actions:[
+    { label:'删除', cls:'danger', action:'delete' }
   ]},
-  { id:3, status:'rejected', title:'闲置冰柜转让', desc:'驳回原因：图片模糊，请重新上传清晰图片', time:'2026-07-05 09:15', descDanger:true, actions:[
+  { id:3, status:'rejected', title:'闲置冰柜转让', content:'九成新商用冰柜低价转让，使用不到一年，制冷效果好的，因店面升级更换大容量设备，低价处理。', images:['',''], time:'2026-07-05 09:15', contentDanger:'驳回原因：图片模糊，请重新上传清晰图片', actions:[
     { label:'✏ 重新编辑', cls:'', toast:'进入编辑页面' }
   ]},
-  { id:4, status:'pending', title:'中南大学档口招租', desc:'已提交，平台审核中...', time:'2026-07-08 09:00', actions:[] },
-  { id:5, status:'published', title:'转让奶茶设备一套', desc:'九成新奶茶设备低价转让', time:'2026-07-04 11:20', actions:[
-    { label:'🔄 刷新', cls:'', toast:'已刷新' },
-    { label:'⬇ 下架', cls:'danger', toast:'已下架' }
+  { id:4, status:'pending', title:'中南大学档口招租', content:'中南大学南校区食堂二楼档口招租，面积15㎡，适合奶茶、轻食等项目，学校人流量大，价格面议。', images:[], time:'2026-07-08 09:00', actions:[] },
+  { id:5, status:'published', title:'转让奶茶设备一套', content:'全套奶茶设备打包转让，含封口机、果糖机、蒸汽机、制冰机等，九成新，打包价格面议。', images:['',''], time:'2026-07-04 11:20', actions:[
+    { label:'删除', cls:'danger', action:'delete' }
   ]}
 ];
 
@@ -3273,18 +3299,43 @@ function renderMyPosts(statusFilter) {
     items = myPostsData.filter(function(p) { return p.status === statusFilter; });
   }
   var html = '';
+  var statusLabels = { pending:'审核中', published:'已发布', rejected:'已驳回' };
   if (items.length === 0) {
     html = '<div class="mp-empty">暂无发布记录</div>';
   } else {
     items.forEach(function(p) {
-      html += '<div class="mp-item">';
+      html += '<div class="mp-item" id="mp-' + p.id + '">';
       html += '<div class="mp-title">' + p.title + '</div>';
-      html += '<div class="mp-desc' + (p.descDanger ? ' mp-desc-danger' : '') + '">' + p.desc + '</div>';
-      html += '<div class="mp-time">' + p.time + '</div>';
+      // content
+      if (p.content) {
+        html += '<div class="mp-content' + (p.contentDanger ? ' mp-content-danger' : '') + '">' + p.content + '</div>';
+        if (p.contentDanger) {
+          html += '<div class="mp-content mp-content-danger" style="margin-top:4px">' + p.contentDanger + '</div>';
+        }
+      }
+      // images (placeholder colored blocks)
+      if (p.images && p.images.length > 0) {
+        html += '<div class="mp-images">';
+        var imgColors = ['#fef2f2','#ecfdf5','#eff6ff','#fefce8'];
+        p.images.forEach(function(_, i) {
+          html += '<div class="mp-img" style="background:' + imgColors[i % 4] + '"></div>';
+        });
+        html += '</div>';
+      }
+      // footer: time + status
+      html += '<div class="mp-footer">';
+      html += '<span class="mp-time">' + p.time + '</span>';
+      html += '<span class="mp-status-tag ' + p.status + '">' + (statusLabels[p.status] || p.status) + '</span>';
+      html += '</div>';
+      // actions
       if (p.actions.length > 0) {
         html += '<div class="mp-actions">';
         p.actions.forEach(function(a) {
-          html += '<button class="mp-btn' + (a.cls ? ' ' + a.cls : '') + '" onclick="showToast(\'' + a.toast + '\')">' + a.label + '</button>';
+          if (a.action === 'delete') {
+            html += '<button class="mp-btn danger" onclick="deleteMyPost(' + p.id + ')">删除</button>';
+          } else {
+            html += '<button class="mp-btn' + (a.cls ? ' ' + a.cls : '') + '" onclick="showToast(\'' + a.toast + '\')">' + a.label + '</button>';
+          }
         });
         html += '</div>';
       }
@@ -3292,6 +3343,27 @@ function renderMyPosts(statusFilter) {
     });
   }
   document.getElementById('myPostsList').innerHTML = html;
+}
+
+function deleteMyPost(id) {
+  showConfirm('确定要删除该发布吗？删除后不可恢复。', function() {
+    myPostsData = myPostsData.filter(function(p) { return p.id !== id; });
+    renderMyPosts(myPostsCurrentTab);
+    showToast('删除成功');
+  });
+}
+
+function showConfirm(msg, onConfirm) {
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOkBtn').onclick = function() {
+    closeConfirm();
+    onConfirm();
+  };
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
 }
 
 // ============ Feedback ============
