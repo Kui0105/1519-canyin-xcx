@@ -876,7 +876,6 @@ body {
 /* Floating Button */
 .floating-cs {
   position: absolute; right: 32px; bottom: 200px; z-index: 50;
-  display: flex; flex-direction: column; gap: 16px;
 }
 .floating-btn {
   width: 84px; height: 84px; border-radius: 50%; background: #fff;
@@ -885,18 +884,25 @@ body {
   transition: all 0.2s;
 }
 .floating-btn:active { transform: scale(0.92); }
-.cs-menu {
-  display: flex; flex-direction: column; gap: 12px;
-  background: #fff; border-radius: 24px; padding: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-}
-.cs-item {
-  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text);
-  cursor: pointer; border-radius: 16px; white-space: nowrap;
-  display: flex; align-items: center; gap: 12px;
-}
-.cs-item:active { background: var(--primary-light); color: var(--primary); }
-.hidden { display: none !important; }
+
+/* CS Popup Overlay */
+.cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.cs-overlay.show { display: flex; }
+.cs-popup { width: 600px; max-height: 80vh; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
+@keyframes popupIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.cs-popup-header { display: flex; align-items: center; justify-content: space-between; padding: 32px 32px 20px; border-bottom: 1px solid #f3f4f6; }
+.cs-popup-title { font-size: 36px; font-weight: 700; color: var(--text); }
+.cs-popup-close { width: 48px; height: 48px; border-radius: 50%; border: none; background: #f3f4f6; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.cs-popup-close:active { background: #e5e7eb; }
+.cs-popup-body { padding: 24px 32px 32px; }
+.cs-option { display: flex; align-items: center; padding: 24px 20px; border-radius: 16px; cursor: pointer; transition: background 0.15s; gap: 20px; }
+.cs-option:active { background: rgba(37,99,235,0.06); }
+.cs-option + .cs-option { margin-top: 12px; }
+.cs-option-icon { font-size: 44px; flex-shrink: 0; width: 64px; text-align: center; }
+.cs-option-info { flex: 1; min-width: 0; }
+.cs-option-title { font-size: var(--fs-body); font-weight: 600; color: var(--text); }
+.cs-option-desc { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 4px; }
+.cs-option-arrow { font-size: 36px; color: var(--text-muted); flex-shrink: 0; }
 
 /* Back to Top */
 .back-to-top {
@@ -1837,12 +1843,7 @@ body {
 
   <!-- Floating CS Button -->
   <div class="floating-cs" id="floatingCs">
-    <div class="floating-btn" id="csToggle" onclick="toggleCsMenu()" style="font-size:32px">💬</div>
-    <div class="cs-menu hidden" id="csMenu">
-      <div class="cs-item" onclick="showToast('正在拨打客服电话：400-XXX-XXXX')">📞 客服电话</div>
-      <div class="cs-item" onclick="showToast('请添加客服微信：wanyue_cs')">💚 客服微信</div>
-      <div class="cs-item" onclick="showToast('正在连接在线客服...')">🎧 在线客服</div>
-    </div>
+    <div class="floating-btn" id="csToggle" onclick="openCsPopup()" style="font-size:32px">💬</div>
   </div>
 
   <!-- Back to Top -->
@@ -1861,6 +1862,42 @@ body {
     <div class="confirm-btns">
       <button class="confirm-btn" onclick="closeConfirm()">取消</button>
       <button class="confirm-btn primary" id="confirmOkBtn" onclick="">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Service Popup -->
+<div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
+  <div class="cs-popup">
+    <div class="cs-popup-header">
+      <span class="cs-popup-title">联系客服</span>
+      <button class="cs-popup-close" onclick="closeCsPopup()">✕</button>
+    </div>
+    <div class="cs-popup-body">
+      <div class="cs-option" onclick="handleCsOption('phone')">
+        <div class="cs-option-icon">📞</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">客服电话</div>
+          <div class="cs-option-desc">400-XXX-XXXX</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
+      <div class="cs-option" onclick="handleCsOption('wechat')">
+        <div class="cs-option-icon">💚</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">客服微信</div>
+          <div class="cs-option-desc">微信号：wanyue_cs</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
+      <div class="cs-option" onclick="handleCsOption('online')">
+        <div class="cs-option-icon">🎧</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">在线客服</div>
+          <div class="cs-option-desc">在线实时对话</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
     </div>
   </div>
 </div>
@@ -4072,13 +4109,21 @@ function updateCardActions(id) {
 }
 
 // ============ CS Menu ============
-function toggleCsMenu() {
-  document.getElementById('csMenu').classList.toggle('hidden');
+function openCsPopup() {
+  document.getElementById('csOverlay').classList.add('show');
+}
+function closeCsPopup() {
+  document.getElementById('csOverlay').classList.remove('show');
+}
+function handleCsOption(type) {
+  closeCsPopup();
+  if (type === 'phone') showToast('正在拨打客服电话：400-XXX-XXXX');
+  else if (type === 'wechat') showToast('请添加客服微信：wanyue_cs');
+  else if (type === 'online') showToast('正在连接在线客服...');
 }
 
 function scrollToTop() {
   document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
-  document.getElementById('csMenu').classList.add('hidden');
 }
 
 // ============ Toast ============
@@ -4441,9 +4486,8 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
   document.getElementById('searchResults').style.display = 'block';
 }
 
-// Close CS menu on scroll + toggle back-to-top
+// Toggle back-to-top button on scroll
 document.getElementById('pageContainer').addEventListener('scroll', function() {
-  document.getElementById('csMenu').classList.add('hidden');
   var scrollTop = document.getElementById('pageContainer').scrollTop;
   var btn = document.getElementById('backToTop');
   if (scrollTop > 800) {
