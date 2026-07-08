@@ -368,15 +368,30 @@ body {
 }
 .detail-bottom-bar .bar-btn.liked { color: #ef4444; font-weight: 600; }
 .detail-bottom-bar .bar-btn.favorited { color: #f59e0b; font-weight: 600; }
-.detail-bottom-bar .bar-btn.comment-btn { color: var(--primary); font-weight: 500; }
+.detail-bottom-bar .bar-btn.comment-btn {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: #fff; font-weight: 600; border: none;
+  padding: 12px 32px; border-radius: 12px; font-size: var(--fs-body);
+}
+.detail-bottom-bar .bar-btn.comment-btn:active { opacity: 0.85; }
 
 /* ============ Comment Section ============ */
 .comment-section { margin-top: 24px; border-top: 2px solid var(--border); padding-top: 24px; }
 .comment-section .cs-title { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); margin-bottom: 20px; }
 .comment-section .cs-empty { text-align: center; padding: 48px 0; color: var(--text-muted); font-size: var(--fs-caption); }
 .comment-section .cs-empty .cs-empty-icon { font-size: 60px; margin-bottom: 16px; }
-.comment-item { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+
+/* Comment input area */
+.comment-input-wrap { display: flex; gap: 12px; margin-bottom: 20px; padding: 16px; background: #f9fafb; border-radius: 16px; }
+.comment-input-wrap input { flex: 1; min-width: 0; padding: 14px 18px; border: 2px solid var(--border); border-radius: 12px; font-size: var(--fs-caption); outline: none; background: #fff; }
+.comment-input-wrap input:focus { border-color: var(--primary); }
+.comment-input-wrap button { padding: 14px 24px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 12px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.comment-input-wrap button:active { opacity: 0.85; }
+
+/* Comment item */
+.comment-item { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); flex-direction: column; }
 .comment-item:last-child { border-bottom: none; }
+.comment-item .ci-main { display: flex; gap: 16px; }
 .comment-item .ci-avatar {
   width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #4f46e5);
   color: #fff; display: flex; align-items: center; justify-content: center;
@@ -390,6 +405,31 @@ body {
 .comment-item .ci-actions { margin-top: 10px; display: flex; align-items: center; gap: 16px; }
 .comment-item .ci-like { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 .comment-item .ci-like.active { color: #ef4444; }
+.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.comment-item .ci-reply:active { color: var(--primary); }
+
+/* Reply items */
+.reply-list { margin-top: 12px; padding-left: 52px; }
+.reply-item { display: flex; gap: 12px; padding: 12px 0; }
+.reply-item .ri-avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: #e5e7eb;
+  color: var(--text-secondary); display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-mini); font-weight: 600; flex-shrink: 0;
+}
+.reply-item .ri-avatar.ri-author { background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; }
+.reply-item .ri-body { flex: 1; min-width: 0; }
+.reply-item .ri-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.reply-item .ri-nickname { font-size: var(--fs-mini); font-weight: 600; color: var(--text); }
+.reply-item .ri-time { font-size: 11px; color: var(--text-muted); }
+.reply-item .ri-content { font-size: var(--fs-mini); color: var(--text-secondary); line-height: 1.5; }
+.reply-item .ri-actions { margin-top: 8px; }
+.reply-item .ri-reply { cursor: pointer; font-size: 11px; color: var(--text-muted); }
+
+/* Reply input area (inside comment) */
+.reply-input-wrap { display: flex; gap: 10px; margin-top: 12px; padding-left: 52px; }
+.reply-input-wrap input { flex: 1; min-width: 0; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: var(--fs-mini); outline: none; background: #fff; }
+.reply-input-wrap input:focus { border-color: var(--primary); }
+.reply-input-wrap button { padding: 12px 20px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 10px; font-size: var(--fs-mini); font-weight: 600; cursor: pointer; white-space: nowrap; }
 
 /* Publish Form */
 .publish-form { padding: 24px 32px; }
@@ -1336,7 +1376,7 @@ body {
       <div class="detail-bottom-bar" id="detailBottomBar">
         <span class="bar-btn" id="detailBarLike" onclick="toggleDetailLike(currentDetailId)">♡ 点赞</span>
         <span class="bar-btn" id="detailBarFav" onclick="toggleDetailFav(currentDetailId)">☆ 收藏</span>
-        <span class="bar-btn comment-btn" onclick="showToast('评论功能开发中')">💬 评论</span>
+        <span class="bar-btn comment-btn" onclick="showCommentInput('detail')">💬 评论</span>
       </div>
     </div>
 
@@ -1391,7 +1431,7 @@ body {
       <div class="detail-bottom-bar" id="idleDetailBar">
         <span class="bar-btn" id="idleBarLike" onclick="toggleIdleLike(this)">♡ 点赞</span>
         <span class="bar-btn" id="idleBarFav" onclick="toggleIdleDetailFav(currentIdleDetailId)">☆ 收藏</span>
-        <span class="bar-btn comment-btn" onclick="showToast('评论功能开发中')">💬 评论</span>
+        <span class="bar-btn comment-btn" onclick="showCommentInput('detail')">💬 评论</span>
       </div>
     </div>
 
@@ -1549,7 +1589,11 @@ var locIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" 
 const mockData = [
   { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340,
     comments: [
-      { id:1, avatar:'张', nickname:'张老板', time:'30分钟前', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', liked:false, likes:5 },
+      { id:1, avatar:'张', nickname:'张老板', time:'30分钟前', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', liked:false, likes:5,
+        replies: [
+          { id:101, avatar:'湖', nickname:'湖南大学餐饮部', time:'20分钟前', content:'在三楼食堂西区，最小的15㎡的还在，面食类可以经营的。', isAuthor: true },
+          { id:102, avatar:'张', nickname:'张老板', time:'10分钟前', content:'好的，我下午过去看看行吗？', isAuthor: false },
+        ] },
       { id:2, avatar:'李', nickname:'李师傅', time:'1小时前', content:'请问进场费还要另外交吗？押金多少？', liked:true, likes:12 },
       { id:3, avatar:'王', nickname:'小王餐饮', time:'2小时前', content:'学生消费能力怎么样？客单价大概多少？', liked:false, likes:2 },
     ] },
@@ -2415,6 +2459,7 @@ function renderIdleDetailPage(item) {
 
   document.getElementById('idleDetailBody').innerHTML = html;
   currentIdleDetailId = item.id;
+  currentPostType = 'idle';
   updateIdleDetailBottomBar(item);
 }
 
@@ -2452,6 +2497,7 @@ function renderNewsCards() {
 let currentNewsDetail = null;
 let currentDetailId = null;
 let currentIdleDetailId = null;
+let currentPostType = null; // 'detail' | 'idle'
 
 function openNewsDetail(id) {
   var item = newsData.find(function(d) { return d.id === id; });
@@ -2519,6 +2565,7 @@ function renderDetailPage(item) {
 
   document.getElementById('detailPageBody').innerHTML = html;
   currentDetailId = item.id;
+  currentPostType = 'detail';
   updateDetailBottomBar(item);
 }
 
@@ -2883,6 +2930,178 @@ function toggleFav(el, id) {
 }
 
 // ============ Comment & Bottom Bar Helpers ============
+
+// Sensitive words list
+var SENSITIVE_WORDS = ['广告', '兼职', '刷单', '诈骗', '赌博', '色情', '招嫖', '毒品', '枪支', '代考', '替考', '传销', '高利贷', '办证', '假证', '迷药', '催情', '窃听', '赌博', '刷钻', '套现', '洗钱'];
+
+function hasSensitiveWord(text) {
+  var t = text.toLowerCase();
+  for (var i = 0; i < SENSITIVE_WORDS.length; i++) {
+    if (t.indexOf(SENSITIVE_WORDS[i].toLowerCase()) !== -1) return true;
+  }
+  return false;
+}
+
+// Current reply target
+var currentReplyTarget = null; // { commentId: number, replyTo: 'comment' | replyId }
+
+function showCommentInput(type) {
+  // Remove any existing reply inputs
+  document.querySelectorAll('.reply-input-wrap').forEach(function(el) { el.remove(); });
+  currentReplyTarget = null;
+
+  var sectionId = type === 'detail' ? 'detailPageBody' : 'idleDetailBody';
+  var commentSection = document.querySelector('#' + sectionId + ' .comment-section');
+  if (!commentSection) return;
+
+  // Check if input already exists
+  var existing = commentSection.querySelector('.comment-input-wrap');
+  if (existing) {
+    existing.querySelector('input').focus();
+    return;
+  }
+
+  var inputHtml = '<div class="comment-input-wrap" id="commentInputWrap">' +
+    '<input type="text" id="commentInputText" placeholder="请输入评论内容" maxlength="200" onkeydown="if(event.key===\'Enter\')submitComment(\'' + type + '\')">' +
+    '<button onclick="submitComment(\'' + type + '\')">发表</button>' +
+    '</div>';
+
+  // Insert after cs-title or at top of comment section
+  var csTitle = commentSection.querySelector('.cs-title');
+  if (csTitle) {
+    csTitle.insertAdjacentHTML('afterend', inputHtml);
+  } else {
+    commentSection.insertAdjacentHTML('afterbegin', inputHtml);
+  }
+
+  setTimeout(function() {
+    var inp = document.getElementById('commentInputText');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function submitComment(type) {
+  var inp = document.getElementById('commentInputText');
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) { showToast('请输入评论内容'); return; }
+  if (text.length < 2) { showToast('评论内容至少2个字符'); return; }
+  if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
+
+  // Get the post item
+  var postId, item, dataArr;
+  if (type === 'detail') {
+    postId = currentDetailId;
+    item = mockData.find(function(d) { return d.id === postId; });
+  } else {
+    postId = currentIdleDetailId;
+    item = idleData.find(function(d) { return d.id === postId; });
+  }
+  if (!item) return;
+
+  if (!item.comments) item.comments = [];
+  var newId = Date.now();
+  item.comments.push({
+    id: newId, avatar: '我', nickname: '当前用户', time: '刚刚',
+    content: text, liked: false, likes: 0, replies: [], isAuthor: false
+  });
+
+  // Remove input
+  var wrap = document.getElementById('commentInputWrap');
+  if (wrap) wrap.remove();
+
+  // Re-render
+  if (type === 'detail') {
+    var detailItem = mockData.find(function(d) { return d.id === postId; });
+    renderDetailPage(detailItem);
+  } else {
+    var idleItem = idleData.find(function(d) { return d.id === postId; });
+    renderIdleDetailPage(idleItem);
+  }
+  showToast('评论发表成功');
+}
+
+function showReplyInput(commentId, replyToId) {
+  // Remove any existing reply input
+  document.querySelectorAll('.reply-input-wrap').forEach(function(el) { el.remove(); });
+  // Remove comment input wrap too
+  var ciw = document.getElementById('commentInputWrap');
+  if (ciw) ciw.remove();
+
+  currentReplyTarget = { commentId: commentId, replyTo: replyToId || 'comment' };
+
+  // Find the comment item
+  var commentItem = document.querySelector('[data-cid="' + commentId + '"]');
+  if (!commentItem) return;
+
+  var placeholder = replyToId ? '请输入回复内容' : '请输入回复内容';
+  var inputHtml = '<div class="reply-input-wrap" id="replyInputWrap">' +
+    '<input type="text" id="replyInputText" placeholder="请输入回复内容" maxlength="200" onkeydown="if(event.key===\'Enter\')submitReply()">' +
+    '<button onclick="submitReply()">回复</button>' +
+    '</div>';
+
+  // Insert at the end of the comment item (after reply list or main content)
+  commentItem.insertAdjacentHTML('beforeend', inputHtml);
+
+  setTimeout(function() {
+    var inp = document.getElementById('replyInputText');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function submitReply() {
+  var inp = document.getElementById('replyInputText');
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) { showToast('请输入回复内容'); return; }
+  if (text.length < 1) { showToast('回复内容不能为空'); return; }
+  if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
+
+  if (!currentReplyTarget) return;
+  var commentId = currentReplyTarget.commentId;
+
+  // Find the post and comment
+  var postId = currentPostType === 'detail' ? currentDetailId : currentIdleDetailId;
+  var item = currentPostType === 'detail'
+    ? mockData.find(function(d) { return d.id === postId; })
+    : idleData.find(function(d) { return d.id === postId; });
+  if (!item || !item.comments) return;
+
+  var comment = item.comments.find(function(c) { return c.id === commentId; });
+  if (!comment) return;
+
+  if (!comment.replies) comment.replies = [];
+
+  var targetNickname = '';
+  if (currentReplyTarget.replyTo !== 'comment') {
+    // Replying to a specific reply
+    var targetReply = comment.replies.find(function(r) { return r.id === currentReplyTarget.replyTo; });
+    if (targetReply) targetNickname = targetReply.nickname;
+  } else {
+    targetNickname = comment.nickname;
+  }
+
+  var newReplyId = Date.now();
+  comment.replies.push({
+    id: newReplyId, avatar: '我', nickname: '当前用户', time: '刚刚',
+    content: (targetNickname ? '@' + targetNickname + ' ' : '') + text,
+    isAuthor: false
+  });
+
+  // Remove input
+  var wrap = document.getElementById('replyInputWrap');
+  if (wrap) wrap.remove();
+  currentReplyTarget = null;
+
+  // Re-render
+  if (currentPostType === 'detail') {
+    renderDetailPage(item);
+  } else {
+    renderIdleDetailPage(item);
+  }
+  showToast('回复成功');
+}
+
 function renderComments(comments) {
   if (!comments || !comments.length) {
     return '<div class="cs-empty"><div class="cs-empty-icon">💬</div><div>暂无评论，快来抢沙发吧~</div></div>';
@@ -2890,20 +3109,47 @@ function renderComments(comments) {
   var html = '';
   comments.forEach(function(c) {
     html +=
-    '<div class="comment-item">' +
-      '<div class="ci-avatar">' + c.avatar + '</div>' +
-      '<div class="ci-body">' +
-        '<div class="ci-header">' +
-          '<span class="ci-nickname">' + c.nickname + '</span>' +
-          '<span class="ci-time">' + c.time + '</span>' +
+    '<div class="comment-item" data-cid="' + c.id + '">' +
+      '<div class="ci-main">' +
+        '<div class="ci-avatar">' + c.avatar + '</div>' +
+        '<div class="ci-body">' +
+          '<div class="ci-header">' +
+            '<span class="ci-nickname">' + c.nickname + '</span>' +
+            '<span class="ci-time">' + c.time + '</span>' +
+          '</div>' +
+          '<div class="ci-content">' + c.content + '</div>' +
+          '<div class="ci-actions">' +
+            '<span class="ci-like' + (c.liked ? ' active' : '') + '" onclick="toggleCommentLike(this,' + c.id + ')">' + (c.liked ? '❤' : '♡') + ' <span class="ci-like-count">' + c.likes + '</span></span>' +
+            '<span class="ci-reply" onclick="showReplyInput(' + c.id + ')">💬 回复</span>' +
+          '</div>' +
         '</div>' +
-        '<div class="ci-content">' + c.content + '</div>' +
-        '<div class="ci-actions">' +
-          '<span class="ci-like' + (c.liked ? ' active' : '') + '" onclick="toggleCommentLike(this,' + c.id + ')">' + (c.liked ? '❤' : '♡') + ' <span class="ci-like-count">' + c.likes + '</span></span>' +
+      '</div>' +
+      renderReplies(c.replies, c.id) +
+    '</div>';
+  });
+  return html;
+}
+
+function renderReplies(replies, commentId) {
+  if (!replies || !replies.length) return '';
+  var html = '<div class="reply-list">';
+  replies.forEach(function(r) {
+    html +=
+    '<div class="reply-item">' +
+      '<div class="ri-avatar' + (r.isAuthor ? ' ri-author' : '') + '">' + r.avatar + '</div>' +
+      '<div class="ri-body">' +
+        '<div class="ri-header">' +
+          '<span class="ri-nickname">' + r.nickname + (r.isAuthor ? ' <span style="font-size:10px;color:var(--primary);font-weight:400">(作者)</span>' : '') + '</span>' +
+          '<span class="ri-time">' + r.time + '</span>' +
+        '</div>' +
+        '<div class="ri-content">' + r.content + '</div>' +
+        '<div class="ri-actions">' +
+          '<span class="ri-reply" onclick="showReplyInput(' + commentId + ',' + r.id + ')">💬 回复</span>' +
         '</div>' +
       '</div>' +
     '</div>';
   });
+  html += '</div>';
   return html;
 }
 
