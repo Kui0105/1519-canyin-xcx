@@ -2309,7 +2309,7 @@ function renderFavorites() {
     favoritesIds.forEach(function(id) {
       var item = mockData.find(function(d) { return d.id === id; });
       if (item) {
-        html += renderInfoCard(item, id - 1);
+        html += renderInfoCard(item, id - 1, true);
       }
     });
   }
@@ -2827,7 +2827,8 @@ function renderHomeCards() {
   document.getElementById('homeCards').innerHTML = html;
 }
 
-function renderInfoCard(item, idx) {
+function renderInfoCard(item, idx, forceFaved) {
+  var faved = forceFaved || item.userFaved;
   const imagesHtml = item.images.length ? `
     <div class="card-images">
       ${item.images.map((img,i) => `<div class="card-img" style="${cardImgStyle(img, i)}">${imgContent(i)}</div>`).join('')}
@@ -2855,7 +2856,7 @@ function renderInfoCard(item, idx) {
       </div>
       <div class="card-actions">
         <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
-        <span class="${item.userFaved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${item.userFaved ? '★' : '☆'} ${item.favorites}</span>
+        <span class="${faved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${faved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
         <span onclick="event.stopPropagation();showToast('已复制分享链接')">↗ 转发</span>
       </div>
