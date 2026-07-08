@@ -805,17 +805,6 @@ body {
 .ps-toggle.on { background: #f59e0b; }
 .ps-toggle::after { content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
 .ps-toggle.on::after { left: 26px; }
-.points-card-body { margin-top: 16px; padding-top: 16px; border-top: 1px solid #fef3c7; display: none; }
-.points-card-body.show { display: block; }
-.points-info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.points-info-row .pir-label { font-size: var(--fs-caption); color: var(--text-secondary); }
-.points-info-row .pir-value { font-size: var(--fs-caption); color: var(--text); font-weight: 600; }
-.points-info-row .pir-value.highlight { color: #f59e0b; }
-.points-result { background: #fffbeb; border-radius: 12px; padding: 16px; text-align: center; }
-.points-result .pr-tag { display: inline-block; background: #fef3c7; color: #92400e; font-size: var(--fs-caption-sm); font-weight: 600; padding: 2px 12px; border-radius: 4px; margin-bottom: 8px; }
-.points-result .pr-remaining { font-size: var(--fs-caption); color: var(--text-secondary); }
-.points-result .pr-remaining .pr-amount { font-size: var(--fs-body-sm); font-weight: 700; color: var(--text); }
-.points-result .pr-full { font-size: var(--fs-caption); color: #92400e; font-weight: 600; }
 /* payment method section hidden when full points deduction */
 .payment-method-section.hidden { display: none; }
 
@@ -1842,16 +1831,6 @@ body {
             </div>
             <div class="ps-toggle" id="pointsToggle" onclick="togglePointsDeduction()"></div>
           </div>
-          <div class="points-card-body" id="pointsCardBody">
-            <div class="points-info-row">
-              <span class="pir-label">使用积分</span>
-              <span class="pir-value highlight" id="pointsUseVal">0</span>
-            </div>
-            <div class="points-result" id="pointsResult">
-              <div class="pr-tag">积分抵扣</div>
-              <div class="pr-full" id="pointsResultText">已抵扣 ¥0.00</div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="payment-method-section" id="paymentMethodSection">
@@ -2225,13 +2204,11 @@ var previousTab = 'home';
 var pointsData = [
   { date:'2026-07-08', items:[
     { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-08 08:30', amount:'+50' },
-    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-08 10:15', amount:'-30' },
-    { type:'expense', icon:'📋', reason:'发帖置顶推广消耗积分', time:'2026-07-08 14:20', amount:'-50' }
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-08 10:15', amount:'-30' }
   ]},
   { date:'2026-07-07', items:[
     { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-07 09:00', amount:'+50' },
-    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-07 11:30', amount:'-30' },
-    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-07 16:45', amount:'-50' }
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-07 11:30', amount:'-30' }
   ]},
   { date:'2026-07-06', items:[
     { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-06 07:55', amount:'+50' },
@@ -2239,8 +2216,7 @@ var pointsData = [
     { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-06 12:30', amount:'-30' }
   ]},
   { date:'2026-07-05', items:[
-    { type:'expense', icon:'📋', reason:'发帖置顶推广消耗积分', time:'2026-07-05 08:20', amount:'-50' },
-    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-05 15:10', amount:'-50' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-05 08:20', amount:'-30' },
     { type:'expense', icon:'⚙', reason:'系统扣减积分', time:'2026-07-05 17:30', amount:'-20' }
   ]},
   { date:'2026-07-04', items:[
@@ -2496,14 +2472,7 @@ function renderPaymentPage() {
     var toggle = document.getElementById('pointsToggle');
     toggle.classList.add('on');
 
-    // Show body
-    document.getElementById('pointsCardBody').classList.add('show');
-
-    // Update display
     updatePointsDeductionDisplay();
-
-    // Ensure methods are visible initially
-    methodSection.classList.remove('hidden');
   } else {
     pointsSection.classList.remove('show');
     usePoints = false;
@@ -2554,17 +2523,14 @@ function updatePaymentButton() {
 function togglePointsDeduction() {
   usePoints = !usePoints;
   var toggle = document.getElementById('pointsToggle');
-  var body = document.getElementById('pointsCardBody');
 
   if (usePoints) {
     toggle.classList.add('on');
-    body.classList.add('show');
     var needPoints = Math.ceil(paymentContext.amount * pointsDeductRatio);
     currentPointsToUse = Math.min(needPoints, userPoints);
     updatePointsDeductionDisplay();
   } else {
     toggle.classList.remove('on');
-    body.classList.remove('show');
     currentPointsToUse = 0;
     document.getElementById('paymentMethodSection').classList.remove('hidden');
     updatePaymentButton();
