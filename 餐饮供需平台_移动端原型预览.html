@@ -2954,7 +2954,7 @@ var currentReplyTarget = null; // { commentId: number, replyTo: 'comment' | repl
 // === Bar input: replaces bottom bar with input + confirm button ===
 function showBarInput(type, mode) {
   /* type: 'detail' | 'idle',  mode: 'comment' | 'reply' */
-  currentReplyTarget = null;
+  if (mode === 'comment') currentReplyTarget = null;
   currentPostType = type;
   var barId = type === 'detail' ? 'detailBottomBar' : 'idleDetailBar';
   var bar = document.getElementById(barId);
