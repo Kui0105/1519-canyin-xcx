@@ -835,6 +835,14 @@ body {
 .notif-empty { text-align: center; padding: 100px 32px; font-size: var(--fs-body-sm); color: var(--text-muted); }
 .notif-empty-icon { font-size: 80px; margin-bottom: 20px; }
 
+/* Favorites & Browsing History Pages */
+#page-favorites .fav-list,
+#page-browsing-history .bh-list { padding: 16px 32px 32px; }
+#page-favorites .info-card,
+#page-browsing-history .info-card { margin-bottom: 16px; }
+#page-favorites .empty-state,
+#page-browsing-history .empty-state { padding: 100px 32px; }
+
 /* Tab Badge */
 .tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
 .tab-badge.show { display: flex; }
@@ -1630,12 +1638,12 @@ body {
           <span class="menu-badge" id="menuNotifBadge">3</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('查看我的收藏列表')">
+        <div class="menu-item" onclick="openFavorites()">
           <span class="menu-icon">⭐</span>
           <span class="menu-text">我的收藏</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('查看浏览记录')">
+        <div class="menu-item" onclick="openBrowsingHistory()">
           <span class="menu-icon">👁</span>
           <span class="menu-text">浏览足迹</span>
           <span class="menu-arrow">›</span>
@@ -1762,6 +1770,16 @@ body {
         <span class="notif-mark-all" onclick="markAllNotificationsRead()">全部已读</span>
       </div>
       <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ==================== 我的收藏 ==================== -->
+    <div class="page" id="page-favorites">
+      <div class="fav-list" id="favList"></div>
+    </div>
+
+    <!-- ==================== 浏览足迹 ==================== -->
+    <div class="page" id="page-browsing-history">
+      <div class="bh-list" id="bhList"></div>
     </div>
   </div>
 
@@ -1938,9 +1956,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1961,6 +1979,8 @@ function switchTab(page) {
   if (page === 'recharge') renderRechargePage();
   if (page === 'payment') renderPaymentPage();
   if (page === 'notifications') renderNotifications();
+  if (page === 'favorites') renderFavorites();
+  if (page === 'browsing-history') renderBrowsingHistory();
 }
 
 var previousTab = 'home';
@@ -2263,6 +2283,67 @@ function openNotifDetail(notifId) {
   }, 300);
 }
 
+// ============ Favorites & Browsing History ============
+// Use post IDs from mockData to simulate favorited/viewed posts
+var favoritesIds = [1, 4, 6]; // 供应帖 id=1, 闲置帖 id=4, 供应帖 id=6
+var browsingHistoryIds = [1, 2, 4, 6, 8]; // mix of supply and idle posts
+
+function openFavorites() {
+  previousTab = currentTab;
+  currentTab = 'favorites';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-favorites').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '我的收藏';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderFavorites();
+}
+
+function renderFavorites() {
+  var html = '';
+  if (favoritesIds.length === 0) {
+    html = '<div class="empty-state"><div class="icon">⭐</div><div class="text">暂无收藏</div></div>';
+  } else {
+    favoritesIds.forEach(function(id) {
+      var item = mockData.find(function(d) { return d.id === id; });
+      if (item) {
+        html += renderInfoCard(item, id - 1);
+      }
+    });
+  }
+  document.getElementById('favList').innerHTML = html;
+}
+
+function openBrowsingHistory() {
+  previousTab = currentTab;
+  currentTab = 'browsing-history';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-browsing-history').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '浏览足迹';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderBrowsingHistory();
+}
+
+function renderBrowsingHistory() {
+  var html = '';
+  if (browsingHistoryIds.length === 0) {
+    html = '<div class="empty-state"><div class="icon">👁</div><div class="text">暂无浏览记录</div></div>';
+  } else {
+    browsingHistoryIds.forEach(function(id) {
+      var item = mockData.find(function(d) { return d.id === id; });
+      if (item) {
+        html += renderInfoCard(item, id - 1);
+      }
+    });
+  }
+  document.getElementById('bhList').innerHTML = html;
+}
+
 // ============ City Select ============
 var currentCity = '长沙';
 var cityGroups = [
@@ -2370,7 +2451,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
