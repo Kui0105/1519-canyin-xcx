@@ -2150,6 +2150,7 @@ let currentCatListCat = 'all';
 let pubTodayCount = 0; // simulated daily publish count
 let paymentContext = { amount:0, reason:'', source:'' }; // payment flow context
 let selectedPaymentMethod = 'balance'; // default payment method
+let unlockedPhoneIds = new Set(); // track posts with unlocked phone numbers
 let photoCount = 0;
 // Points deduction state
 let userPoints = 800; // 用户当前积分
@@ -2562,23 +2563,23 @@ function confirmPayment() {
     showToast('付费发帖成功！');
     setTimeout(function() { switchTab('home'); }, 1500);
   } else if (paymentContext.source === 'unlock-idle') {
-    var el = paymentContext.el;
-    if (el) {
-      var parent = el.parentElement;
-      parent.querySelector('.field-value').textContent = '13912345678';
-      unlockBtnToDial(el);
-      showToast('解锁成功！完整号码：13912345678');
+    var itemId = paymentContext.itemId || currentIdleDetailId;
+    if (itemId) {
+      unlockedPhoneIds.add(itemId);
+      var item = idleData.find(function(d) { return d.id === itemId; });
+      if (item) renderIdleDetailPage(item);
     }
-    setTimeout(function() { goBack(); }, 1500);
+    showToast('解锁成功！完整号码：13912345678');
+    setTimeout(function() { switchTab('idle-detail'); }, 1500);
   } else if (paymentContext.source === 'unlock-detail') {
-    var el = paymentContext.el;
-    if (el) {
-      var parent = el.parentElement;
-      parent.querySelector('.field-value').textContent = '13912345678';
-      unlockBtnToDial(el);
-      showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+    var itemId = paymentContext.itemId || currentDetailId;
+    if (itemId) {
+      unlockedPhoneIds.add(itemId);
+      var item = mockData.find(function(d) { return d.id === itemId; });
+      if (item) renderDetailPage(item);
     }
-    setTimeout(function() { goBack(); }, 1500);
+    showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+    setTimeout(function() { switchTab('detail'); }, 1500);
   }
 }
 
@@ -3505,8 +3506,10 @@ function renderIdleDetailPage(item) {
     <div class="detail-field"><div class="field-label">发布时间</div><div class="field-value">${item.time}</div></div>
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系卖家</div>
-      <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">138****6789</div>
-      <button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">${unlockedPhoneIds.has(item.id) ? '13912345678' : '138****6789'}</div>
+      ${unlockedPhoneIds.has(item.id)
+        ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
+        : '<button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>'}
     </div>
     <div class="comment-section">
       <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
@@ -3611,8 +3614,10 @@ function renderDetailPage(item) {
     ${imagesHtml}
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系电话</div>
-      <div class="field-value" style="font-size:32px;letter-spacing:2px">${item.phone}</div>
-      <button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px">${unlockedPhoneIds.has(item.id) ? '13912345678' : item.phone}</div>
+      ${unlockedPhoneIds.has(item.id)
+        ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
+        : '<button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>'}
     </div>
     <div class="comment-section">
       <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
@@ -3630,32 +3635,13 @@ function closeDetail() {
 }
 
 // ============ Phone Unlock ============
-function unlockBtnToDial(el) {
-  el.textContent = '📞 一键拨号';
-  el.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-  el.style.color = '#fff';
-  el.onclick = function() { showToast('正在拨打 13912345678…'); };
-}
-
-function handleUnlockPhone(id, el) {
-  showToast('支付 ¥2.00 即可查看完整手机号\n（模拟：13912345678）');
-  if (el) {
-    el.querySelector('.phone-num').textContent = '13912345678';
-    var btn = el.querySelector('.unlock-btn');
-    btn.textContent = '📞 一键拨号';
-    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-    btn.style.color = '#fff';
-    btn.onclick = function(e) { e.stopPropagation(); showToast('正在拨打 13912345678…'); };
-  }
-}
-
 function handleIdleDetailUnlock(el) {
-  paymentContext.el = el;
+  paymentContext.itemId = currentIdleDetailId;
   goToPayment(1.00, '解锁查看完整号码', 'unlock-idle');
 }
 
 function handleDetailUnlock(el) {
-  paymentContext.el = el;
+  paymentContext.itemId = currentDetailId;
   goToPayment(2.00, '解锁查看完整号码', 'unlock-detail');
 }
 
