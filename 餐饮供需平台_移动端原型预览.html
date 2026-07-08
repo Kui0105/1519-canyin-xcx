@@ -701,16 +701,7 @@ body {
   padding: 48px 32px 40px; text-align: center; color: #fff;
 }
 .points-header .points-total-label { font-size: var(--fs-caption); opacity: 0.8; margin-bottom: 8px; }
-.points-header .points-total-val { font-size: 80px; font-weight: 700; line-height: 1; margin-bottom: 32px; }
-.points-summary {
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.15); border-radius: 16px;
-  padding: 24px 0; margin: 0 16px;
-}
-.ps-item { flex: 1; text-align: center; }
-.ps-item .ps-val { font-size: var(--fs-title); font-weight: 600; }
-.ps-item .ps-label { font-size: var(--fs-caption-sm); opacity: 0.75; margin-top: 4px; }
-.ps-divider { width: 2px; height: 48px; background: rgba(255,255,255,0.2); }
+.points-header .points-total-val { font-size: 80px; font-weight: 700; line-height: 1; }
 .points-list { padding: 24px 32px; }
 .points-list .pl-date { font-size: var(--fs-caption-sm); color: var(--text-muted); padding: 20px 0 12px; }
 .points-list .pl-date:first-child { padding-top: 0; }
@@ -1551,17 +1542,6 @@ body {
       <div class="points-header">
         <div class="points-total-label">当前积分</div>
         <div class="points-total-val" id="pointsTotalVal">500</div>
-        <div class="points-summary">
-          <div class="ps-item">
-            <div class="ps-val" id="pointsIncome">+650</div>
-            <div class="ps-label">积分来源</div>
-          </div>
-          <div class="ps-divider"></div>
-          <div class="ps-item">
-            <div class="ps-val" id="pointsExpense">-150</div>
-            <div class="ps-label">积分去向</div>
-          </div>
-        </div>
       </div>
       <div class="points-list" id="pointsList"></div>
     </div>
@@ -1788,19 +1768,14 @@ function openPointsDetail() {
 }
 
 function renderPointsDetail() {
-  var totalIncome = 0, totalExpense = 0;
+  var total = 0;
   pointsData.forEach(function(day) {
     day.items.forEach(function(item) {
-      var val = parseInt(item.amount);
-      if (item.type === 'income') { totalIncome += val; }
-      else { totalExpense += Math.abs(val); }
+      total += parseInt(item.amount);
     });
   });
-  var total = totalIncome - totalExpense;
 
   document.getElementById('pointsTotalVal').textContent = total;
-  document.getElementById('pointsIncome').textContent = '+' + totalIncome;
-  document.getElementById('pointsExpense').textContent = '-' + totalExpense;
 
   var html = '';
   pointsData.forEach(function(day) {
