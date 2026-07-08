@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>万铺优选 - 移动端原型预览</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --primary-dark: #1e40af;
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #ea580c;
+  --warning-light: #fff7ed;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --red: #dc2626;
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --text: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --tab-height: 112px;
+  --top-bar-height: 88px;
+  /* 标准字号体系 (@2x / 750px) */
+  --fs-title-lg: 36px;   /* 大标题 18pt */
+  --fs-title: 34px;      /* 导航栏标题 17pt */
+  --fs-section: 30px;    /* 区块标题 15pt */
+  --fs-body: 28px;       /* 正文 14pt */
+  --fs-body-sm: 26px;    /* 次要正文 13pt */
+  --fs-caption: 24px;    /* 辅助文字 12pt */
+  --fs-caption-sm: 22px; /* 小辅助文字 11pt */
+  --fs-mini: 20px;       /* 最小文字 10pt */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  background: #e8ecf1;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; padding: 0; margin: 0;
+  color: var(--text);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+
+/* ===== Phone Frame ===== */
+.phone-frame {
+  width: 750px; height: 1624px;
+  background: var(--bg);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 3px #1a1a1a,
+    0 0 0 6px #2d2d2d,
+    0 20px 60px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column;
+  transform-origin: top center;
+  flex-shrink: 0;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 88px; background: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; font-size: var(--fs-caption); font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.status-bar .time { font-size: var(--fs-body); font-weight: 700; }
+.status-icons { display: flex; gap: 12px; align-items: center; font-size: var(--fs-caption-sm); }
+
+/* Nav Bar */
+.nav-bar {
+  height: 88px; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-title); font-weight: 600; color: var(--text);
+  position: relative; flex-shrink: 0;
+}
+.nav-bar .nav-back {
+  position: absolute; left: 32px; font-size: 40px;
+  color: var(--text); background: none; border: none;
+  cursor: pointer; display: none; padding: 8px;
+  line-height: 1;
+}
+.nav-bar .nav-title { text-align: center; }
+
+/* ===== Page Container ===== */
+.page-container {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.page-container::-webkit-scrollbar { display: none; }
+
+.page { display: none; padding-bottom: 32px; min-height: 100%; }
+.page.active { display: block; }
+
+/* ===== Bottom Tab Bar ===== */
+.tab-bar {
+  height: var(--tab-height); background: #fff;
+  display: flex; align-items: center; border-top: 2px solid var(--border);
+  flex-shrink: 0; z-index: 100;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; cursor: pointer; padding: 8px 0;
+  color: var(--text-muted); font-size: var(--fs-mini); gap: 4px;
+  transition: color 0.2s; position: relative; user-select: none;
+}
+.tab-item.active { color: var(--primary); }
+.tab-item .tab-icon { font-size: 40px; line-height: 1; }
+.tab-item .tab-label { font-size: var(--fs-mini); }
+
+/* Center Publish Button */
+.tab-publish {
+  position: relative; margin-top: -40px;
+}
+.tab-publish .publish-circle {
+  width: 100px; height: 100px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 56px; font-weight: 300; line-height: 1;
+  position: relative;
+}
+  box-shadow: 0 8px 24px rgba(37,99,235,0.4); margin-bottom: 8px;
+}
+.tab-publish .tab-label { color: var(--text-secondary); font-weight: 500; }
+
+/* ===== Common Components ===== */
+.section-title {
+  font-size: var(--fs-section); font-weight: 600; color: var(--text);
+  padding: 24px 32px 16px;
+}
+.section-more { color: var(--text-muted); font-size: var(--fs-caption); }
+
+/* Search Bar */
+.search-bar {
+  padding: 16px 32px; background: #fff; position: sticky; top: 0; z-index: 10;
+}
+.search-input-wrap {
+  display: flex; align-items: center; background: #f3f4f6;
+  border-radius: 40px; padding: 16px 28px; gap: 12px;
+}
+.search-input-wrap .search-icon { display: flex; align-items: center; flex-shrink: 0; }
+.search-input-wrap .search-icon svg { display: block; }
+.search-input-wrap input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: var(--fs-body); color: var(--text);
+}
+.search-input-wrap input::placeholder { color: var(--text-muted); }
+
+/* City locator in search bar */
+.city-locator {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  padding-right: 16px; border-right: 2px solid #e5e7eb; cursor: pointer;
+  font-size: var(--fs-body); font-weight: 500; color: var(--text);
+  white-space: nowrap; user-select: none;
+}
+.city-locator .loc-icon { display: flex; align-items: center; }
+.city-locator .loc-arrow { font-size: 20px; color: var(--text-muted); margin-left: -2px; }
+
+/* City list page */
+.city-page-header {
+  padding: 20px 32px; background: #fff; border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+}
+.city-page-header .current-city {
+  font-size: var(--fs-body); color: var(--text-muted);
+}
+.city-page-header .current-city b {
+  color: var(--primary); margin-left: 4px;
+}
+.city-list-wrap {
+  display: flex; flex: 1; overflow: hidden;
+}
+.city-list-scroll {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.city-group { padding: 0 32px 24px; }
+.city-group .group-letter {
+  font-size: var(--fs-section); font-weight: 700; color: var(--text);
+  padding: 24px 0 12px; position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.city-group .city-item {
+  padding: 16px 0; font-size: var(--fs-body); color: var(--text);
+  border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: color 0.15s;
+}
+.city-group .city-item:active { color: var(--primary); }
+.city-group .city-item.selected { color: var(--primary); font-weight: 600; }
+
+/* Letter index bar */
+.letter-index {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 40px; padding: 8px 0; gap: 2px; flex-shrink: 0;
+}
+.letter-index .letter-dot {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-mini); color: var(--text-muted); cursor: pointer;
+  border-radius: 8px; transition: all 0.15s;
+}
+.letter-index .letter-dot:active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
+
+/* Category Tabs - horizontal scroll */
+.cat-scroll {
+  display: flex; gap: 0; background: #fff; overflow-x: auto;
+  padding: 0 32px; border-bottom: 2px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex-shrink: 0; padding: 20px 28px; font-size: var(--fs-body-sm);
+  color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+  border-bottom: 4px solid transparent; transition: all 0.2s;
+  user-select: none;
+}
+.cat-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+
+/* Info Card */
+.info-card {
+  background: #fff; margin: 16px 24px; border-radius: 20px;
+  padding: 28px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  cursor: pointer; transition: transform 0.1s;
+  position: relative;
+}
+.info-card:active { transform: scale(0.99); }
+.info-card .card-header {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 20px;
+}
+.user-avatar {
+  width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: var(--fs-body); font-weight: 600; flex-shrink: 0;
+}
+.info-card .user-info { flex: 1; min-width: 0; }
+.info-card .user-name { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); }
+.info-card .post-time { font-size: var(--fs-caption-sm); color: var(--text-muted); }
+.info-card .card-title { font-size: var(--fs-section); font-weight: 600; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
+.info-card .card-desc { font-size: var(--fs-body-sm); color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-tags { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.tag { font-size: var(--fs-caption-sm); padding: 6px 16px; border-radius: 8px; }
+.tag-blue { background: #dbeafe; color: #1d4ed8; }
+.tag-green { background: #dcfce7; color: #166534; }
+.tag-orange { background: #fff7ed; color: #c2410c; }
+.tag-purple { background: #f3e8ff; color: #7c3aed; }
+.info-card .card-location { font-size: var(--fs-caption); color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.info-card .card-phone {
+  font-size: var(--fs-caption); color: var(--text-muted); display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px; background: #f9fafb; padding: 12px 20px; border-radius: 12px;
+}
+.info-card .card-phone .phone-num { letter-spacing: 2px; }
+.info-card .card-phone .unlock-btn {
+  font-size: var(--fs-caption-sm); color: var(--primary); font-weight: 500; cursor: pointer;
+  margin-left: auto; padding: 4px 16px; border-radius: 24px;
+  background: var(--primary-light);
+}
+.info-card .card-images {
+  display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px;
+}
+.info-card .card-images::-webkit-scrollbar { display: none; }
+.info-card .card-img {
+  width: 200px; height: 160px; border-radius: 12px; flex-shrink: 0;
+  background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: var(--fs-caption); overflow: hidden;
+}
+.info-card .card-img img { width: 100%; height: 100%; object-fit: cover; }
+.info-card .card-actions {
+  display: flex; gap: 32px; font-size: var(--fs-caption); color: var(--text-muted);
+  border-top: 2px solid var(--border); padding-top: 20px;
+}
+.info-card .card-actions span { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.info-card .card-actions span.liked { color: #ef4444; font-weight: 600; }
+.info-card .card-actions span.favorited { color: #f59e0b; font-weight: 600; }
+
+/* Pinned Badge */
+.pin-badge {
+  display: inline-flex; align-items: center;
+  background: #fef3c7; color: #d97706;
+  font-size: var(--fs-mini); padding: 2px 12px;
+  border-radius: 6px; font-weight: 600;
+  margin-left: 12px; vertical-align: middle;
+  border: 2px solid #fde68a;
+}
+
+/* Detail Overlay */
+.detail-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 200;
+  display: none; justify-content: center; align-items: flex-end;
+}
+.detail-overlay.show { display: flex; }
+.detail-panel {
+  width: 750px; max-height: 85vh; background: #fff;
+  border-radius: 32px 32px 0 0; overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.detail-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 32px; border-bottom: 2px solid var(--border);
+  position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.detail-header .close-btn { font-size: 40px; background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 8px; }
+.detail-header .title { font-size: var(--fs-section); font-weight: 600; }
+.detail-body { padding: 32px; }
+#page-detail .detail-body { padding: 24px 32px 160px; }
+.detail-body .detail-img-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin: 24px 0;
+}
+.detail-body .detail-img-grid > * {
+  width: 100%; height: 200px; object-fit: cover; border-radius: 8px; background: #f3f4f6;
+}
+.detail-body .detail-field { margin-bottom: 24px; }
+.detail-body .detail-field .field-label { font-size: var(--fs-caption); color: var(--text-muted); margin-bottom: 8px; }
+.detail-body .detail-field .field-value { font-size: var(--fs-body); color: var(--text); }
+
+/* Publish Form */
+.publish-form { padding: 24px 32px; }
+.form-group { margin-bottom: 28px; }
+.form-group .form-label { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.form-group .form-label .required { color: var(--danger); font-size: var(--fs-caption); }
+.form-input {
+  width: 100%; padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 16px; font-size: var(--fs-body); background: #fff; color: var(--text);
+  outline: none;
+}
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 6px rgba(37,99,235,0.1); }
+.form-textarea {
+  width: 100%; padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 16px; font-size: var(--fs-body); resize: none; min-height: 200px;
+  outline: none; font-family: inherit;
+}
+.form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 6px rgba(37,99,235,0.1); }
+.form-select {
+  width: 100%; padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 16px; font-size: var(--fs-body); background: #fff; color: var(--text);
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 24px center;
+  cursor: pointer; outline: none;
+}
+.form-select:focus { border-color: var(--primary); }
+
+/* Publish form trigger (clickable select replacement) */
+.form-trigger {
+  width: 100%; padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 16px; font-size: var(--fs-body); background: #fff; color: var(--text);
+  cursor: pointer; outline: none; display: flex; align-items: center;
+  justify-content: space-between; transition: border-color 0.2s;
+}
+.form-trigger:active { border-color: var(--primary); }
+.form-trigger .arrow { transition: transform 0.25s; font-size: 20px; color: var(--text-muted); }
+.form-trigger .arrow.up { transform: rotate(180deg); }
+.form-trigger .placeholder { color: var(--text-muted); }
+
+/* Publish overlay & panel */
+.pub-overlay {
+  position: fixed; top: 176px; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
+}
+.pub-overlay.show { display: block; }
+.pub-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  max-height: 560px; overflow: hidden;
+  border-radius: 0 0 24px 24px;
+}
+.pub-panel.show { display: block; }
+
+/* Pin grid */
+.pub-pin-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.pub-pin-card {
+  border: 2px solid var(--border); border-radius: 16px;
+  padding: 20px 12px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: #fff;
+}
+.pub-pin-card:active { background: #f3f4f6; }
+.pub-pin-card.selected {
+  border-color: #f59e0b; background: #fffbeb;
+  box-shadow: 0 0 0 2px rgba(245,158,11,0.15);
+}
+.pub-pin-card .pin-days { font-size: var(--fs-body-sm); font-weight: 700; color: var(--text); }
+.pub-pin-card .pin-price { font-size: var(--fs-caption-sm); color: var(--danger); margin-top: 4px; }
+.pub-pin-card .pin-unit { font-size: var(--fs-mini); color: var(--text-muted); }
+.pub-pin-card.selected .pin-days,
+.pub-pin-card.selected .pin-price { color: #f59e0b; }
+
+#photoPreview { display: contents; }
+
+.photo-upload {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.photo-upload .upload-box {
+  width: 160px; height: 160px; border: 3px dashed var(--border);
+  border-radius: 16px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; color: var(--text-muted);
+  font-size: var(--fs-caption-sm); cursor: pointer; gap: 8px; transition: all 0.2s;
+}
+.photo-upload .upload-box:hover { border-color: var(--primary); color: var(--primary); }
+.photo-upload .upload-box .icon { font-size: 48px; }
+.submit-btn {
+  width: 100%; padding: 26px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; font-size: 32px; font-weight: 600; border: none;
+  border-radius: 20px; cursor: pointer; margin-top: 16px;
+}
+.submit-btn:active { transform: scale(0.98); }
+
+/* Idle Card */
+.idle-card {
+  background: #fff; margin: 16px 24px; border-radius: 20px;
+  padding: 24px; display: flex; gap: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04); cursor: pointer;
+}
+.idle-card:active { transform: scale(0.99); }
+.idle-card .idle-img {
+  width: 200px; height: 200px; border-radius: 16px; flex-shrink: 0;
+  background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.idle-card .idle-img img { width: 100%; height: 100%; object-fit: cover; }
+.idle-card .idle-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.idle-card .idle-title { font-size: var(--fs-body); font-weight: 600; color: var(--text); }
+.idle-card .idle-condition { font-size: var(--fs-caption); color: var(--text-muted); }
+.idle-card .idle-price { font-size: 36px; font-weight: 700; color: var(--danger); }
+.idle-card .idle-location { font-size: var(--fs-caption-sm); color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+
+/* Idle Search Bar */
+.idle-search-bar { padding: 20px 24px 0; background: #fff; }
+.idle-search-wrap {
+  display: flex; align-items: center; gap: 12px;
+}
+.idle-search-wrap input {
+  flex: 1; border: 2px solid var(--border); border-radius: 16px;
+  padding: 16px 24px; font-size: var(--fs-body); color: var(--text);
+  background: #f9fafb; outline: none; transition: border-color 0.2s;
+}
+.idle-search-wrap input:focus { border-color: #3b82f6; background: #fff; }
+.idle-search-wrap input::placeholder { color: var(--text-muted); }
+.idle-search-btn {
+  padding: 16px 28px; background: #3b82f6; color: #fff; border: none;
+  border-radius: 16px; font-size: var(--fs-body); font-weight: 600;
+  cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+}
+.idle-search-btn:active { background: #2563eb; }
+
+/* Idle Filter Bar */
+.idle-filter-bar {
+  display: flex; gap: 12px; padding: 16px 24px; background: #fff;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 20;
+}
+.idle-filter-item { flex: 1; min-width: 0; }
+.idle-filter-trigger {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 8px; background: #f3f4f6; border-radius: 12px;
+  font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; white-space: nowrap; user-select: none;
+  transition: all 0.2s; border: 2px solid transparent; width: 100%;
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.idle-filter-trigger.active {
+  background: #eff6ff; border-color: #3b82f6; color: #3b82f6;
+}
+.idle-filter-trigger .arrow { font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+.idle-filter-trigger .arrow.up { transform: rotate(180deg); }
+.idle-filter-overlay {
+  position: fixed; top: 176px; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
+}
+.idle-filter-overlay.show { display: block; }
+.idle-filter-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  max-height: 560px; overflow: hidden;
+}
+.idle-filter-panel.show { display: block; }
+.idle-filter-panel .idle-poi-row {
+  display: flex; gap: 0; border-bottom: 2px solid var(--border);
+  height: 420px; overflow: hidden;
+}
+.idle-filter-panel .idle-poi-col {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  border-right: 2px solid var(--border); padding: 12px 0;
+}
+.idle-filter-panel .idle-poi-col:last-child { border-right: none; }
+.idle-filter-panel .idle-poi-item {
+  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.idle-filter-panel .idle-poi-item:hover, .idle-filter-panel .idle-poi-item:active { background: #f3f4f6; }
+.idle-filter-panel .idle-poi-item.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
+.idle-filter-panel .idle-poi-actions {
+  display: flex; gap: 16px; padding: 20px 24px; border-top: 2px solid var(--border);
+  background: #fff;
+}
+.idle-filter-panel .idle-poi-btn {
+  flex: 1; padding: 16px; text-align: center; border-radius: 16px;
+  font-size: var(--fs-body); font-weight: 600; cursor: pointer; border: 2px solid var(--border);
+  background: #fff; color: var(--text-primary);
+}
+.idle-filter-panel .idle-poi-btn.confirm { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+.idle-filter-panel .idle-poi-btn.confirm:active { background: #2563eb; }
+
+/* Idle Option Panel */
+.idle-option-panel .idle-panel-option {
+  padding: 18px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #f3f4f6;
+}
+.idle-option-panel .idle-panel-option:hover, .idle-option-panel .idle-panel-option:active { background: #f3f4f6; }
+.idle-option-panel .idle-panel-option.selected { color: #3b82f6; font-weight: 600; }
+.idle-option-panel .idle-panel-option.selected::after { content: ' ✓'; }
+
+/* News Card */
+.news-card {
+  background: #fff; margin: 16px 24px; border-radius: 20px;
+  padding: 28px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  cursor: pointer; display: flex; gap: 24px;
+}
+.news-card:active { transform: scale(0.99); }
+.news-card .news-cover {
+  width: 200px; height: 140px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 48px;
+}
+.news-card .news-cover.c2 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.news-card .news-cover.c3 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+.news-card .news-info { flex: 1; min-width: 0; }
+.news-card .news-title { font-size: var(--fs-body); font-weight: 600; color: var(--text); margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.news-card .news-desc { font-size: var(--fs-caption); color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.news-card .news-meta { font-size: var(--fs-caption-sm); color: var(--text-muted); margin-top: 12px; display: flex; justify-content: space-between; }
+
+/* Profile Page */
+.profile-header {
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 48px 32px 40px; text-align: center; color: #fff;
+}
+.profile-header .profile-avatar {
+  width: 128px; height: 128px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+  font-size: 56px;
+}
+.profile-header .profile-name { font-size: 36px; font-weight: 600; margin-bottom: 8px; }
+.profile-header .profile-phone { font-size: var(--fs-body-sm); opacity: 0.8; }
+.wallet-row {
+  display: flex; gap: 0; margin: -60px 32px 0;
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.wallet-item {
+  flex: 1; padding: 28px 20px; text-align: center; cursor: pointer;
+}
+.wallet-item .val { font-size: 44px; font-weight: 700; color: var(--text); }
+.wallet-item .label { font-size: var(--fs-caption-sm); color: var(--text-muted); margin-top: 8px; }
+.wallet-item.divider { border-right: 2px solid var(--border); }
+.menu-section { margin: 24px 32px; background: #fff; border-radius: 20px; overflow: hidden; }
+.menu-item {
+  display: flex; align-items: center; padding: 28px 32px; cursor: pointer;
+  border-bottom: 2px solid var(--border); gap: 24px;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: #f9fafb; }
+.menu-item .menu-icon { font-size: 40px; width: 56px; text-align: center; flex-shrink: 0; }
+.menu-item .menu-text { flex: 1; font-size: var(--fs-body); color: var(--text); }
+.menu-item .menu-badge {
+  font-size: var(--fs-caption-sm); background: var(--danger); color: #fff;
+  padding: 4px 16px; border-radius: 20px;
+}
+.menu-item .menu-right { font-size: var(--fs-body); color: var(--text-muted); }
+.menu-item .menu-arrow { color: #d1d5db; font-size: var(--fs-body); }
+
+/* Floating Button */
+.floating-cs {
+  position: absolute; right: 32px; bottom: 200px; z-index: 50;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.floating-btn {
+  width: 84px; height: 84px; border-radius: 50%; background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 40px; cursor: pointer;
+  transition: all 0.2s;
+}
+.floating-btn:active { transform: scale(0.92); }
+.cs-menu {
+  display: flex; flex-direction: column; gap: 12px;
+  background: #fff; border-radius: 24px; padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.cs-item {
+  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text);
+  cursor: pointer; border-radius: 16px; white-space: nowrap;
+  display: flex; align-items: center; gap: 12px;
+}
+.cs-item:active { background: var(--primary-light); color: var(--primary); }
+.hidden { display: none !important; }
+
+/* Back to Top */
+.back-to-top {
+  position: absolute; right: 32px; bottom: 320px; z-index: 49;
+  width: 84px; height: 84px; border-radius: 50%; background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 36px; cursor: pointer;
+  transition: all 0.3s ease; opacity: 0; pointer-events: none;
+  border: none;
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+.back-to-top:active { transform: scale(0.92); background: var(--primary-light); }
+
+/* Banner Carousel */
+.banner-wrap {
+  margin: 0 24px 0; border-radius: 24px; overflow: hidden;
+  position: relative; height: 280px; background: #fff;
+}
+.banner-slides {
+  display: flex; height: 100%; transition: transform 0.4s ease;
+}
+.banner-slide {
+  min-width: 100%; height: 100%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 36px; font-weight: 700; color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  background-size: cover; background-position: center; cursor: pointer;
+}
+.banner-dots {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 12px;
+}
+.banner-dot {
+  width: 12px; height: 12px; border-radius: 6px; background: rgba(255,255,255,0.5);
+  transition: all 0.3s; border: none; padding: 0; cursor: pointer;
+}
+.banner-dot.active { width: 36px; background: #fff; }
+
+.home-top-wrap { background: #fff; padding-bottom: 0; }
+
+/* Category Nav Grid */
+.cat-nav-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; padding: 20px 24px; background: #fff;
+}
+.cat-nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 20px 12px; border-radius: 16px;
+  background: #f9fafb; cursor: pointer; transition: all 0.2s;
+  user-select: none; border: 2px solid transparent;
+}
+.cat-nav-item:active { transform: scale(0.96); background: #eff6ff; border-color: #bfdbfe; }
+.cat-nav-item .cat-nav-icon {
+  width: 72px; height: 72px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.cat-nav-item .cat-nav-label {
+  font-size: var(--fs-caption); color: var(--text-secondary);
+  font-weight: 500; text-align: center; line-height: 1.3;
+}
+
+/* Category List Filter Bar */
+.filter-bar {
+  display: flex; gap: 12px; padding: 20px 24px; background: #fff;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 20;
+}
+.filter-item { flex: 1; min-width: 0; }
+.filter-trigger {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 8px; background: #f3f4f6; border-radius: 12px;
+  font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; white-space: nowrap; user-select: none;
+  transition: all 0.2s; border: 2px solid transparent; width: 100%;
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.filter-trigger.active {
+  background: #eff6ff; border-color: #3b82f6; color: #3b82f6;
+}
+.filter-trigger .arrow { font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+.filter-trigger .arrow.up { transform: rotate(180deg); }
+
+/* Filter Panel Overlay */
+.filter-panel-overlay {
+  position: fixed; top: 176px; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); z-index: 30; display: none;
+}
+.filter-panel-overlay.show { display: block; }
+
+/* Filter Panel (generic popup) */
+.filter-panel {
+  position: fixed; left: 0; right: 0; top: 176px;
+  background: #fff; z-index: 31; display: none;
+  max-height: 560px; overflow: hidden;
+}
+.filter-panel.show { display: block; }
+
+/* Region Picker Panel */
+.region-panel {
+  border-radius: 0 0 24px 24px;
+}
+.region-columns {
+  display: flex; height: 400px;
+}
+.region-col {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  border-right: 2px solid #f3f4f6;
+}
+.region-col:last-child { border-right: none; }
+.region-col-title {
+  padding: 20px 24px; font-size: var(--fs-caption);
+  color: var(--text-muted); font-weight: 600; position: sticky; top: 0;
+  background: #fff; z-index: 1;
+}
+.region-option {
+  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.region-option:active { background: #f3f4f6; }
+.region-option.selected { color: #3b82f6; font-weight: 600; background: #eff6ff; }
+
+.panel-footer {
+  display: flex; gap: 16px; padding: 16px 24px; border-top: 2px solid #f3f4f6;
+}
+.panel-btn {
+  flex: 1; padding: 18px; border-radius: 14px; font-size: var(--fs-body-sm);
+  font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
+}
+.panel-btn.reset { background: #f3f4f6; color: var(--text-secondary); }
+.panel-btn.reset:active { background: #e5e7eb; }
+.panel-btn.confirm { background: #3b82f6; color: #fff; }
+.panel-btn.confirm:active { background: #2563eb; }
+
+/* Option Panel (category/type/sort) */
+.option-panel {
+  border-radius: 0 0 24px 24px;
+}
+.option-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 32px; font-size: var(--fs-body-sm); color: var(--text-primary);
+  cursor: pointer; transition: background 0.15s; border-bottom: 2px solid #f9fafb;
+}
+.option-item:last-child { border-bottom: none; }
+.option-item:active { background: #f3f4f6; }
+.option-item.selected { color: #3b82f6; font-weight: 600; }
+.option-item .check { color: #3b82f6; font-size: 28px; display: none; }
+.option-item.selected .check { display: inline; }
+
+/* Publish Limit Toast */
+.toast {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75); color: #fff; padding: 28px 56px;
+  border-radius: 20px; font-size: var(--fs-body); z-index: 300;
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; white-space: nowrap;
+  letter-spacing: 1px;
+}
+.toast.show { opacity: 1; }
+
+/* Empty State */
+.empty-state {
+  text-align: center; padding: 120px 40px; color: var(--text-muted);
+}
+.empty-state .icon { font-size: 96px; margin-bottom: 24px; }
+.empty-state .text { font-size: var(--fs-body); }
+
+/* Card slider */
+.card-slider { display: flex; gap: 24px; overflow-x: auto; padding: 8px 32px 24px; }
+.card-slider::-webkit-scrollbar { display: none; }
+.stat-card {
+  flex-shrink: 0; width: 320px; background: #fff; border-radius: 20px;
+  padding: 28px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.stat-card .stat-icon { font-size: 56px; margin-bottom: 12px; }
+.stat-card .stat-val { font-size: 44px; font-weight: 700; color: var(--text); }
+.stat-card .stat-label { font-size: var(--fs-caption); color: var(--text-muted); }
+
+/* ===== Search Page ===== */
+.search-page-header {
+  display: flex; align-items: center; gap: 20px;
+  padding: 16px 32px; background: #fff; border-bottom: 2px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+.search-page-header .search-back {
+  font-size: 40px; color: var(--text); background: none; border: none;
+  cursor: pointer; padding: 8px 0; flex-shrink: 0; line-height: 1;
+}
+.search-page-input-wrap {
+  flex: 1; display: flex; align-items: center;
+  background: #f3f4f6; border-radius: 40px; padding: 12px 24px;
+  gap: 12px; transition: all 0.2s;
+}
+.search-page-input-wrap.focused {
+  background: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.2);
+}
+.search-page-input-wrap .search-icon { display: flex; align-items: center; flex-shrink: 0; }
+.search-page-input-wrap .search-icon svg { display: block; }
+.search-page-input-wrap input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: var(--fs-body); color: var(--text); padding: 8px 0;
+}
+.search-page-input-wrap input::placeholder { color: var(--text-muted); }
+.search-page-input-wrap .clear-input {
+  font-size: var(--fs-body); color: var(--text-muted); background: #d1d5db;
+  width: 36px; height: 36px; border-radius: 50%; display: none;
+  align-items: center; justify-content: center; cursor: pointer; border: none;
+}
+.search-page-input-wrap .clear-input.show { display: flex; }
+.search-btn {
+  font-size: var(--fs-body); color: var(--primary); font-weight: 600;
+  background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 8px 0;
+}
+/* Hot Search */
+.hot-search-section {
+  padding: 32px 32px 8px;
+}
+.hot-search-title {
+  font-size: var(--fs-body); font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+}
+.hot-search-title .fire-icon { font-size: 32px; }
+.hot-search-title .update-time { font-size: var(--fs-caption-sm); color: var(--text-muted); font-weight: 400; margin-left: auto; }
+.hot-search-list { display: flex; flex-direction: column; }
+.hot-search-item {
+  display: flex; align-items: center; padding: 20px 0; cursor: pointer;
+  border-bottom: 2px solid #f3f4f6; gap: 20px;
+}
+.hot-search-item:last-child { border-bottom: none; }
+.hot-search-item .rank {
+  width: 40px; text-align: center; font-size: var(--fs-body); font-weight: 700;
+  color: var(--text-muted); flex-shrink: 0;
+}
+.hot-search-item .rank.top3 { color: #f97316; }
+.hot-search-item .rank.top1 { color: #ef4444; }
+.hot-search-item .keyword { flex: 1; font-size: var(--fs-body); color: var(--text); }
+.hot-search-item .hot-badge {
+  font-size: var(--fs-mini); padding: 4px 12px; border-radius: 8px;
+  font-weight: 500; flex-shrink: 0;
+}
+.hot-badge-hot { background: #fef2f2; color: #ef4444; }
+.hot-badge-new { background: #dcfce7; color: #16a34a; }
+.hot-badge-rising { background: #fff7ed; color: #ea580c; }
+/* Search History */
+.history-section {
+  padding: 24px 32px 8px;
+}
+.history-title {
+  font-size: var(--fs-body); font-weight: 600; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.history-title .clear-history {
+  font-size: var(--fs-caption); color: var(--text-muted); cursor: pointer;
+  background: none; border: none; padding: 8px;
+}
+.history-tags { display: flex; flex-wrap: wrap; gap: 16px; }
+.history-tag {
+  padding: 12px 28px; background: #f3f4f6; border-radius: 32px;
+  font-size: var(--fs-body-sm); color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.history-tag:active { background: var(--primary-light); color: var(--primary); }
+/* Search Results */
+.search-result-count {
+  font-size: var(--fs-caption); color: var(--text-muted); padding: 16px 32px 8px;
+}
+.no-result {
+  text-align: center; padding: 80px 40px; color: var(--text-muted);
+}
+.no-result .icon { font-size: 96px; margin-bottom: 16px; }
+.no-result .text { font-size: var(--fs-body); margin-bottom: 8px; }
+.no-result .sub { font-size: var(--fs-caption); color: var(--text-muted); }
+/* Search filter bar */
+.search-filter-bar {
+  display: flex; gap: 16px; padding: 20px 32px; background: #fff;
+  border-bottom: 2px solid var(--border);
+  position: sticky; top: 116px; z-index: 19; overflow-x: auto;
+}
+.search-filter-bar::-webkit-scrollbar { display: none; }
+.search-filter-btn {
+  flex: 1; padding: 12px 0; border-radius: 32px;
+  border: 2px solid var(--border); background: #fff;
+  font-size: var(--fs-body-sm); color: var(--text-secondary); cursor: pointer;
+  white-space: nowrap; transition: all 0.2s; text-align: center;
+}
+.search-filter-btn.active {
+  background: var(--primary-light); color: var(--primary);
+  border-color: var(--primary); font-weight: 600;
+}
+.search-filter-btn .sort-arrow {
+  font-size: var(--fs-mini); margin-left: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- Phone Frame -->
+<div class="phone-frame" id="app">
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <span class="status-icons">5G ▮▮▮▮ 🔋</span>
+  </div>
+
+  <!-- Nav Bar -->
+  <div class="nav-bar">
+    <button class="nav-back" id="navBack" onclick="goBack()">‹</button>
+    <span class="nav-title" id="navTitle">万铺优选</span>
+  </div>
+
+  <!-- Pages Container -->
+  <div class="page-container" id="pageContainer">
+
+    <!-- ==================== 首页 ==================== -->
+    <div class="page active" id="page-home">
+      <div class="home-top-wrap">
+      <!-- Search -->
+      <div class="search-bar">
+        <div class="search-input-wrap" onclick="openSearch()" style="cursor:pointer">
+          <span class="city-locator" onclick="event.stopPropagation();openCityList()" id="cityLocator">
+            <span class="loc-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <span id="currentCityName">长沙</span>
+            <span class="loc-arrow">▾</span>
+          </span>
+          <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input type="text" placeholder="请输入关键词进行搜索" id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
+        </div>
+      </div>
+
+      <!-- Banner Carousel -->
+      <div class="banner-wrap" id="homeBanner">
+        <div class="banner-slides" id="bannerSlides">
+          <div class="banner-slide" style="background-image:url('banner1.jpg');background-size:cover;background-position:center;" onclick="showToast('查看详情：高校食堂招商专场')">
+          </div>
+          <div class="banner-slide" style="background-image:url('banner2.jpg');background-size:cover;background-position:center;" onclick="showToast('查看详情：闲置设备限时秒杀')">
+          </div>
+          <div class="banner-slide" style="background-image:url('banner3.jpg');background-size:cover;background-position:center;" onclick="showToast('查看详情：品牌加盟季·0元审核')">
+          </div>
+        </div>
+        <div class="banner-dots" id="bannerDots">
+          <button class="banner-dot active" data-idx="0" onclick="goBanner(0)"></button>
+          <button class="banner-dot" data-idx="1" onclick="goBanner(1)"></button>
+          <button class="banner-dot" data-idx="2" onclick="goBanner(2)"></button>
+        </div>
+      </div>
+      </div>
+
+      <!-- Category Nav Grid -->
+      <div class="cat-nav-grid">
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('canteen')">
+          <div class="cat-nav-icon" style="background:#eff6ff">🍽️</div>
+          <div class="cat-nav-label">校园食堂</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('street')">
+          <div class="cat-nav-icon" style="background:#fef3c7">🏪</div>
+          <div class="cat-nav-label">校园商业街</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('hospital')">
+          <div class="cat-nav-icon" style="background:#fce7f3">🏥</div>
+          <div class="cat-nav-label">医院餐厅</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('park')">
+          <div class="cat-nav-icon" style="background:#dcfce7">🏢</div>
+          <div class="cat-nav-label">企业园区</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('recruit')">
+          <div class="cat-nav-icon" style="background:#f3e8ff">👥</div>
+          <div class="cat-nav-label">人才招聘</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('biz')">
+          <div class="cat-nav-icon" style="background:#ffe4e6">📋</div>
+          <div class="cat-nav-label">生意转让</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('shop')">
+          <div class="cat-nav-icon" style="background:#fff7ed">🏠</div>
+          <div class="cat-nav-label">校外旺铺</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('brand')">
+          <div class="cat-nav-icon" style="background:#f0f9ff">🏷️</div>
+          <div class="cat-nav-label">品牌加盟</div>
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="cat-scroll" id="homeCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchHomeCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="canteen" onclick="switchHomeCat(this, 'canteen')">校园食堂</div>
+        <div class="cat-tab" data-cat="transfer" onclick="switchHomeCat(this, 'transfer')">档口转让</div>
+        <div class="cat-tab" data-cat="recruit" onclick="switchHomeCat(this, 'recruit')">人才招聘</div>
+        <div class="cat-tab" data-cat="biz" onclick="switchHomeCat(this, 'biz')">生意转让</div>
+        <div class="cat-tab" data-cat="shop" onclick="switchHomeCat(this, 'shop')">校外旺铺</div>
+        <div class="cat-tab" data-cat="brand" onclick="switchHomeCat(this, 'brand')">品牌加盟</div>
+      </div>
+
+      <!-- Info Cards -->
+      <div id="homeCards"></div>
+    </div>
+
+    <!-- ==================== 城市列表 ==================== -->
+    <div class="page" id="page-city">
+      <div class="city-page-header">
+        <span class="current-city">当前定位：<b id="cityCurrentShow">长沙</b></span>
+      </div>
+      <div class="city-list-wrap">
+        <div class="city-list-scroll" id="cityListScroll">
+          <div id="cityGroups"></div>
+        </div>
+        <div class="letter-index" id="letterIndex"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 搜索页 ==================== -->
+    <div class="page" id="page-search">
+      <!-- Search Header -->
+      <div class="search-page-header" id="searchPageHeader">
+        <div class="search-page-input-wrap" id="searchInputWrap">
+          <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input type="text" placeholder="搜索校园食堂、档口转让、人才招聘..." id="searchInput" oninput="onSearchInput()" onfocus="onSearchFocus()" onblur="onSearchBlur()">
+          <button class="clear-input" id="clearSearchBtn" onclick="clearSearchInput()">✕</button>
+        </div>
+        <button class="search-btn" onclick="doSearch()">搜索</button>
+      </div>
+
+      <!-- Search Content Area -->
+      <div id="searchContent">
+        <!-- Search History -->
+        <div class="history-section" id="historySection">
+          <div class="history-title">
+            <span>🕐 搜索历史</span>
+            <button class="clear-history" onclick="clearHistory()">🗑 清空</button>
+          </div>
+          <div class="history-tags" id="historyTags"></div>
+        </div>
+
+        <!-- Hot Search -->
+        <div class="hot-search-section">
+          <div class="hot-search-title">
+            <span class="fire-icon">🔥</span>热搜榜
+            <span class="update-time">实时更新</span>
+          </div>
+          <div class="hot-search-list" id="hotSearchList"></div>
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div id="searchResults" style="display:none"></div>
+    </div>
+
+    <!-- ==================== 闲置社区 ==================== -->
+    <div class="page" id="page-idle">
+      <!-- Idle Search Bar -->
+      <div class="idle-search-bar" id="idleSearchBar">
+        <div class="idle-search-wrap">
+          <input type="text" id="idleSearchInput" placeholder="搜索闲置物品关键词..." onkeydown="if(event.key==='Enter')doIdleSearch()">
+          <button class="idle-search-btn" onclick="doIdleSearch()">搜索</button>
+        </div>
+      </div>
+      <div class="cat-scroll" id="idleCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchIdleCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="equip" onclick="switchIdleCat(this, 'equip')">餐饮设备</div>
+        <div class="cat-tab" data-cat="material" onclick="switchIdleCat(this, 'material')">物料耗材</div>
+        <div class="cat-tab" data-cat="resource" onclick="switchIdleCat(this, 'resource')">经营资源</div>
+        <div class="cat-tab" data-cat="other" onclick="switchIdleCat(this, 'other')">其他闲置</div>
+      </div>
+      <!-- Idle Filter Bar -->
+      <div class="idle-filter-bar" id="idleFilterBar">
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-region" onclick="toggleIdleFilterDropdown('idle-region')">
+            区域 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-price" onclick="toggleIdleFilterDropdown('idle-price')">
+            价格 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="idle-filter-item">
+          <div class="idle-filter-trigger" data-filter="idle-time" onclick="toggleIdleFilterDropdown('idle-time')">
+            发布时间 <span class="arrow">▾</span>
+          </div>
+        </div>
+      </div>
+      <div class="idle-filter-overlay" id="idleFilterOverlay" onclick="closeAllIdleDropdowns()"></div>
+      <div class="idle-filter-panel" id="idleFilterPanel-region">
+        <div class="idle-poi-row">
+          <div class="idle-poi-col" id="idlePoiProvince" onclick="selectIdleProvince('湖南省')"></div>
+          <div class="idle-poi-col" id="idlePoiCity"></div>
+          <div class="idle-poi-col" id="idlePoiDistrict"></div>
+        </div>
+        <div class="idle-poi-actions">
+          <div class="idle-poi-btn reset" onclick="resetIdleRegion()">重置</div>
+          <div class="idle-poi-btn confirm" onclick="confirmIdleRegion()">确定</div>
+        </div>
+      </div>
+      <div class="idle-filter-panel idle-option-panel" id="idleFilterPanel-price">
+        <div class="idle-panel-option" data-value="asc" onclick="selectIdleFilter('idle-price','asc','价格升序')">价格升序</div>
+        <div class="idle-panel-option" data-value="desc" onclick="selectIdleFilter('idle-price','desc','价格降序')">价格降序</div>
+      </div>
+      <div class="idle-filter-panel idle-option-panel" id="idleFilterPanel-time">
+        <div class="idle-panel-option" data-value="new" onclick="selectIdleFilter('idle-time','new','最新发布')">最新发布</div>
+        <div class="idle-panel-option" data-value="old" onclick="selectIdleFilter('idle-time','old','最早发布')">最早发布</div>
+      </div>
+      <div id="idleCards"></div>
+    </div>
+
+    <!-- ==================== 发布中心 ==================== -->
+    <div class="page" id="page-publish">
+      <div class="publish-form">
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>发布分类</div>
+          <div class="form-trigger" id="pubCategoryTrigger" onclick="openPubCategoryPanel()">
+            <span id="pubCategoryText" class="placeholder">请选择分类</span>
+            <span class="arrow">▾</span>
+          </div>
+          <input type="hidden" id="pubCategory" value="">
+        </div>
+
+        <div class="form-group" id="pubSubCatWrap" style="display:none">
+          <div class="form-label">二级分类</div>
+          <select class="form-select" id="pubSubCat">
+            <option value="">请选择</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>信息标题</div>
+          <input class="form-input" type="text" placeholder="简要概括信息内容" id="pubTitle">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>照片上传（最多9张）</div>
+          <div class="photo-upload">
+            <div id="photoPreview"></div>
+            <div class="upload-box" onclick="addPhoto()">
+              <span class="icon">📷</span>
+              <span>添加图片</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>描述信息</div>
+          <textarea class="form-textarea" placeholder="详细描述信息内容..." id="pubDesc"></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">帖子标签</div>
+          <input type="text" class="form-input" id="pubTags" placeholder="多个标签以英文逗号隔开">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>所属区域（湖南省内）</div>
+          <div class="form-trigger" id="pubRegionTrigger" onclick="openPubRegionPanel()">
+            <span id="pubRegionText" class="placeholder">选择城市</span>
+            <span class="arrow">▾</span>
+          </div>
+          <input type="hidden" id="pubRegion1" value="">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>详细地址</div>
+          <input class="form-input" type="text" placeholder="填写具体地址" id="pubAddress">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>联系电话</div>
+          <input class="form-input" type="tel" placeholder="138****5678" value="138****5678" id="pubPhone">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">置顶推广（按周期付费）</div>
+          <div class="pub-pin-grid" id="pubPinGrid">
+            <div class="pub-pin-card selected" data-pin="" onclick="selectPubPin(this, '')">
+              <div class="pin-days">不置顶</div>
+              <div class="pin-price">¥0</div>
+              <div class="pin-unit">免费发布</div>
+            </div>
+            <div class="pub-pin-card" data-pin="7" onclick="selectPubPin(this, '7')">
+              <div class="pin-days">7天置顶</div>
+              <div class="pin-price">¥9.9</div>
+              <div class="pin-unit">¥1.4/天</div>
+            </div>
+            <div class="pub-pin-card" data-pin="15" onclick="selectPubPin(this, '15')">
+              <div class="pin-days">15天置顶</div>
+              <div class="pin-price">¥18.8</div>
+              <div class="pin-unit">¥1.25/天</div>
+            </div>
+            <div class="pub-pin-card" data-pin="30" onclick="selectPubPin(this, '30')">
+              <div class="pin-days">30天置顶</div>
+              <div class="pin-price">¥29.9</div>
+              <div class="pin-unit">¥1.0/天</div>
+            </div>
+          </div>
+          <input type="hidden" id="pubPin" value="">
+        </div>
+
+        <p style="font-size:var(--fs-caption-sm);color:var(--text-muted);text-align:center;margin-bottom:16px;">
+          每日免费发布 1 条，今日剩余：<strong style="color:var(--success)" id="pubRemain">1</strong> 条
+        </p>
+        <button class="submit-btn" onclick="submitPublish()">确认发布</button>
+      </div>
+
+      <!-- Publish Popup Overlay -->
+      <div class="pub-overlay" id="pubOverlay" onclick="closePubPanels()"></div>
+
+      <!-- Category option panel -->
+      <div class="pub-panel option-panel" id="pubCategoryPanel">
+        <div class="option-item selected" data-value="" onclick="selectPubCategory(this, '')">请选择分类</div>
+        <div class="option-item" data-value="canteen" onclick="selectPubCategory(this, 'canteen')">校园食堂招租</div>
+        <div class="option-item" data-value="bizstreet" onclick="selectPubCategory(this, 'bizstreet')">校园商圈招租</div>
+        <div class="option-item" data-value="hospital" onclick="selectPubCategory(this, 'hospital')">医院餐厅招租</div>
+        <div class="option-item" data-value="transfer" onclick="selectPubCategory(this, 'transfer')">档口转让</div>
+        <div class="option-item" data-value="park" onclick="selectPubCategory(this, 'park')">企业园区招租</div>
+        <div class="option-item" data-value="recruit" onclick="selectPubCategory(this, 'recruit')">人才招聘</div>
+        <div class="option-item" data-value="shop" onclick="selectPubCategory(this, 'shop')">校外旺铺发布</div>
+        <div class="option-item" data-value="bizsell" onclick="selectPubCategory(this, 'bizsell')">生意转让</div>
+        <div class="option-item" data-value="equipment" onclick="selectPubCategory(this, 'equipment')">闲置物品转让</div>
+        <div class="option-item" data-value="brand" onclick="selectPubCategory(this, 'brand')">品牌信息发布</div>
+      </div>
+
+      <!-- Region picker panel -->
+      <div class="pub-panel region-panel" id="pubRegionPanel">
+        <div class="region-columns" id="pubRegionColumns"></div>
+        <div class="panel-footer">
+          <button class="panel-btn reset" onclick="resetPubRegion()">重置</button>
+          <button class="panel-btn confirm" onclick="confirmPubRegion()">确定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 行业资讯 ==================== -->
+    <div class="page" id="page-news">
+      <div class="cat-scroll" id="newsCats">
+        <div class="cat-tab active" data-cat="all" onclick="switchNewsCat(this, 'all')">全部</div>
+        <div class="cat-tab" data-cat="policy" onclick="switchNewsCat(this, 'policy')">行业政策</div>
+        <div class="cat-tab" data-cat="skill" onclick="switchNewsCat(this, 'skill')">创业干货</div>
+      </div>
+      <div id="newsCards"></div>
+    </div>
+
+    <!-- ==================== 供需详情 ==================== -->
+    <div class="page" id="page-detail">
+      <div class="detail-body" id="detailPageBody"></div>
+    </div>
+
+    <!-- ==================== 分类列表 ==================== -->
+    <div class="page" id="page-cat-list">
+      <div class="filter-bar" id="catFilterBar">
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="region" onclick="openFilterPanel('region')">
+            区域 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="category" onclick="openFilterPanel('category')">
+            类目 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="type" onclick="openFilterPanel('type')">
+            分类 <span class="arrow">▾</span>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-trigger" data-filter="sort" onclick="openFilterPanel('sort')">
+            排序 <span class="arrow">▾</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Panel Overlay -->
+      <div class="filter-panel-overlay" id="filterPanelOverlay" onclick="closeFilterPanel()"></div>
+
+      <!-- Region Picker (cascading province/city/district) -->
+      <div class="filter-panel region-panel" id="panel-region">
+        <div class="region-columns" id="regionColumns"></div>
+        <div class="panel-footer">
+          <button class="panel-btn reset" onclick="resetRegionFilter()">重置</button>
+          <button class="panel-btn confirm" onclick="confirmRegionFilter()">确定</button>
+        </div>
+      </div>
+
+      <!-- Simple option panels (category/type/sort) -->
+      <div class="filter-panel option-panel" id="panel-category"></div>
+      <div class="filter-panel option-panel" id="panel-type"></div>
+      <div class="filter-panel option-panel" id="panel-sort"></div>
+
+      <div id="catListCards" style="padding: 0 0 160px;"></div>
+    </div>
+
+    <!-- ==================== 闲置详情 ==================== -->
+    <div class="page" id="page-idle-detail">
+      <div class="detail-body" id="idleDetailBody"></div>
+    </div>
+
+    <!-- ==================== 个人中心 ==================== -->
+    <div class="page" id="page-me">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">餐饮创业者小王</div>
+        <div class="profile-phone">138****5678</div>
+      </div>
+
+      <div class="wallet-row">
+        <div class="wallet-item divider" onclick="showToast('积分获取：新用户注册赠送500积分')">
+          <div class="val">500</div>
+          <div class="label">我的积分</div>
+        </div>
+        <div class="wallet-item divider" onclick="showToast('余额可充值使用，点击进入充值')">
+          <div class="val">¥28.50</div>
+          <div class="label">我的余额</div>
+        </div>
+        <div class="wallet-item" onclick="showToast('共发布 3 条信息，2条已上架')">
+          <div class="val">3</div>
+          <div class="label">发布数量</div>
+        </div>
+      </div>
+
+      <div class="menu-section" style="margin-top:40px">
+        <div class="menu-item" onclick="showMyPosts()">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">我的发布</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('暂无未读消息')">
+          <span class="menu-icon">🔔</span>
+          <span class="menu-text">消息通知</span>
+          <span class="menu-badge" style="display:none">0</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('查看我的收藏列表')">
+          <span class="menu-icon">⭐</span>
+          <span class="menu-text">我的收藏</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('查看浏览记录')">
+          <span class="menu-icon">👁</span>
+          <span class="menu-text">浏览足迹</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-item" onclick="showToast('查看所有付费订单')">
+          <span class="menu-icon">💳</span>
+          <span class="menu-text">付费订单中心</span>
+          <span class="menu-right">查看详情</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showFeedback()">
+          <span class="menu-icon">💬</span>
+          <span class="menu-text">意见反馈</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('联系在线客服')">
+          <span class="menu-icon">🎧</span>
+          <span class="menu-text">在线客服</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar" id="tabBar">
+    <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">首页</span>
+    </div>
+    <div class="tab-item" data-page="idle" onclick="switchTab('idle')">
+      <span class="tab-icon">🔄</span>
+      <span class="tab-label">闲置社区</span>
+    </div>
+    <div class="tab-item tab-publish" data-page="publish" onclick="switchTab('publish')">
+      <div class="publish-circle"><span style="line-height:1;margin-top:-4px">+</span></div>
+      <span class="tab-label">发布</span>
+    </div>
+    <div class="tab-item" data-page="news" onclick="switchTab('news')">
+      <span class="tab-icon">📰</span>
+      <span class="tab-label">资讯</span>
+    </div>
+    <div class="tab-item" data-page="me" onclick="switchTab('me')">
+      <span class="tab-icon">👤</span>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+
+  <!-- Floating CS Button -->
+  <div class="floating-cs" id="floatingCs">
+    <div class="floating-btn" id="csToggle" onclick="toggleCsMenu()" style="font-size:32px">💬</div>
+    <div class="cs-menu hidden" id="csMenu">
+      <div class="cs-item" onclick="showToast('正在拨打客服电话：400-XXX-XXXX')">📞 客服电话</div>
+      <div class="cs-item" onclick="showToast('请添加客服微信：wanyue_cs')">💚 客服微信</div>
+      <div class="cs-item" onclick="showToast('正在连接在线客服...')">🎧 在线客服</div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">⬆</button>
+</div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- My Posts Overlay -->
+<div class="detail-overlay" id="mypostsOverlay" onclick="if(event.target===this)closeMyPosts()">
+  <div class="detail-panel" id="mypostsPanel"></div>
+</div>
+
+<!-- Feedback Overlay -->
+<div class="detail-overlay" id="feedbackOverlay" onclick="if(event.target===this)closeFeedback()">
+  <div class="detail-panel" id="feedbackPanel"></div>
+</div>
+
+<script>
+// ============ Auto Scale ============
+(function() {
+  var frame = document.querySelector('.phone-frame');
+  var body = document.body;
+
+  function updateScale() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var padX = 20;
+    var padY = 20;
+    var scaleX = (vw - padX * 2) / 750;
+    var scaleY = (vh - padY * 2) / 1624;
+    var scale = Math.min(scaleX, scaleY, 1);
+    if (scale < 0.3) scale = 0.3;
+    frame.style.transform = 'scale(' + scale + ')';
+    // Adjust body height to accommodate scaled frame
+    body.style.minHeight = (1624 * scale + padY * 2) + 'px';
+    body.style.padding = padY + 'px 0';
+  }
+
+  updateScale();
+  window.addEventListener('resize', updateScale);
+  window.addEventListener('orientationchange', function() {
+    setTimeout(updateScale, 100);
+  });
+})();
+
+// ============ Data ============
+var locIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+const mockData = [
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
+  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
+  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520 },
+  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
+  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
+  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
+  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
+  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
+  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
+  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', likes:45, favorites:15, views:980 },
+  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', likes:88, favorites:32, views:1670 },
+  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', likes:56, favorites:24, views:1120 },
+];
+
+const idleData = [
+  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', userFaved:false, favorites:5 },
+  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前', userFaved:false, favorites:3 },
+  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前', userFaved:false, favorites:2 },
+  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前', userFaved:false, favorites:1 },
+  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前', userFaved:false, favorites:0 },
+  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前', userFaved:false, favorites:8 },
+  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前', userFaved:false, favorites:0 },
+  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前', userFaved:false, favorites:4 },
+];
+
+const newsData = [
+  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1' },
+  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2' },
+  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3' },
+  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1' },
+  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2' },
+  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3' },
+];
+
+// ============ State ============
+let currentTab = 'home';
+let currentHomeCat = 'all';
+let currentIdleCat = 'all';
+let currentNewsCat = 'all';
+
+let idleSearchKeyword = '';
+let idleFilters = { region:'all', price:'all', time:'all' };
+let idleRegionPick = { province:'', city:'', district:'' };
+let idleRegionPickWorking = { province:'', city:'', district:'' };
+
+let catListFilters = { region:'all', category:'all', type:'all', sort:'newest' };
+let currentCatListCat = 'all';
+let pubTodayCount = 0; // simulated daily publish count
+let photoCount = 0;
+
+// ============ Navigation ============
+function switchTab(page) {
+  currentTab = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
+  if (tabEl) tabEl.classList.add('active');
+
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市' };
+  document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city') {
+    document.getElementById('navBack').style.display = 'block';
+    document.getElementById('tabBar').style.display = 'none';
+  } else {
+    document.getElementById('navBack').style.display = 'none';
+    document.getElementById('tabBar').style.display = 'flex';
+  }
+  document.getElementById('pageContainer').scrollTop = 0;
+
+  if (page === 'home') renderHomeCards();
+  if (page === 'idle') renderIdleCards();
+  if (page === 'news') renderNewsCards();
+  if (page === 'publish') updatePublishRemain();
+  if (page === 'search') initSearchPage();
+  if (page === 'cat-list') renderCatListCards();
+  if (page === 'city') renderCityPage();
+}
+
+var previousTab = 'home';
+
+// ============ City Select ============
+var currentCity = '长沙';
+var cityGroups = [
+  { letter:'A', cities:['安阳','安康','安庆','鞍山','安顺'] },
+  { letter:'B', cities:['北京','保定','包头','蚌埠','滨州','宝鸡','亳州'] },
+  { letter:'C', cities:['长沙','成都','重庆','长春','常州','滁州','巢湖','沧州','郴州','常德'] },
+  { letter:'D', cities:['大连','东莞','德阳','德州','大同','大庆','丹东'] },
+  { letter:'E', cities:['鄂尔多斯','恩施'] },
+  { letter:'F', cities:['福州','佛山','阜阳','抚顺','抚州'] },
+  { letter:'G', cities:['广州','贵阳','桂林','赣州','广元','广安'] },
+  { letter:'H', cities:['杭州','合肥','哈尔滨','呼和浩特','海口','惠州','衡阳','怀化','湖州','淮安','邯郸','菏泽'] },
+  { letter:'J', cities:['济南','嘉兴','金华','九江','吉林','济宁','焦作'] },
+  { letter:'K', cities:['昆明','开封'] },
+  { letter:'L', cities:['兰州','洛阳','柳州','娄底','临沂','聊城','丽江','临汾'] },
+  { letter:'M', cities:['绵阳','茂名','梅州','牡丹江'] },
+  { letter:'N', cities:['南京','宁波','南宁','南昌','南通','南充','南阳'] },
+  { letter:'P', cities:['莆田','平顶山','盘锦'] },
+  { letter:'Q', cities:['青岛','泉州','秦皇岛','齐齐哈尔','清远'] },
+  { letter:'R', cities:['日照'] },
+  { letter:'S', cities:['上海','深圳','苏州','沈阳','石家庄','汕头','韶关','邵阳','十堰','商丘','宿迁','绍兴'] },
+  { letter:'T', cities:['天津','太原','唐山','台州','泰安'] },
+  { letter:'W', cities:['武汉','无锡','温州','芜湖','渭南','威海','潍坊'] },
+  { letter:'X', cities:['西安','厦门','徐州','襄阳','湘潭','新乡','许昌','西宁','咸阳','新余'] },
+  { letter:'Y', cities:['银川','岳阳','宜昌','烟台','益阳','永州','盐城','扬州','运城'] },
+  { letter:'Z', cities:['郑州','珠海','株洲','驻马店','张家界','遵义','中山','淄博','湛江','漳州'] }
+];
+
+function openCityList() {
+  var prev = currentTab;
+  if (prev !== 'home' && prev !== 'city') previousTab = prev;
+  else if (prev === 'city') previousTab = 'home';
+  else previousTab = currentTab;
+  switchTab('city');
+}
+
+function renderCityPage() {
+  var html = '';
+  var letters = [];
+  cityGroups.forEach(function(g) {
+    letters.push(g.letter);
+    html += '<div class="city-group" id="cityGroup_' + g.letter + '">';
+    html += '<div class="group-letter">&nbsp;' + g.letter + '</div>';
+    g.cities.forEach(function(c) {
+      var sel = c === currentCity ? ' selected' : '';
+      html += '<div class="city-item' + sel + '" onclick="selectCity(\'' + c + '\')">' + c + '</div>';
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('cityGroups').innerHTML = html;
+  document.getElementById('cityCurrentShow').textContent = currentCity;
+
+  // Render letter index
+  var idxHtml = '';
+  letters.forEach(function(l) {
+    idxHtml += '<div class="letter-dot" onclick="scrollToCityGroup(\'' + l + '\')">' + l + '</div>';
+  });
+  document.getElementById('letterIndex').innerHTML = idxHtml;
+}
+
+function selectCity(city) {
+  currentCity = city;
+  document.getElementById('currentCityName').textContent = city;
+  document.getElementById('cityCurrentShow').textContent = city;
+  // Update selected state
+  document.querySelectorAll('.city-item').forEach(function(el) {
+    el.classList.toggle('selected', el.textContent === city);
+  });
+  showToast('已切换至：' + city);
+}
+
+function scrollToCityGroup(letter) {
+  var el = document.getElementById('cityGroup_' + letter);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function goBack() {
+  var target = previousTab;
+  // Safety: never go back to search, detail or idle-detail itself
+  if (['search', 'detail', 'idle-detail', 'city'].indexOf(target) !== -1) target = 'home';
+  switchTab(target);
+}
+
+// ============ Home Page ============
+function switchHomeCat(el, cat) {
+  currentHomeCat = cat;
+  document.querySelectorAll('#homeCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderHomeCards();
+  // scroll to cards area
+  document.getElementById('pageContainer').scrollTop = document.getElementById('homeCards').offsetTop - 100;
+}
+
+function switchHomeCatByNav(cat) {
+  previousTab = 'home';
+  currentCatListCat = cat;
+  // reset filters: category pre-select to the nav cat, others reset
+  catListFilters = { region:'all', category:cat, type:'all', sort:'newest' };
+  regionPick = { province: '', city: '', district: '' };
+  regionPickWorking = { province: '', city: '', district: '' };
+  // reset trigger labels
+  resetFilterLabels();
+  // pre-select category trigger text
+  var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9' };
+  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
+  updateTriggerLabel('category', catLabels[cat] || cat);
+  currentTab = 'cat-list';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-cat-list').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('navTitle').textContent = catTitles[cat] || '分类列表';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderCatListCards();
+}
+
+function filterHomeCards() {
+  renderHomeCards();
+}
+
+// ============ Category List Page ============
+function openCatList(cat) {
+  switchHomeCatByNav(cat);
+}
+
+function renderCatListCards() {
+  var data = mockData.slice();
+  var f = catListFilters;
+
+  // Filter by category
+  if (f.category !== 'all') {
+    data = data.filter(function(d) { return d.cat === f.category; });
+  }
+
+  // Filter by region: match city name (with or without 市 suffix)
+  if (f.region !== 'all') {
+    var regionParts = f.region.split(' · ');
+    var regionCity = regionParts[0].replace('市', '');
+    var regionDistrict = regionParts[1] || '';
+    data = data.filter(function(d) {
+      var locCity = d.location.split(' · ')[0];
+      if (locCity !== regionCity) return false;
+      if (regionDistrict && regionDistrict !== '不限') {
+        return d.location.indexOf(regionDistrict) !== -1;
+      }
+      return true;
+    });
+  }
+
+  // Filter by type
+  if (f.type !== 'all') {
+    if (f.type === 'biz_shop') {
+      data = data.filter(function(d) { return d.cat === 'biz' || d.cat === 'shop'; });
+    } else {
+      data = data.filter(function(d) { return d.cat === f.type; });
+    }
+  }
+
+  // Sort
+  if (f.sort === 'hot') {
+    data.sort(function(a, b) { return b.views - a.views; });
+  } else if (f.sort === 'likes') {
+    data.sort(function(a, b) { return b.likes - a.likes; });
+  } else {
+    // newest: keep original order (reverse by id as proxy)
+    data.sort(function(a, b) { return b.id - a.id; });
+  }
+
+  // Reset all filter trigger active states and close panels
+  closeFilterPanel();
+
+  if (data.length === 0) {
+    document.getElementById('catListCards').innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div class="text">没有找到相关信息</div></div>';
+    return;
+  }
+
+  var html = '';
+  data.forEach(function(item, idx) {
+    html += renderInfoCard(item, idx);
+  });
+  document.getElementById('catListCards').innerHTML = html;
+}
+
+// ============ Filter Panel System ============
+const regionData = {
+  '湖南省': {
+    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '天心区', '雨花区', '全市'],
+    '株洲市': ['不限', '芦淞区', '天元区'],
+    '湘潭市': ['不限', '雨湖区', '岳塘区'],
+    '衡阳市': ['不限', '蒸湘区', '珠晖区'],
+    '岳阳市': ['不限', '岳阳楼区', '云溪区'],
+    '常德市': ['不限', '武陵区', '鼎城区'],
+    '益阳市': ['不限', '赫山区', '资阳区'],
+    '娄底市': ['不限', '娄星区'],
+    '邵阳市': ['不限', '大祥区', '双清区'],
+    '郴州市': ['不限', '北湖区', '苏仙区'],
+    '永州市': ['不限', '冷水滩区', '零陵区'],
+    '怀化市': ['不限', '鹤城区'],
+    '湘西州': ['不限', '吉首市'],
+    '张家界市': ['不限', '永定区', '武陵源区']
+  }
+};
+
+const categoryOptions = [
+  { value:'all', label:'不限' },
+  { value:'canteen', label:'类目1' },
+  { value:'street', label:'类目2' },
+  { value:'hospital', label:'类目3' },
+  { value:'park', label:'类目4' },
+  { value:'transfer', label:'类目5' },
+  { value:'recruit', label:'类目6' },
+  { value:'biz', label:'类目7' },
+  { value:'shop', label:'类目8' },
+  { value:'brand', label:'类目9' }
+];
+
+const typeOptions = [
+  { value:'all', label:'不限' },
+  { value:'canteen', label:'分类1' },
+  { value:'transfer', label:'分类2' },
+  { value:'recruit', label:'分类3' },
+  { value:'biz_shop', label:'分类4' },
+  { value:'brand', label:'分类5' }
+];
+
+const sortOptions = [
+  { value:'newest', label:'最新发布' },
+  { value:'hot', label:'浏览量最高' },
+  { value:'likes', label:'点赞最多' }
+];
+
+// Region picker state
+let regionPick = { province: '', city: '', district: '' };
+let regionPickWorking = { province: '', city: '', district: '' };
+
+function openFilterPanel(filterName) {
+  closeFilterPanel();
+  var overlay = document.getElementById('filterPanelOverlay');
+  overlay.classList.add('show');
+  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
+  trigger.classList.add('active');
+  trigger.querySelector('.arrow').classList.add('up');
+
+  if (filterName === 'region') {
+    buildRegionPicker();
+    document.getElementById('panel-region').classList.add('show');
+  } else {
+    buildOptionPanel(filterName);
+    document.getElementById('panel-' + filterName).classList.add('show');
+  }
+}
+
+function closeFilterPanel() {
+  document.getElementById('filterPanelOverlay').classList.remove('show');
+  document.querySelectorAll('.filter-panel').forEach(function(p) { p.classList.remove('show'); });
+  document.querySelectorAll('.filter-trigger').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.filter-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+}
+
+// Build region cascading picker
+function buildRegionPicker() {
+  var container = document.getElementById('regionColumns');
+  // Initialize pick state from current filter
+  var current = catListFilters.region;
+  if (current !== 'all') {
+    // Try to parse: "长沙 · 岳麓区" style
+    var parts = current.split(' · ');
+    if (parts.length === 2) {
+      var city = parts[0];
+      var district = parts[1];
+      // Find matching province
+      for (var prov in regionData) {
+        if (regionData[prov][city]) {
+          regionPickWorking.province = prov;
+          regionPickWorking.city = city;
+          regionPickWorking.district = district;
+          break;
+        }
+      }
+    } else if (current.indexOf('市') !== -1) {
+      // Just city
+      for (var prov2 in regionData) {
+        if (regionData[prov2][current]) {
+          regionPickWorking.province = prov2;
+          regionPickWorking.city = current;
+          regionPickWorking.district = '不限';
+          break;
+        }
+      }
+    }
+  } else {
+    regionPickWorking = { province: '', city: '', district: '' };
+  }
+
+  renderRegionColumns();
+}
+
+function renderRegionColumns() {
+  var container = document.getElementById('regionColumns');
+  var html = '';
+
+  // Column 1: Provinces
+  html += '<div class="region-col"><div class="region-col-title">省份</div>';
+  for (var prov in regionData) {
+    var sel = regionPickWorking.province === prov ? ' selected' : '';
+    html += '<div class="region-option' + sel + '" onclick="selectRegionProvince(\'' + prov + '\')">' + prov + '</div>';
+  }
+  html += '</div>';
+
+  // Column 2: Cities
+  html += '<div class="region-col"><div class="region-col-title">城市</div>';
+  if (regionPickWorking.province && regionData[regionPickWorking.province]) {
+    for (var city in regionData[regionPickWorking.province]) {
+      var sel2 = regionPickWorking.city === city ? ' selected' : '';
+      html += '<div class="region-option' + sel2 + '" onclick="selectRegionCity(\'' + city + '\')">' + city + '</div>';
+    }
+  } else {
+    html += '<div class="region-option" style="color:#9ca3af">请先选择省份</div>';
+  }
+  html += '</div>';
+
+  // Column 3: Districts
+  html += '<div class="region-col"><div class="region-col-title">区县</div>';
+  if (regionPickWorking.province && regionPickWorking.city && regionData[regionPickWorking.province][regionPickWorking.city]) {
+    var districts = regionData[regionPickWorking.province][regionPickWorking.city];
+    for (var i = 0; i < districts.length; i++) {
+      var d = districts[i];
+      var sel3 = regionPickWorking.district === d ? ' selected' : '';
+      html += '<div class="region-option' + sel3 + '" onclick="selectRegionDistrict(\'' + d + '\')">' + d + '</div>';
+    }
+  } else {
+    html += '<div class="region-option" style="color:#9ca3af">请先选择城市</div>';
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function selectRegionProvince(prov) {
+  if (regionPickWorking.province === prov) return;
+  regionPickWorking.province = prov;
+  regionPickWorking.city = '';
+  regionPickWorking.district = '';
+  renderRegionColumns();
+}
+
+function selectRegionCity(city) {
+  if (regionPickWorking.city === city) return;
+  regionPickWorking.city = city;
+  regionPickWorking.district = '不限';
+  renderRegionColumns();
+}
+
+function selectRegionDistrict(district) {
+  regionPickWorking.district = district;
+  renderRegionColumns();
+}
+
+function confirmRegionFilter() {
+  regionPick = {
+    province: regionPickWorking.province,
+    city: regionPickWorking.city,
+    district: regionPickWorking.district
+  };
+
+  // Build filter value
+  if (!regionPick.province || !regionPick.city) {
+    catListFilters.region = 'all';
+    updateTriggerLabel('region', '区域');
+  } else {
+    if (regionPick.district && regionPick.district !== '不限') {
+      catListFilters.region = regionPick.city + ' · ' + regionPick.district;
+      updateTriggerLabel('region', regionPick.city + ' · ' + regionPick.district);
+    } else {
+      catListFilters.region = regionPick.city;
+      updateTriggerLabel('region', regionPick.city);
+    }
+  }
+  closeFilterPanel();
+  renderCatListCards();
+}
+
+function resetRegionFilter() {
+  regionPickWorking = { province: '', city: '', district: '' };
+  renderRegionColumns();
+}
+
+// Build simple option panel
+function buildOptionPanel(filterName) {
+  var panel = document.getElementById('panel-' + filterName);
+  var options;
+  if (filterName === 'category') options = categoryOptions;
+  else if (filterName === 'type') options = typeOptions;
+  else if (filterName === 'sort') options = sortOptions;
+  else return;
+
+  var current = catListFilters[filterName];
+  var html = '';
+  options.forEach(function(opt) {
+    var sel = current === opt.value ? ' selected' : '';
+    html += '<div class="option-item' + sel + '" onclick="selectPanelOption(\'' + filterName + '\',\'' + opt.value + '\',\'' + opt.label + '\')"><span>' + opt.label + '</span><span class="check">✓</span></div>';
+  });
+  panel.innerHTML = html;
+}
+
+function selectPanelOption(filterName, value, label) {
+  catListFilters[filterName] = value;
+  var defaultVal = (filterName === 'sort') ? 'newest' : 'all';
+  updateTriggerLabel(filterName, value === defaultVal ? getFilterLabel(filterName) : label);
+  closeFilterPanel();
+  renderCatListCards();
+}
+
+function getFilterLabel(filterName) {
+  var map = { region:'区域', category:'类目', type:'分类', sort:'排序' };
+  return map[filterName] || '';
+}
+
+function updateTriggerLabel(filterName, label) {
+  var trigger = document.querySelector('.filter-trigger[data-filter="' + filterName + '"]');
+  if (trigger) trigger.childNodes[0].nodeValue = label + ' ';
+}
+
+// Reset filter labels when entering cat-list page
+function resetFilterLabels() {
+  updateTriggerLabel('region', '区域');
+  updateTriggerLabel('category', '类目');
+  updateTriggerLabel('type', '分类');
+  updateTriggerLabel('sort', '排序');
+}
+
+// ============ Info Cards Render ============
+
+function renderHomeCards() {
+  var data = mockData;
+
+  if (currentHomeCat !== 'all') {
+    data = data.filter(function(d) { return d.cat === currentHomeCat; });
+  }
+
+  // Sort pinned first
+  data.sort(function(a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0); });
+
+  if (data.length === 0) {
+    document.getElementById('homeCards').innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div class="text">没有找到相关信息</div></div>';
+    return;
+  }
+
+  let html = '';
+  data.forEach((item, idx) => {
+    html += renderInfoCard(item, idx);
+  });
+  document.getElementById('homeCards').innerHTML = html;
+}
+
+function renderInfoCard(item, idx) {
+  const imagesHtml = item.images.length ? `
+    <div class="card-images">
+      ${item.images.map((img,i) => `<div class="card-img" style="${cardImgStyle(img, i)}">${imgContent(i)}</div>`).join('')}
+    </div>` : '';
+  const pinHtml = item.pinned ? '<span class="pin-badge">置顶</span>' : '';
+  const tagsHtml = item.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('');
+  return `
+    <div class="info-card" onclick="openDetail(${item.id})">
+      <div class="card-header">
+        <div class="user-avatar">${item.avatar}</div>
+        <div class="user-info">
+          <div class="user-name">${item.username}</div>
+          <div class="post-time">${item.time}</div>
+        </div>
+        <span style="font-size:var(--fs-caption);color:var(--text-muted);background:#f3f4f6;padding:6px 16px;border-radius:8px">${item.catLabel}</span>
+      </div>
+      <div class="card-title">${item.title}${pinHtml}</div>
+      <div class="card-desc">${item.desc}</div>
+      <div class="card-tags">${tagsHtml}</div>
+      <div class="card-location">${locIcon} ${item.location}</div>
+      ${imagesHtml}
+      <div class="card-phone" onclick="event.stopPropagation();handleUnlockPhone(${item.id}, this)">
+        <span class="phone-num">${item.phone}</span>
+        <span class="unlock-btn">查看完整号码 ¥2</span>
+      </div>
+      <div class="card-actions">
+        <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
+        <span class="${item.userFaved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${item.userFaved ? '★' : '☆'} ${item.favorites}</span>
+        <span>👁 ${item.views}</span>
+        <span onclick="event.stopPropagation();showToast('已复制分享链接')">↗ 转发</span>
+      </div>
+    </div>`;
+}
+
+// ============ Idle Page ============
+function switchIdleCat(el, cat) {
+  currentIdleCat = cat;
+  document.querySelectorAll('#idleCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderIdleCards();
+}
+
+function renderIdleCards() {
+  let data = idleData;
+  if (currentIdleCat !== 'all') data = data.filter(d => d.cat === currentIdleCat);
+
+  // keyword search
+  if (idleSearchKeyword) {
+    var kw = idleSearchKeyword.trim().toLowerCase();
+    data = data.filter(function(d) {
+      return d.title.toLowerCase().indexOf(kw) !== -1 || d.location.toLowerCase().indexOf(kw) !== -1;
+    });
+  }
+
+  // region filter
+  if (idleFilters.region !== 'all') {
+    data = data.filter(function(d) { return d.location.indexOf(idleFilters.region) !== -1; });
+  }
+
+  // price sort
+  if (idleFilters.price === 'asc') {
+    data = data.sort(function(a, b) { return a.price - b.price; });
+  } else if (idleFilters.price === 'desc') {
+    data = data.sort(function(a, b) { return b.price - a.price; });
+  }
+
+  // time sort (mock: use time text ordering)
+  if (idleFilters.time === 'new') {
+    // already in default order, no change needed
+  } else if (idleFilters.time === 'old') {
+    data = data.reverse();
+  }
+
+  if (data.length === 0) {
+    document.getElementById('idleCards').innerHTML = '<div class="empty-state"><div class="icon">📦</div><div class="text">暂无闲置物品</div></div>';
+    return;
+  }
+
+  let html = '';
+  data.forEach((item, idx) => {
+    const idleStyle = idleImgStyle(item.img, idx);
+    const idleIcon = idleImgIcon(idx);
+    html += `
+    <div class="idle-card" onclick="openIdleDetail(${item.id})">
+      <div class="idle-img" style="${idleStyle}">${idleIcon}</div>
+      <div class="idle-info">
+        <div>
+          <div class="idle-title">${item.title}</div>
+          <div class="idle-condition">${item.condition} · ${item.used}</div>
+        </div>
+        <div>
+          <div class="idle-price">¥${item.price}</div>
+          <div class="idle-location">${locIcon} ${item.location} · ${item.time}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('idleCards').innerHTML = html;
+}
+
+// ============ Idle Search ============
+function doIdleSearch() {
+  idleSearchKeyword = document.getElementById('idleSearchInput').value;
+  renderIdleCards();
+}
+
+// ============ Idle Filter ============
+function toggleIdleFilterDropdown(filterName) {
+  var panel = document.getElementById('idleFilterPanel-' + filterName.replace('idle-', ''));
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="' + filterName + '"]');
+  var overlay = document.getElementById('idleFilterOverlay');
+  var isOpen = panel.classList.contains('show');
+
+  closeAllIdleDropdowns();
+
+  if (!isOpen) {
+    panel.classList.add('show');
+    trigger.classList.add('active');
+    trigger.querySelector('.arrow').classList.add('up');
+    overlay.classList.add('show');
+
+    if (filterName === 'idle-region') {
+      renderIdleRegionColumns();
+    } else if (filterName === 'idle-price') {
+      buildIdleOptionPanel('idle-price', 'idle-panel-option', idleFilters.price, 'all', 'idle-price', 'all');
+    } else if (filterName === 'idle-time') {
+      buildIdleOptionPanel('idle-time', 'idle-panel-option', idleFilters.time, 'all', 'idle-time', 'all');
+    }
+  }
+}
+
+function closeAllIdleDropdowns() {
+  document.querySelectorAll('.idle-filter-panel').forEach(function(d) { d.classList.remove('show'); });
+  document.querySelectorAll('.idle-filter-trigger').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.idle-filter-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+  document.getElementById('idleFilterOverlay').classList.remove('show');
+}
+
+function selectIdleFilter(filterName, value, label) {
+  var key = filterName.replace('idle-', '');
+  idleFilters[key] = value;
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="' + filterName + '"]');
+  var defaultLabels = { 'idle-price': '价格', 'idle-time': '发布时间' };
+  var defaultVals = { 'idle-price': 'all', 'idle-time': 'all' };
+  var def = defaultLabels[filterName];
+  trigger.childNodes[0].nodeValue = value === defaultVals[filterName] ? def + ' ' : label + ' ';
+  closeAllIdleDropdowns();
+  renderIdleCards();
+}
+
+function updateIdleTriggerLabel(filterName, label) {
+  var trigger = document.querySelector('.idle-filter-trigger[data-filter="idle-' + filterName + '"]');
+  if (!trigger) return;
+  var defaultLabels = { region: '区域', price: '价格', time: '发布时间' };
+  var def = defaultLabels[filterName];
+  trigger.childNodes[0].nodeValue = (label === 'all' || label === '') ? def + ' ' : label + ' ';
+}
+
+function buildIdleOptionPanel(filterName, optionClass, currentValue, defaultValue, filterKey, defaultValueLabel) {
+  var panel = document.getElementById('idleFilterPanel-' + filterKey.replace('idle-', ''));
+  var options = [];
+  if (filterKey === 'idle-price') {
+    options = [{ value: 'all', label: '不限' }, { value: 'asc', label: '价格升序' }, { value: 'desc', label: '价格降序' }];
+  } else if (filterKey === 'idle-time') {
+    options = [{ value: 'all', label: '不限' }, { value: 'new', label: '最新发布' }, { value: 'old', label: '最早发布' }];
+  }
+  var html = '';
+  options.forEach(function(opt) {
+    var sel = currentValue === opt.value ? ' selected' : '';
+    html += '<div class="' + optionClass + sel + '" data-value="' + opt.value + '" onclick="selectIdleFilter(\'' + filterKey + '\',\'' + opt.value + '\',\'' + opt.label + '\')">' + opt.label + '</div>';
+  });
+  panel.innerHTML = html;
+}
+
+function renderIdleRegionColumns() {
+  var provinces = ['湖南省'];
+  var cities = { '湖南省': ['长沙市', '株洲市', '湘潭市'] };
+  var districts = {
+    '长沙市': ['不限', '岳麓区', '开福区', '芙蓉区', '望城区', '全市'],
+    '株洲市': ['不限', '芦淞区', '天元区', '石峰区', '荷塘区', '全市'],
+    '湘潭市': ['不限', '雨湖区', '岳塘区', '湘乡市', '韶山市', '全市']
+  };
+  var provCol = document.getElementById('idlePoiProvince');
+  var cityCol = document.getElementById('idlePoiCity');
+  var distCol = document.getElementById('idlePoiDistrict');
+
+  provCol.innerHTML = provinces.map(function(p) {
+    var sel = p === idleRegionPickWorking.province ? ' selected' : '';
+    return '<div class="idle-poi-item' + sel + '" onclick="selectIdleProvince(\'' + p + '\')">' + p + '</div>';
+  }).join('');
+
+  if (idleRegionPickWorking.province) {
+    var cityList = cities[idleRegionPickWorking.province] || [];
+    cityCol.innerHTML = cityList.map(function(c) {
+      var sel = c === idleRegionPickWorking.city ? ' selected' : '';
+      return '<div class="idle-poi-item' + sel + '" onclick="selectIdleCity(\'' + c + '\')">' + c + '</div>';
+    }).join('');
+  } else {
+    cityCol.innerHTML = '';
+  }
+
+  if (idleRegionPickWorking.city) {
+    var distList = districts[idleRegionPickWorking.city] || [];
+    distCol.innerHTML = distList.map(function(d) {
+      var sel = d === idleRegionPickWorking.district ? ' selected' : '';
+      return '<div class="idle-poi-item' + sel + '" onclick="selectIdleDistrict(\'' + d + '\')">' + d + '</div>';
+    }).join('');
+  } else {
+    distCol.innerHTML = '';
+  }
+}
+
+function selectIdleProvince(province) {
+  idleRegionPickWorking = { province: province, city: '', district: '' };
+  renderIdleRegionColumns();
+}
+function selectIdleCity(city) {
+  idleRegionPickWorking = { province: idleRegionPickWorking.province, city: city, district: '' };
+  renderIdleRegionColumns();
+}
+function selectIdleDistrict(district) {
+  idleRegionPickWorking = { province: idleRegionPickWorking.province, city: idleRegionPickWorking.city, district: district };
+  renderIdleRegionColumns();
+}
+function confirmIdleRegion() {
+  idleRegionPick = JSON.parse(JSON.stringify(idleRegionPickWorking));
+  if (idleRegionPick.city) {
+    if (idleRegionPick.district && idleRegionPick.district !== '不限') {
+      idleFilters.region = idleRegionPick.city + ' · ' + idleRegionPick.district;
+      updateIdleTriggerLabel('region', idleRegionPick.city + ' · ' + idleRegionPick.district);
+    } else {
+      idleFilters.region = idleRegionPick.city;
+      updateIdleTriggerLabel('region', idleRegionPick.city);
+    }
+  }
+  closeAllIdleDropdowns();
+  renderIdleCards();
+}
+function resetIdleRegion() {
+  idleRegionPickWorking = { province: '', city: '', district: '' };
+  renderIdleRegionColumns();
+  idleFilters.region = 'all';
+  updateIdleTriggerLabel('region', 'all');
+  closeAllIdleDropdowns();
+  renderIdleCards();
+}
+
+// ============ Idle Detail ============
+function openIdleDetail(id) {
+  var item = idleData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  previousTab = 'idle';
+  renderIdleDetailPage(item);
+  switchTab('idle-detail');
+}
+
+function renderIdleDetailPage(item) {
+  var descMap = {
+    'equip': '该餐饮设备成色良好，功能正常，适合后厨使用。因店面升级/搬迁原因转让，有需要的老板可以联系看实物，支持现场验货。',
+    'material': '全新或几乎全新的餐饮耗材，因库存积压/店铺转行低价处理。价格实惠，量大可议，适合食堂档口批量采购。',
+    'resource': '经营资源转让，含完整技术方案/配方/培训，已验证可行。适合想拓展品类的餐饮创业者，提供一对一指导。',
+    'other': '个人闲置物品，使用正常无暗病。因不再需要低价转让，先到先得，诚意购买可小刀议价。'
+  };
+  var desc = descMap[item.cat] || '个人闲置物品，使用正常，因不再需要低价转让，欢迎联系看货面议。';
+  var idleStyle = idleImgStyle(item.img, item.id);
+  var idleIcon = idleImgIcon(item.id);
+
+  var html = `
+    <div style="border-radius:16px;overflow:hidden;margin-bottom:24px;height:400px;display:flex;align-items:center;justify-content:center;font-size:100px;${idleStyle}">${idleIcon}</div>
+    <div style="font-size:40px;font-weight:700;color:var(--danger);margin-bottom:16px">¥${item.price}</div>
+    <h3 style="font-size:var(--fs-title);margin-bottom:12px;line-height:1.5">${item.title}</h3>
+    <div class="card-tags" style="margin-bottom:20px">
+      <span class="tag tag-orange">${item.catLabel}</span>
+      <span class="tag tag-green">${item.condition}</span>
+      <span class="tag tag-blue">${item.used}</span>
+    </div>
+    <div class="detail-field"><div class="field-label">商品描述</div><div class="field-value" style="line-height:1.8">${desc}</div></div>
+    <div class="detail-field"><div class="field-label">所在地区</div><div class="field-value">${locIcon} ${item.location}</div></div>
+    <div class="detail-field"><div class="field-label">发布时间</div><div class="field-value">${item.time}</div></div>
+    <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
+      <div class="field-label">联系卖家</div>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">138****6789</div>
+      <button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>
+    </div>
+    <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="toggleIdleLike(this)">♡ 点赞</span>
+      <span id="idleDetailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleIdleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
+    </div>`;
+
+  document.getElementById('idleDetailBody').innerHTML = html;
+}
+
+// ============ News Page ============
+function switchNewsCat(el, cat) {
+  currentNewsCat = cat;
+  document.querySelectorAll('#newsCats .cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderNewsCards();
+}
+
+function renderNewsCards() {
+  let data = newsData;
+  if (currentNewsCat !== 'all') data = data.filter(d => d.cat === currentNewsCat);
+
+  let html = '';
+  data.forEach(item => {
+    html += `
+    <div class="news-card" onclick="showToast('查看资讯详情: ${item.title}')">
+      <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':'💡'}</div>
+      <div class="news-info">
+        <div class="news-title">${item.title}</div>
+        <div class="news-desc">${item.desc}</div>
+        <div class="news-meta">
+          <span>👁 ${item.views}次阅读</span>
+          <span>${item.time}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('newsCards').innerHTML = html;
+}
+
+// ============ Detail View ============
+function openDetail(id) {
+  var item = mockData.find(function(d) { return d.id === id; });
+  if (!item) return;
+
+  previousTab = currentTab;
+  renderDetailPage(item);
+  switchTab('detail');
+}
+
+function renderDetailPage(item) {
+  var imagesHtml = item.images.length ? `
+    <div class="detail-img-grid">
+      ${item.images.map(function(img,i){ return '<div class="detail-img-item" style="' + cardImgStyle(img, i) + ';height:200px;border-radius:8px;font-size:40px">' + imgContent(i) + '</div>'; }).join('')}
+    </div>` : '<p style="color:var(--text-muted);font-size:var(--fs-body-sm)">暂无图片</p>';
+
+  var html = `
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+      <div class="user-avatar" style="width:80px;height:80px;font-size:32px">${item.avatar}</div>
+      <div>
+        <div style="font-weight:600;font-size:var(--fs-section)">${item.username}</div>
+        <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.time} · ${item.catLabel}</div>
+      </div>
+      ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a">置顶</span>' : ''}
+    </div>
+    <h3 style="font-size:var(--fs-title-lg);margin-bottom:20px;line-height:1.5">${item.title}</h3>
+    <p style="color:var(--text-secondary);font-size:var(--fs-body);line-height:1.8;margin-bottom:24px">${item.desc}</p>
+    <div class="card-tags">${item.tags.map(function(t){ return '<span class="tag tag-blue">'+t+'</span>'; }).join('')}</div>
+    <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">${locIcon} ${item.location}</div></div>
+    ${imagesHtml}
+    <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
+      <div class="field-label">联系电话</div>
+      <div class="field-value" style="font-size:32px;letter-spacing:2px">${item.phone}</div>
+      <button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>
+    </div>
+    <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
+      <span id="detailLikeBtn" class="${item.userLiked ? 'liked' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userLiked ? 'color:#ef4444;font-weight:600;' : ''}" onclick="toggleDetailLike(${item.id})">${item.userLiked ? '❤' : '♡'} 点赞 ${item.likes}</span>
+      <span id="detailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
+      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
+    </div>`;
+
+  document.getElementById('detailPageBody').innerHTML = html;
+}
+
+function closeDetail() {
+  // Legacy — kept for other overlays (myposts, feedback)
+  document.getElementById('detailOverlay').classList.remove('show');
+}
+
+// ============ Phone Unlock ============
+function unlockBtnToDial(el) {
+  el.textContent = '📞 一键拨号';
+  el.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+  el.style.color = '#fff';
+  el.onclick = function() { showToast('正在拨打 13912345678…'); };
+}
+
+function handleUnlockPhone(id, el) {
+  showToast('支付 ¥2.00 即可查看完整手机号\n（模拟：13912345678）');
+  if (el) {
+    el.querySelector('.phone-num').textContent = '13912345678';
+    var btn = el.querySelector('.unlock-btn');
+    btn.textContent = '📞 一键拨号';
+    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    btn.style.color = '#fff';
+    btn.onclick = function(e) { e.stopPropagation(); showToast('正在拨打 13912345678…'); };
+  }
+}
+
+function handleIdleDetailUnlock(el) {
+  var parent = el.parentElement;
+  parent.querySelector('.field-value').textContent = '13912345678';
+  unlockBtnToDial(el);
+  showToast('解锁成功！完整号码：13912345678');
+}
+
+function handleDetailUnlock(el) {
+  var parent = el.parentElement;
+  parent.querySelector('.field-value').textContent = '13912345678';
+  unlockBtnToDial(el);
+  showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+}
+
+// ============ Publish ============
+// Category panel
+function openPubCategoryPanel() {
+  closePubPanels();
+  document.getElementById('pubOverlay').classList.add('show');
+  document.getElementById('pubCategoryPanel').classList.add('show');
+  var trig = document.getElementById('pubCategoryTrigger');
+  trig.querySelector('.arrow').classList.add('up');
+}
+
+function selectPubCategory(el, val) {
+  var text = el.textContent.trim();
+  document.getElementById('pubCategory').value = val;
+  document.getElementById('pubCategoryText').textContent = text;
+  if (val) {
+    document.getElementById('pubCategoryText').classList.remove('placeholder');
+  } else {
+    document.getElementById('pubCategoryText').classList.add('placeholder');
+  }
+  // Update selection highlight
+  document.querySelectorAll('#pubCategoryPanel .option-item').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  closePubPanels();
+  // Trigger sub-category logic
+  onPubCatChange(val);
+}
+
+// Region panel for publish
+let pubRegionPick = { province: '湖南', city: '', district: '' };
+let pubRegionPickWorking = { province: '湖南', city: '', district: '' };
+
+function openPubRegionPanel() {
+  closePubPanels();
+  document.getElementById('pubOverlay').classList.add('show');
+  document.getElementById('pubRegionPanel').classList.add('show');
+  var trig = document.getElementById('pubRegionTrigger');
+  trig.querySelector('.arrow').classList.add('up');
+  buildPubRegionPicker();
+}
+
+function buildPubRegionPicker() {
+  var container = document.getElementById('pubRegionColumns');
+  var current = document.getElementById('pubRegion1').value;
+  pubRegionPickWorking.province = '湖南省';
+  if (current) {
+    var parts = current.split(' · ');
+    pubRegionPickWorking.city = parts[0] || '';
+    pubRegionPickWorking.district = parts[1] || '';
+  }
+  var hnData = regionData['湖南省'];
+  var cities = Object.keys(hnData);
+  var districts = pubRegionPickWorking.city ? (hnData[pubRegionPickWorking.city] || []) : [];
+
+  var html = '<div class="region-col"><div class="region-col-title">城市</div>';
+  cities.forEach(function(c) {
+    var sel = pubRegionPickWorking.city === c ? ' selected' : '';
+    html += '<div class="region-option' + sel + '" onclick="selectPubCity(\'' + c + '\')">' + c + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="region-col"><div class="region-col-title">区县</div>';
+  if (districts.length) {
+    districts.forEach(function(d) {
+      var sel = pubRegionPickWorking.district === d ? ' selected' : '';
+      html += '<div class="region-option' + sel + '" onclick="selectPubDistrict(\'' + d + '\')">' + d + '</div>';
+    });
+  } else {
+    html += '<div class="region-option" style="color:var(--text-muted)">请先选择城市</div>';
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function selectPubCity(city) {
+  pubRegionPickWorking.city = city;
+  pubRegionPickWorking.district = '';
+  buildPubRegionPicker();
+}
+
+function selectPubDistrict(district) {
+  pubRegionPickWorking.district = district;
+  buildPubRegionPicker();
+}
+
+function resetPubRegion() {
+  pubRegionPickWorking.province = '湖南省';
+  pubRegionPickWorking.city = '';
+  pubRegionPickWorking.district = '';
+  buildPubRegionPicker();
+}
+
+function confirmPubRegion() {
+  var result = '';
+  if (pubRegionPickWorking.city) {
+    result = pubRegionPickWorking.city;
+    if (pubRegionPickWorking.district && pubRegionPickWorking.district !== '不限') {
+      result += ' · ' + pubRegionPickWorking.district;
+    }
+  }
+  document.getElementById('pubRegion1').value = result;
+  var textEl = document.getElementById('pubRegionText');
+  if (result) {
+    textEl.textContent = result;
+    textEl.classList.remove('placeholder');
+  } else {
+    textEl.textContent = '选择城市';
+    textEl.classList.add('placeholder');
+  }
+  closePubPanels();
+}
+
+// Pin grid selection
+function selectPubPin(el, val) {
+  document.querySelectorAll('.pub-pin-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('pubPin').value = val;
+}
+
+// Close all publish popups
+function closePubPanels() {
+  document.getElementById('pubOverlay').classList.remove('show');
+  document.getElementById('pubCategoryPanel').classList.remove('show');
+  document.getElementById('pubRegionPanel').classList.remove('show');
+  document.querySelectorAll('#page-publish .form-trigger .arrow').forEach(function(a) { a.classList.remove('up'); });
+}
+
+// Sub-category logic (triggered after category selected)
+function onPubCatChange(val) {
+  var subWrap = document.getElementById('pubSubCatWrap');
+  var sub = document.getElementById('pubSubCat');
+  if (['canteen','transfer','recruit'].includes(val)) {
+    subWrap.style.display = 'block';
+    if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>本科食堂</option><option>专科食堂</option>';
+    else if (val === 'transfer') sub.innerHTML = '<option value="">请选择</option><option>档口整体转让</option><option>设备转让</option>';
+    else if (val === 'recruit') sub.innerHTML = '<option value="">请选择</option><option>管理岗位</option><option>技术岗位</option><option>服务岗位</option>';
+  } else {
+    subWrap.style.display = 'none';
+  }
+}
+
+function addPhoto() {
+  if (photoCount >= 9) { showToast('最多上传9张图片'); return; }
+  photoCount++;
+  const preview = document.getElementById('photoPreview');
+  const div = document.createElement('div');
+  div.style.cssText = 'width:160px;height:160px;border-radius:16px;background:linear-gradient(135deg,#dbeafe,#ede9fe);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;flex-shrink:0';
+  div.innerHTML = '📷<span style="position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer" onclick="removePhoto(this)">×</span>';
+  preview.appendChild(div);
+}
+
+function removePhoto(el) {
+  el.parentElement.remove();
+  photoCount--;
+}
+
+
+function updatePublishRemain() {
+  document.getElementById('pubRemain').textContent = Math.max(0, 1 - pubTodayCount);
+}
+
+function submitPublish() {
+  const cat = document.getElementById('pubCategory').value;
+  const title = document.getElementById('pubTitle').value;
+  const desc = document.getElementById('pubDesc').value;
+  const region = document.getElementById('pubRegion1').value;
+
+  if (!cat || !title || !desc || !region) {
+    showToast('请填写必填信息');
+    return;
+  }
+
+  if (pubTodayCount >= 1) {
+    showToast('今日免费发布额度已用完\n（模拟：支付¥2发布）');
+    pubTodayCount++;
+  } else {
+    pubTodayCount++;
+    showToast('提交成功！等待审核中...');
+  }
+  updatePublishRemain();
+
+  // Reset form
+  document.getElementById('pubCategory').value = '';
+  document.getElementById('pubCategoryText').textContent = '请选择分类';
+  document.getElementById('pubCategoryText').classList.add('placeholder');
+  document.getElementById('pubTitle').value = '';
+  document.getElementById('pubDesc').value = '';
+  document.getElementById('pubRegion1').value = '';
+  document.getElementById('pubRegionText').textContent = '选择城市';
+  document.getElementById('pubRegionText').classList.add('placeholder');
+  document.getElementById('pubSubCat').value = '';
+  document.getElementById('pubSubCatWrap').style.display = 'none';
+  // Reset pin to free
+  document.getElementById('pubPin').value = '';
+  document.querySelectorAll('.pub-pin-card').forEach(function(c) { c.classList.remove('selected'); });
+  document.querySelector('#pubPinGrid .pub-pin-card[data-pin=""]').classList.add('selected');
+  // Reset category panel selection
+  document.querySelectorAll('#pubCategoryPanel .option-item').forEach(function(o) { o.classList.remove('selected'); });
+  document.querySelector('#pubCategoryPanel .option-item[data-value=""]').classList.add('selected');
+  document.getElementById('photoPreview').innerHTML = '';
+  photoCount = 0;
+  document.getElementById('pubTags').value = '';
+
+  // Switch to home after 1s
+  setTimeout(() => switchTab('home'), 1000);
+}
+
+// ============ My Posts ============
+function showMyPosts() {
+  const html = `
+    <div class="detail-header">
+      <button class="close-btn" onclick="closeMyPosts()">✕</button>
+      <span class="title">我的发布</span>
+      <span style="width:48px"></span>
+    </div>
+    <div class="detail-body">
+      <div style="padding:16px 0">
+        <div class="info-card">
+          <span style="font-size:var(--fs-caption-sm);color:var(--warning);background:var(--warning-light);padding:4px 16px;border-radius:8px">审核中</span>
+          <div class="card-title" style="margin-top:16px">湖南大学食堂档口招商</div>
+          <div class="card-desc">刚刚提交，等待审核...</div>
+          <div style="font-size:var(--fs-caption);color:var(--text-muted);margin-top:8px">2026-07-07 10:25</div>
+        </div>
+        <div class="info-card">
+          <span style="font-size:var(--fs-caption-sm);color:var(--success);background:var(--success-light);padding:4px 16px;border-radius:8px">✓ 已上架</span>
+          <div class="card-title" style="margin-top:16px">招聘面点师傅</div>
+          <div class="card-desc">急招面点师傅2名...</div>
+          <div style="display:flex;gap:16px;margin-top:16px">
+            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('已刷新')">🔄 刷新</button>
+            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer;color:var(--danger)" onclick="showToast('已下架')">⬇ 下架</button>
+          </div>
+        </div>
+        <div class="info-card">
+          <span style="font-size:var(--fs-caption-sm);color:var(--danger);background:var(--danger-light);padding:4px 16px;border-radius:8px">审核驳回</span>
+          <div class="card-title" style="margin-top:16px">闲置冰柜转让</div>
+          <div class="card-desc" style="color:var(--danger)">驳回原因：图片模糊，请重新上传清晰图片</div>
+          <div style="display:flex;gap:16px;margin-top:16px">
+            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('进入编辑页面')">✏ 重新编辑</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('mypostsPanel').innerHTML = html;
+  document.getElementById('mypostsOverlay').classList.add('show');
+}
+
+function closeMyPosts() {
+  document.getElementById('mypostsOverlay').classList.remove('show');
+}
+
+// ============ Feedback ============
+function showFeedback() {
+  const html = `
+    <div class="detail-header">
+      <button class="close-btn" onclick="closeFeedback()">✕</button>
+      <span class="title">意见反馈</span>
+      <span style="width:48px"></span>
+    </div>
+    <div class="detail-body">
+      <div class="form-group">
+        <div class="form-label">反馈标题</div>
+        <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
+      </div>
+      <div class="form-group">
+        <div class="form-label">反馈内容</div>
+        <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="form-label">上传截图（选填）</div>
+        <div class="photo-upload">
+          <div class="upload-box" onclick="showToast('模拟上传图片')">
+            <span class="icon">📷</span><span>添加图片</span>
+          </div>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>
+    </div>`;
+  document.getElementById('feedbackPanel').innerHTML = html;
+  document.getElementById('feedbackOverlay').classList.add('show');
+}
+
+function closeFeedback() {
+  document.getElementById('feedbackOverlay').classList.remove('show');
+}
+
+function submitFeedback() {
+  showToast('感谢您的反馈！我们会尽快处理');
+  setTimeout(() => closeFeedback(), 800);
+}
+
+// ============ Interactions ============
+function toggleLike(el, id) {
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    var item = mockData.find(d=>d.id===id);
+    item.userLiked = false;
+    el.innerHTML = '♡ ' + item.likes;
+  } else {
+    el.classList.add('liked');
+    var item = mockData.find(d=>d.id===id);
+    item.userLiked = true;
+    el.innerHTML = '❤ ' + (item.likes + 1);
+  }
+}
+
+function toggleFav(el, id) {
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    var item = mockData.find(d=>d.id===id);
+    item.userFaved = false;
+    el.innerHTML = '☆ ' + item.favorites;
+    showToast('已取消收藏');
+  } else {
+    el.classList.add('favorited');
+    var item = mockData.find(d=>d.id===id);
+    item.userFaved = true;
+    el.innerHTML = '★ ' + (item.favorites + 1);
+    showToast('已收藏');
+  }
+}
+
+function toggleIdleLike(el) {
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    el.innerHTML = '♡ 点赞';
+    el.style.color = '';
+    el.style.fontWeight = '';
+    showToast('已取消点赞');
+  } else {
+    el.classList.add('liked');
+    el.innerHTML = '❤ 点赞';
+    el.style.color = '#ef4444';
+    el.style.fontWeight = '600';
+    showToast('已点赞');
+  }
+}
+
+function toggleIdleDetailFav(id) {
+  var el = document.getElementById('idleDetailFavBtn');
+  var item = idleData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    item.userFaved = false;
+    el.style.color = '';
+    el.style.fontWeight = '';
+    el.innerHTML = '☆ 收藏 ' + item.favorites;
+    showToast('已取消收藏');
+  } else {
+    el.classList.add('favorited');
+    item.userFaved = true;
+    el.style.color = '#f59e0b';
+    el.style.fontWeight = '600';
+    el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
+    showToast('已收藏');
+  }
+}
+
+// Detail page toggle
+function toggleDetailLike(id) {
+  var el = document.getElementById('detailLikeBtn');
+  var item = mockData.find(d=>d.id===id);
+  if (el.classList.contains('liked')) {
+    el.classList.remove('liked');
+    item.userLiked = false;
+    el.style.color = ''; el.style.fontWeight = '';
+    el.innerHTML = '♡ 点赞 ' + item.likes;
+    // Also update the card list
+    updateCardActions(id);
+  } else {
+    el.classList.add('liked');
+    item.userLiked = true;
+    el.style.color = '#ef4444'; el.style.fontWeight = '600';
+    el.innerHTML = '❤ 点赞 ' + (item.likes + 1);
+    updateCardActions(id);
+  }
+}
+
+function toggleDetailFav(id) {
+  var el = document.getElementById('detailFavBtn');
+  var item = mockData.find(d=>d.id===id);
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    item.userFaved = false;
+    el.style.color = ''; el.style.fontWeight = '';
+    el.innerHTML = '☆ 收藏 ' + item.favorites;
+    updateCardActions(id);
+  } else {
+    el.classList.add('favorited');
+    item.userFaved = true;
+    el.style.color = '#f59e0b'; el.style.fontWeight = '600';
+    el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
+    updateCardActions(id);
+  }
+}
+
+function updateCardActions(id) {
+  // Refresh the card list to sync state
+  renderCards();
+}
+
+// ============ CS Menu ============
+function toggleCsMenu() {
+  document.getElementById('csMenu').classList.toggle('hidden');
+}
+
+function scrollToTop() {
+  document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('csMenu').classList.add('hidden');
+}
+
+// ============ Toast ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.whiteSpace = 'pre-line';
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ============ SVG helpers ============
+function cardImgStyle(key, idx) {
+  const palettes = [
+    ['#f97316','#ea580c'], ['#10b981','#047857'], ['#3b82f6','#1d4ed8'],
+    ['#8b5cf6','#6d28d9'], ['#f59e0b','#d97706'], ['#ef4444','#dc2626']
+  ];
+  const labels = ['食堂','档口','后厨','设备','餐厅','校园'];
+  const [c1, c2] = palettes[(idx || 0) % palettes.length];
+  const lb = labels[(idx || 0) % labels.length];
+  return `background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:600`;
+}
+function imgContent(idx) {
+  const icons = ['🍜','🍚','🍳','🍖','🍲','🥘'];
+  return icons[(idx || 0) % icons.length];
+}
+
+function idleImgStyle(key, idx) {
+  const map = {
+    equip1: ['#0ea5e9','#0284c7'], equip2: ['#f97316','#ea580c'], equip3: ['#8b5cf6','#6d28d9'],
+    material1: ['#10b981','#047857'], material2: ['#ef4444','#dc2626'], resource1: ['#6366f1','#4338ca'],
+  };
+  const [c1, c2] = map[key] || ['#6b7280', '#4b5563'];
+  return `background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px`;
+}
+function idleImgIcon(idx) {
+  const icons = ['🔧','🍳','💻','📦','🥢','📋'];
+  return icons[(idx || 0) % icons.length];
+}
+
+// ============ Banner Carousel ============
+var bannerIdx = 0;
+var bannerTotal = 3;
+var bannerTimer = null;
+
+function goBanner(idx) {
+  bannerIdx = idx;
+  document.getElementById('bannerSlides').style.transform = 'translateX(-' + (idx * 100) + '%)';
+  document.querySelectorAll('.banner-dot').forEach(function(d, i) {
+    d.classList.toggle('active', i === idx);
+  });
+}
+
+function bannerAutoPlay() {
+  bannerIdx = (bannerIdx + 1) % bannerTotal;
+  goBanner(bannerIdx);
+}
+
+function startBanner() {
+  stopBanner();
+  bannerTimer = setInterval(bannerAutoPlay, 2000);
+}
+
+function stopBanner() {
+  if (bannerTimer) { clearInterval(bannerTimer); bannerTimer = null; }
+}
+
+// Pause on hover (mobile: no hover, but good practice)
+document.getElementById('homeBanner').addEventListener('mouseenter', stopBanner);
+document.getElementById('homeBanner').addEventListener('mouseleave', startBanner);
+
+startBanner();
+
+// ============ Init ============
+renderHomeCards();
+renderIdleCards();
+renderNewsCards();
+
+// ============ Search Page ============
+var hotSearchData = [
+  { rank:1, keyword:'湖南大学档口转让', badge:'热', badgeClass:'hot-badge-hot' },
+  { rank:2, keyword:'高校食堂招租长沙', badge:'热', badgeClass:'hot-badge-hot' },
+  { rank:3, keyword:'炸炉设备二手转让', badge:'新', badgeClass:'hot-badge-new' },
+  { rank:4, keyword:'面点师傅招聘', badge:'', badgeClass:'' },
+  { rank:5, keyword:'大学城旺铺出租', badge:'升', badgeClass:'hot-badge-rising' },
+  { rank:6, keyword:'食堂档口纯租金', badge:'', badgeClass:'' },
+  { rank:7, keyword:'品牌加盟快餐', badge:'新', badgeClass:'hot-badge-new' },
+  { rank:8, keyword:'中南大学商业街', badge:'', badgeClass:'' },
+  { rank:9, keyword:'餐饮收银机转让', badge:'', badgeClass:'' },
+  { rank:10, keyword:'医院食堂招租', badge:'', badgeClass:'' },
+];
+
+var searchHistory = JSON.parse(localStorage.getItem('whs_search_history') || '[]');
+
+function openSearch() {
+  previousTab = currentTab;
+  currentTab = 'search';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-search').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var homeTab = document.querySelector('.tab-item[data-page="home"]');
+  if (homeTab) homeTab.classList.add('active');
+  document.getElementById('navTitle').textContent = '搜索';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('pageContainer').scrollTop = 0;
+  initSearchPage();
+  // Focus input
+  setTimeout(function() { document.getElementById('searchInput').focus(); }, 100);
+}
+
+function closeSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+  switchTab('home');
+}
+
+function initSearchPage() {
+  searchSortBy = 'default';
+  allSearchResults = null;
+  renderHotSearch();
+  renderHistory();
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+}
+
+function renderHotSearch() {
+  var html = '';
+  hotSearchData.forEach(function(item) {
+    var rankClass = item.rank <= 3 ? ' top' + item.rank : '';
+    var badgeHtml = item.badge ? '<span class="hot-badge ' + item.badgeClass + '">' + item.badge + '</span>' : '';
+    html += '<div class="hot-search-item" onclick="clickHotSearch(\'' + item.keyword + '\')">' +
+      '<span class="rank' + rankClass + '">' + item.rank + '</span>' +
+      '<span class="keyword">' + item.keyword + '</span>' +
+      badgeHtml +
+      '</div>';
+  });
+  document.getElementById('hotSearchList').innerHTML = html;
+}
+
+function renderHistory() {
+  if (searchHistory.length === 0) {
+    document.getElementById('historySection').style.display = 'none';
+  } else {
+    document.getElementById('historySection').style.display = 'block';
+    var html = '';
+    searchHistory.forEach(function(kw) {
+      html += '<span class="history-tag" onclick="clickHistory(\'' + kw + '\')">' + kw + '</span>';
+    });
+    document.getElementById('historyTags').innerHTML = html;
+  }
+}
+
+function clickHotSearch(keyword) {
+  document.getElementById('searchInput').value = keyword;
+  document.getElementById('clearSearchBtn').classList.add('show');
+  document.getElementById('searchInput').focus();
+}
+
+function clickHistory(keyword) {
+  document.getElementById('searchInput').value = keyword;
+  document.getElementById('clearSearchBtn').classList.add('show');
+  document.getElementById('searchInput').focus();
+}
+
+function clearHistory() {
+  searchHistory = [];
+  localStorage.setItem('whs_search_history', '[]');
+  renderHistory();
+  showToast('搜索历史已清空');
+}
+
+function addToHistory(keyword) {
+  searchHistory = searchHistory.filter(function(k) { return k !== keyword; });
+  searchHistory.unshift(keyword);
+  if (searchHistory.length > 10) searchHistory.pop();
+  localStorage.setItem('whs_search_history', JSON.stringify(searchHistory));
+  renderHistory();
+}
+
+function onSearchInput() {
+  var val = document.getElementById('searchInput').value;
+  if (val) {
+    document.getElementById('clearSearchBtn').classList.add('show');
+  } else {
+    document.getElementById('clearSearchBtn').classList.remove('show');
+  }
+}
+
+function onSearchFocus() {
+  document.getElementById('searchInputWrap').classList.add('focused');
+}
+
+function onSearchBlur() {
+  document.getElementById('searchInputWrap').classList.remove('focused');
+}
+
+function clearSearchInput() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchContent').style.display = 'block';
+  document.getElementById('searchInput').focus();
+}
+
+var searchSortBy = 'default'; // 'default' | 'likes' | 'views' | 'time'
+var allSearchResults = null; // { results, idleResults, newsResults, keyword }
+
+function parseTimeScore(timeStr) {
+  // Parse time strings into a numeric score (lower = newer)
+  if (!timeStr) return 999999;
+  var h = timeStr.match(/(\d+)\s*小时前/);
+  if (h) return parseInt(h[1]);
+  var d = timeStr.match(/(\d+)\s*天前/);
+  if (d) return parseInt(d[1]) * 24;
+  var dt = timeStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (dt) {
+    var refDate = new Date(2026, 6, 7); // today
+    var d2 = new Date(parseInt(dt[1]), parseInt(dt[2]) - 1, parseInt(dt[3]));
+    return Math.floor((refDate - d2) / (1000 * 60 * 60));
+  }
+  return 999999;
+}
+
+function doSearch() {
+  var keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) {
+    showToast('请输入搜索关键词');
+    return;
+  }
+  addToHistory(keyword);
+  searchSortBy = 'default';
+  renderSearchResults(keyword);
+}
+
+function doRealtimeSearch(keyword) {
+  if (!keyword.trim()) {
+    document.getElementById('searchResults').style.display = 'none';
+    document.getElementById('searchContent').style.display = 'block';
+    return;
+  }
+  searchSortBy = 'default';
+  renderSearchResults(keyword);
+}
+
+function changeSearchSort(sortBy) {
+  if (searchSortBy === sortBy) return;
+  searchSortBy = sortBy;
+  if (allSearchResults) {
+    renderSortedResults();
+  }
+}
+
+function renderSortedResults() {
+  if (!allSearchResults) return;
+  var data = allSearchResults;
+  var results = data.results.slice();
+  var idleResults = data.idleResults.slice();
+  var newsResults = data.newsResults.slice();
+
+  var sortFn;
+  if (searchSortBy === 'likes') {
+    // Sort by likes desc, fallback to views
+    sortFn = function(a, b) { return (b.likes || 0) - (a.likes || 0); };
+    results.sort(sortFn);
+    newsResults.sort(function(a, b) { return (b.views || 0) - (a.views || 0); });
+    idleResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  } else if (searchSortBy === 'views') {
+    sortFn = function(a, b) { return (b.views || 0) - (a.views || 0); };
+    results.sort(sortFn);
+    newsResults.sort(function(a, b) { return (b.views || 0) - (a.views || 0); });
+    idleResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  } else if (searchSortBy === 'time') {
+    // Newest first (lower score = newer)
+    var timeSort = function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); };
+    results.sort(timeSort);
+    idleResults.sort(timeSort);
+    newsResults.sort(function(a, b) { return parseTimeScore(a.time) - parseTimeScore(b.time); });
+  }
+  // default: no re-sort, keep original relevance order
+
+  outputResultsHTML(data.keyword, results, idleResults, newsResults);
+}
+
+function renderSearchResults(keyword) {
+  document.getElementById('searchContent').style.display = 'none';
+  var kw = (keyword || '').toLowerCase();
+  // Search in all data
+  var results = mockData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.desc.toLowerCase().indexOf(kw) !== -1 ||
+      d.catLabel.toLowerCase().indexOf(kw) !== -1 ||
+      d.location.toLowerCase().indexOf(kw) !== -1 ||
+      d.tags.some(function(t) { return t.toLowerCase().indexOf(kw) !== -1; });
+  });
+
+  var idleResults = idleData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.catLabel.toLowerCase().indexOf(kw) !== -1 ||
+      d.location.toLowerCase().indexOf(kw) !== -1;
+  });
+
+  var newsResults = newsData.filter(function(d) {
+    return d.title.toLowerCase().indexOf(kw) !== -1 ||
+      d.desc.toLowerCase().indexOf(kw) !== -1;
+  });
+
+  allSearchResults = { results: results, idleResults: idleResults, newsResults: newsResults, keyword: keyword };
+  outputResultsHTML(keyword, results, idleResults, newsResults);
+}
+
+function outputResultsHTML(keyword, results, idleResults, newsResults) {
+  var totalCount = results.length + idleResults.length + newsResults.length;
+
+  var html = '';
+  // Filter Bar
+  html += '<div class="search-filter-bar">';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'default' ? ' active' : '') + '" onclick="changeSearchSort(\'default\')">综合</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'likes' ? ' active' : '') + '" onclick="changeSearchSort(\'likes\')">点赞</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'views' ? ' active' : '') + '" onclick="changeSearchSort(\'views\')">浏览量</button>';
+  html += '<button class="search-filter-btn' + (searchSortBy === 'time' ? ' active' : '') + '" onclick="changeSearchSort(\'time\')">最新</button>';
+  html += '</div>';
+
+  if (totalCount === 0) {
+    html += '<div class="no-result"><div class="icon">🔍</div><div class="text">没有找到「' + keyword + '」相关信息</div><div class="sub">换个关键词试试</div></div>';
+  } else {
+    results.forEach(function(item) {
+      html += renderInfoCard(item, item.id);
+    });
+    if (idleResults.length > 0) {
+      html += '<div class="section-title" style="padding-top:32px">📦 闲置物品</div>';
+      idleResults.forEach(function(item, idx) {
+        var istyle = idleImgStyle(item.img, idx);
+        var iicon = idleImgIcon(idx);
+        html += '<div class="idle-card" onclick="openIdleDetail(' + item.id + ')">' +
+          '<div class="idle-img" style="' + istyle + '">' + iicon + '</div>' +
+          '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
+          '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
+          '<div><div class="idle-price">¥' + item.price + '</div>' +
+          '<div class="idle-location">' + locIcon + ' ' + item.location + ' · ' + item.time + '</div></div></div></div>';
+      });
+    }
+    if (newsResults.length > 0) {
+      html += '<div class="section-title" style="padding-top:32px">📰 行业资讯</div>';
+      newsResults.forEach(function(item) {
+        html += '<div class="news-card" onclick="showToast(\'查看资讯详情: ' + item.title + '\')">' +
+          '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : '💡') + '</div>' +
+          '<div class="news-info"><div class="news-title">' + item.title + '</div>' +
+          '<div class="news-desc">' + item.desc + '</div>' +
+          '<div class="news-meta"><span>👁 ' + item.views + '次阅读</span><span>' + item.time + '</span></div></div></div>';
+      });
+    }
+  }
+
+  document.getElementById('searchResults').innerHTML = html;
+  document.getElementById('searchResults').style.display = 'block';
+}
+
+// Close CS menu on scroll + toggle back-to-top
+document.getElementById('pageContainer').addEventListener('scroll', function() {
+  document.getElementById('csMenu').classList.add('hidden');
+  var scrollTop = document.getElementById('pageContainer').scrollTop;
+  var btn = document.getElementById('backToTop');
+  if (scrollTop > 800) {
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+});
+
+// Close detail on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeDetail();
+    closeMyPosts();
+    closeFeedback();
+  }
+});
+</script>
+</body>
+</html>
