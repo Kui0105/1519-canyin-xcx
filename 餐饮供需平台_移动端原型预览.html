@@ -860,6 +860,35 @@ body {
 #page-feedback .feedback-form { padding: 32px; }
 #page-feedback .fb-form-group { margin-bottom: 28px; }
 
+/* Settings Page */
+#page-settings { background: var(--bg); padding: 24px 0; }
+.settings-avatar-row { display: flex; align-items: center; margin: 0 32px; padding: 32px 28px; background: #fff; border-radius: 16px; cursor: pointer; gap: 24px; }
+.settings-avatar-row:active { background: #f9fafb; }
+.settings-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); display: flex; align-items: center; justify-content: center; font-size: 52px; flex-shrink: 0; }
+.settings-avatar-text { flex: 1; min-width: 0; }
+.settings-avatar-label { font-size: var(--fs-body); font-weight: 600; color: var(--text); }
+.settings-avatar-hint { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
+.settings-list { background: #fff; border-radius: 16px; margin: 24px 32px 0; overflow: hidden; }
+.settings-item { display: flex; align-items: center; padding: 28px 28px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+.settings-item:last-child { border-bottom: none; }
+.settings-item:active { background: #f9fafb; }
+.settings-item-label { font-size: var(--fs-body); color: var(--text); flex-shrink: 0; }
+.settings-item-val { flex: 1; text-align: right; font-size: var(--fs-body); color: var(--text-muted); margin-right: 12px; }
+.settings-arrow { font-size: 36px; color: var(--text-muted); flex-shrink: 0; }
+.settings-logout-wrap { position: absolute; bottom: 48px; left: 0; right: 0; padding: 0 32px; }
+.settings-logout-btn { width: 100%; height: 88px; border-radius: 16px; border: none; background: #fff; color: var(--danger); font-size: var(--fs-body); font-weight: 600; cursor: pointer; }
+.settings-logout-btn:active { background: #fef2f2; }
+
+/* Login Page */
+#page-login { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 48px; }
+.login-logo { font-size: 80px; margin-bottom: 32px; }
+.login-title { font-size: 40px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.login-subtitle { font-size: var(--fs-body); color: var(--text-muted); margin-bottom: 64px; text-align: center; }
+.login-btn { width: 100%; height: 96px; border-radius: 16px; border: none; background: var(--primary); color: #fff; font-size: var(--fs-section); font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+.login-btn:active { background: var(--primary-dark); }
+.login-btn.wechat { background: #07c160; }
+.login-btn.wechat:active { background: #06ad56; }
+
 /* Tab Badge */
 .tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
 .tab-badge.show { display: flex; }
@@ -886,9 +915,9 @@ body {
 .floating-btn:active { transform: scale(0.92); }
 
 /* CS Popup Overlay */
-.cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.cs-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
 .cs-overlay.show { display: flex; }
-.cs-popup { width: 600px; max-width: 90vw; max-height: 70vh; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
+.cs-popup { width: 600px; max-height: 1100px; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
 @keyframes popupIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .cs-popup-header { display: flex; align-items: center; justify-content: space-between; padding: 32px 32px 20px; border-bottom: 1px solid #f3f4f6; }
 .cs-popup-title { font-size: 36px; font-weight: 700; color: var(--text); }
@@ -1690,6 +1719,11 @@ body {
           <span class="menu-text">在线客服</span>
           <span class="menu-arrow">›</span>
         </div>
+        <div class="menu-item" onclick="openSettings()">
+          <span class="menu-icon">⚙</span>
+          <span class="menu-text">个人设置</span>
+          <span class="menu-arrow">›</span>
+        </div>
       </div>
     </div>
 
@@ -1814,6 +1848,52 @@ body {
     <div class="page" id="page-feedback">
       <div class="feedback-form" id="feedbackForm"></div>
     </div>
+
+    <!-- ==================== 个人设置 ==================== -->
+    <div class="page" id="page-settings">
+      <div class="settings-avatar-row">
+        <div class="settings-avatar" id="settingsAvatar">👤</div>
+        <div class="settings-avatar-text">
+          <div class="settings-avatar-label">更换头像</div>
+          <div class="settings-avatar-hint">点击更换头像</div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="editNickname()">
+          <span class="settings-item-label">昵称</span>
+          <span class="settings-item-val" id="settingsNickname">餐饮创业者小王</span>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="changePhone()">
+          <span class="settings-item-label">绑定手机号</span>
+          <span class="settings-item-val" id="settingsPhone">138****5678</span>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+      <div class="settings-list" style="margin-top:24px">
+        <div class="settings-item" onclick="showToast('查看用户协议')">
+          <span class="settings-item-label">用户协议</span>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="showToast('查看隐私政策')">
+          <span class="settings-item-label">隐私政策</span>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+      <div class="settings-logout-wrap">
+        <button class="settings-logout-btn" onclick="showLogoutConfirm()">退出登录</button>
+      </div>
+    </div>
+
+    <!-- ==================== 登录页面 ==================== -->
+    <div class="page" id="page-login">
+      <div class="login-logo">🏪</div>
+      <div class="login-title">万铺优选</div>
+      <div class="login-subtitle">高校餐饮商业信息平台</div>
+      <button class="login-btn wechat" onclick="handleLogin('wechat')">微信一键登录</button>
+      <button class="login-btn" onclick="handleLogin('phone')">手机号登录</button>
+    </div>
   </div>
 
   <!-- Bottom Tab Bar -->
@@ -1866,8 +1946,6 @@ body {
   </div>
 </div>
 
-</div>
-
 <!-- Customer Service Popup -->
 <div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
   <div class="cs-popup">
@@ -1902,6 +1980,8 @@ body {
       </div>
     </div>
   </div>
+</div>
+
 </div>
 
 <script>
@@ -2017,9 +2097,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -2565,7 +2645,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback', 'settings'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -3801,6 +3881,34 @@ function renderFeedback() {
 function submitFeedback() {
   showToast('感谢您的反馈！我们会尽快处理');
   setTimeout(function() { goBack(); }, 800);
+}
+
+// ============ Settings ============
+function openSettings() {
+  switchTab('settings');
+}
+function editNickname() {
+  showToast('模拟打开昵称编辑');
+}
+function changePhone() {
+  showToast('模拟打开手机号更换');
+}
+function showLogoutConfirm() {
+  var confirmFn = function() {
+    closeConfirm();
+    switchTab('login');
+    showToast('已退出登录');
+  };
+  showConfirm('确定要退出登录吗？', confirmFn);
+}
+function handleLogin(type) {
+  if (type === 'wechat') {
+    showToast('模拟微信登录成功');
+    setTimeout(function() { switchTab('home'); }, 800);
+  } else {
+    showToast('模拟手机号登录成功');
+    setTimeout(function() { switchTab('home'); }, 800);
+  }
 }
 
 // ============ Interactions ============
