@@ -852,9 +852,7 @@ body {
 .oi-left .oi-meta { display: flex; align-items: center; gap: 10px; font-size: var(--fs-mini); color: var(--text-muted); }
 .oi-left .oi-meta .oi-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
 .oi-right { flex-shrink: 0; text-align: right; margin-left: 16px; display: flex; flex-direction: column; align-items: flex-end; }
-.oi-right .oi-amount { font-size: var(--fs-section); font-weight: 700; }
-.oi-right .oi-amount.income { color: #16a34a; }
-.oi-right .oi-amount.expense { color: #dc2626; }
+.oi-right .oi-amount { font-size: var(--fs-section); font-weight: 700; color: var(--text); }
 .oi-right .oi-method { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
 #page-orders .empty-state { padding: 100px 24px; }
 
@@ -2124,7 +2122,6 @@ function renderOrders() {
     html = '<div class="empty-state"><div class="icon">💳</div><div class="text">暂无交易记录</div></div>';
   } else {
     orderData.forEach(function(item) {
-      var cls = item.type === 'income' ? 'income' : 'expense';
       html +=
       '<div class="order-item">' +
         '<div class="oi-left">' +
@@ -2136,7 +2133,7 @@ function renderOrders() {
           '</div>' +
         '</div>' +
         '<div class="oi-right">' +
-          '<div class="oi-amount ' + cls + '">¥' + item.amount + '</div>' +
+          '<div class="oi-amount">¥' + item.amount + '</div>' +
           '<div class="oi-method">' + item.method + '</div>' +
         '</div>' +
       '</div>';
