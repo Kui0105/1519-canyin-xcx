@@ -856,6 +856,10 @@ body {
 .oi-right .oi-method { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
 #page-orders .empty-state { padding: 100px 24px; }
 
+/* Feedback Page */
+#page-feedback .feedback-form { padding: 32px; }
+#page-feedback .fb-form-group { margin-bottom: 28px; }
+
 /* Tab Badge */
 .tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
 .tab-badge.show { display: flex; }
@@ -1670,7 +1674,7 @@ body {
           <span class="menu-right">查看详情</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showFeedback()">
+        <div class="menu-item" onclick="openFeedback()">
           <span class="menu-icon">💬</span>
           <span class="menu-text">意见反馈</span>
           <span class="menu-arrow">›</span>
@@ -1799,6 +1803,11 @@ body {
     <div class="page" id="page-orders">
       <div class="order-list" id="orderList"></div>
     </div>
+
+    <!-- ==================== 意见反馈 ==================== -->
+    <div class="page" id="page-feedback">
+      <div class="feedback-form" id="feedbackForm"></div>
+    </div>
   </div>
 
   <!-- Bottom Tab Bar -->
@@ -1854,11 +1863,6 @@ body {
       <button class="confirm-btn primary" id="confirmOkBtn" onclick="">确认</button>
     </div>
   </div>
-</div>
-
-<!-- Feedback Overlay -->
-<div class="detail-overlay" id="feedbackOverlay" onclick="if(event.target===this)closeFeedback()">
-  <div class="detail-panel" id="feedbackPanel"></div>
 </div>
 
 <script>
@@ -1974,9 +1978,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -2000,6 +2004,7 @@ function switchTab(page) {
   if (page === 'favorites') renderFavorites();
   if (page === 'browsing-history') renderBrowsingHistory();
   if (page === 'orders') renderOrders();
+  if (page === 'feedback') renderFeedback();
 }
 
 var previousTab = 'home';
@@ -2521,7 +2526,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -3728,43 +3733,35 @@ function closeConfirm() {
 }
 
 // ============ Feedback ============
-function showFeedback() {
-  const html = `
-    <div class="detail-header">
-      <button class="close-btn" onclick="closeFeedback()">✕</button>
-      <span class="title">意见反馈</span>
-      <span style="width:48px"></span>
-    </div>
-    <div class="detail-body">
-      <div class="form-group">
-        <div class="form-label">反馈标题</div>
-        <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
-      </div>
-      <div class="form-group">
-        <div class="form-label">反馈内容</div>
-        <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
-      </div>
-      <div class="form-group">
-        <div class="form-label">上传截图（选填）</div>
-        <div class="photo-upload">
-          <div class="upload-box" onclick="showToast('模拟上传图片')">
-            <span class="icon">📷</span><span>添加图片</span>
-          </div>
-        </div>
-      </div>
-      <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>
-    </div>`;
-  document.getElementById('feedbackPanel').innerHTML = html;
-  document.getElementById('feedbackOverlay').classList.add('show');
+function openFeedback() {
+  switchTab('feedback');
 }
 
-function closeFeedback() {
-  document.getElementById('feedbackOverlay').classList.remove('show');
+function renderFeedback() {
+  var html = `
+    <div class="fb-form-group">
+      <div class="form-label">反馈标题</div>
+      <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
+    </div>
+    <div class="fb-form-group">
+      <div class="form-label">反馈内容</div>
+      <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
+    </div>
+    <div class="fb-form-group">
+      <div class="form-label">上传截图（选填）</div>
+      <div class="photo-upload">
+        <div class="upload-box" onclick="showToast('模拟上传图片')">
+          <span class="icon">📷</span><span>添加图片</span>
+        </div>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>`;
+  document.getElementById('feedbackForm').innerHTML = html;
 }
 
 function submitFeedback() {
   showToast('感谢您的反馈！我们会尽快处理');
-  setTimeout(() => closeFeedback(), 800);
+  setTimeout(function() { goBack(); }, 800);
 }
 
 // ============ Interactions ============
@@ -4461,7 +4458,6 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeDetail();
     closeMyPosts();
-    closeFeedback();
   }
 });
 </script>
