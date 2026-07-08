@@ -792,7 +792,7 @@ body {
 .payment-submit-btn:active { opacity: 0.85; }
 #page-payment { padding-bottom: 120px; }
 /* +++++ 积分抵扣区域 +++++ */
-.points-section { padding: 0 32px 24px; display: none; }
+.points-section { padding: 24px 32px 24px; display: none; }
 .points-section.show { display: block; }
 .points-card { background: #fff; border-radius: 16px; padding: 24px; border: 2px solid #fbbf24; }
 .points-card-header { display: flex; align-items: center; justify-content: space-between; }
@@ -805,9 +805,6 @@ body {
 .ps-toggle.on { background: #f59e0b; }
 .ps-toggle::after { content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
 .ps-toggle.on::after { left: 26px; }
-/* payment method section hidden when full points deduction */
-.payment-method-section.hidden { display: none; }
-
 /* My Posts Page */
 .mp-tabs { display: flex; gap: 0; padding: 0; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .mp-tabs::-webkit-scrollbar { display: none; }
@@ -2454,7 +2451,6 @@ function renderPaymentPage() {
   // Points deduction: only for unlock sources
   var isUnlock = paymentContext.source === 'unlock-idle' || paymentContext.source === 'unlock-detail';
   var pointsSection = document.getElementById('pointsSection');
-  var methodSection = document.getElementById('paymentMethodSection');
 
   if (isUnlock) {
     pointsSection.classList.add('show');
@@ -2478,7 +2474,6 @@ function renderPaymentPage() {
     usePoints = false;
     currentPointsToUse = 0;
     document.getElementById('pointsToggle').classList.remove('on');
-    methodSection.classList.remove('hidden');
   }
 
   updatePaymentButton();
@@ -2488,12 +2483,6 @@ function updatePointsDeductionDisplay() {
   var deductAmount = currentPointsToUse / pointsDeductRatio;
   var remaining = paymentContext.amount - deductAmount;
   if (remaining < 0) remaining = 0;
-
-  if (deductAmount >= paymentContext.amount) {
-    document.getElementById('paymentMethodSection').classList.add('hidden');
-  } else {
-    document.getElementById('paymentMethodSection').classList.remove('hidden');
-  }
 
   updatePaymentButton();
 }
@@ -2525,7 +2514,6 @@ function togglePointsDeduction() {
   } else {
     toggle.classList.remove('on');
     currentPointsToUse = 0;
-    document.getElementById('paymentMethodSection').classList.remove('hidden');
     updatePaymentButton();
   }
 }
