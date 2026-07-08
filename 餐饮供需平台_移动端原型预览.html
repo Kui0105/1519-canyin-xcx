@@ -886,9 +886,9 @@ body {
 .floating-btn:active { transform: scale(0.92); }
 
 /* CS Popup Overlay */
-.cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
-.cs-overlay.show { display: flex; }
-.cs-popup { width: 600px; max-height: 80vh; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
+.cs-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+.cs-overlay.show { display: flex; align-items: center; justify-content: center; }
+.cs-popup { width: 600px; max-height: 70%; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
 @keyframes popupIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .cs-popup-header { display: flex; align-items: center; justify-content: space-between; padding: 32px 32px 20px; border-bottom: 1px solid #f3f4f6; }
 .cs-popup-title { font-size: 36px; font-weight: 700; color: var(--text); }
@@ -1866,37 +1866,38 @@ body {
   </div>
 </div>
 
-<!-- Customer Service Popup -->
-<div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
-  <div class="cs-popup">
-    <div class="cs-popup-header">
-      <span class="cs-popup-title">联系客服</span>
-      <button class="cs-popup-close" onclick="closeCsPopup()">✕</button>
-    </div>
-    <div class="cs-popup-body">
-      <div class="cs-option" onclick="handleCsOption('phone')">
-        <div class="cs-option-icon">📞</div>
-        <div class="cs-option-info">
-          <div class="cs-option-title">客服电话</div>
-          <div class="cs-option-desc">400-XXX-XXXX</div>
-        </div>
-        <span class="cs-option-arrow">›</span>
+  <!-- Customer Service Popup -->
+  <div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
+    <div class="cs-popup">
+      <div class="cs-popup-header">
+        <span class="cs-popup-title">联系客服</span>
+        <button class="cs-popup-close" onclick="closeCsPopup()">✕</button>
       </div>
-      <div class="cs-option" onclick="handleCsOption('wechat')">
-        <div class="cs-option-icon">💚</div>
-        <div class="cs-option-info">
-          <div class="cs-option-title">客服微信</div>
-          <div class="cs-option-desc">微信号：wanyue_cs</div>
+      <div class="cs-popup-body">
+        <div class="cs-option" onclick="handleCsOption('phone')">
+          <div class="cs-option-icon">📞</div>
+          <div class="cs-option-info">
+            <div class="cs-option-title">客服电话</div>
+            <div class="cs-option-desc">400-XXX-XXXX</div>
+          </div>
+          <span class="cs-option-arrow">›</span>
         </div>
-        <span class="cs-option-arrow">›</span>
-      </div>
-      <div class="cs-option" onclick="handleCsOption('online')">
-        <div class="cs-option-icon">🎧</div>
-        <div class="cs-option-info">
-          <div class="cs-option-title">在线客服</div>
-          <div class="cs-option-desc">在线实时对话</div>
+        <div class="cs-option" onclick="handleCsOption('wechat')">
+          <div class="cs-option-icon">💚</div>
+          <div class="cs-option-info">
+            <div class="cs-option-title">客服微信</div>
+            <div class="cs-option-desc">微信号：wanyue_cs</div>
+          </div>
+          <span class="cs-option-arrow">›</span>
         </div>
-        <span class="cs-option-arrow">›</span>
+        <div class="cs-option" onclick="handleCsOption('online')">
+          <div class="cs-option-icon">🎧</div>
+          <div class="cs-option-info">
+            <div class="cs-option-title">在线客服</div>
+            <div class="cs-option-desc">在线实时对话</div>
+          </div>
+          <span class="cs-option-arrow">›</span>
+        </div>
       </div>
     </div>
   </div>
