@@ -773,6 +773,7 @@ body {
 .payment-amount-card { background: linear-gradient(135deg, #16a34a, #22c55e); padding: 40px 32px; color: #fff; text-align: center; }
 .payment-amount-card .payment-amount-label { font-size: var(--fs-caption); opacity: 0.85; margin-bottom: 12px; }
 .payment-amount-card .payment-amount-val { font-size: 64px; font-weight: 700; line-height: 1; }
+.payment-amount-card .payment-amount-reason { font-size: var(--fs-caption-sm); opacity: 0.75; margin-top: 8px; }
 .payment-method-section { padding: 24px 32px; }
 .payment-method-title { font-size: var(--fs-caption); color: var(--text-secondary); margin-bottom: 16px; font-weight: 500; }
 .payment-method-item { background: #fff; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--border); cursor: pointer; transition: all 0.2s; }
@@ -780,12 +781,16 @@ body {
 .pm-left { display: flex; align-items: center; gap: 16px; }
 .pm-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
 .pm-icon.wx { background: #dcfce7; }
+.pm-icon.balance { background: #fef3c7; }
+.pm-icon.combo { background: #ede9fe; }
+.payment-method-item + .payment-method-item { margin-top: 12px; }
 .pm-text .pm-name { font-size: var(--fs-body-sm); color: var(--text); font-weight: 600; }
 .pm-text .pm-desc { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 2px; }
 .pm-check { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
 .payment-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; padding: 16px 32px 24px; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 10; box-sizing: border-box; }
 .payment-submit-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; padding: 16px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 700; text-align: center; cursor: pointer; transition: all 0.2s; }
 .payment-submit-btn:active { opacity: 0.85; }
+#page-payment { padding-bottom: 120px; }
 
 /* My Posts Page */
 .mp-tabs { display: flex; gap: 0; padding: 0; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -1795,15 +1800,36 @@ body {
       <div class="payment-amount-card">
         <div class="payment-amount-label">支付金额</div>
         <div class="payment-amount-val" id="paymentAmountVal">¥0.00</div>
+        <div class="payment-amount-reason" id="paymentReason">—</div>
       </div>
       <div class="payment-method-section">
         <div class="payment-method-title">选择支付方式</div>
-        <div class="payment-method-item selected" id="paymentMethodWx">
+        <div class="payment-method-item selected" id="paymentMethodBalance" onclick="selectPaymentMethod('balance')">
+          <div class="pm-left">
+            <div class="pm-icon balance">💰</div>
+            <div class="pm-text">
+              <div class="pm-name">余额支付</div>
+              <div class="pm-desc">使用账户余额支付</div>
+            </div>
+          </div>
+          <div class="pm-check">✓</div>
+        </div>
+        <div class="payment-method-item" id="paymentMethodWx" onclick="selectPaymentMethod('wechat')">
           <div class="pm-left">
             <div class="pm-icon wx">💚</div>
             <div class="pm-text">
               <div class="pm-name">微信支付</div>
               <div class="pm-desc">推荐已安装微信的用户使用</div>
+            </div>
+          </div>
+          <div class="pm-check">✓</div>
+        </div>
+        <div class="payment-method-item" id="paymentMethodCombo" onclick="selectPaymentMethod('combo')">
+          <div class="pm-left">
+            <div class="pm-icon combo">🔄</div>
+            <div class="pm-text">
+              <div class="pm-name">组合支付</div>
+              <div class="pm-desc">余额 + 微信组合支付</div>
             </div>
           </div>
           <div class="pm-check">✓</div>
@@ -2094,6 +2120,8 @@ let idleRegionPickWorking = { province:'', city:'', district:'' };
 let catListFilters = { region:'all', category:'all', type:'all', sort:'newest' };
 let currentCatListCat = 'all';
 let pubTodayCount = 0; // simulated daily publish count
+let paymentContext = { amount:0, reason:'', source:'' }; // payment flow context
+let selectedPaymentMethod = 'balance'; // default payment method
 let photoCount = 0;
 
 // ============ Navigation ============
@@ -2368,25 +2396,76 @@ function updateRechargeBottom() {
 
 function confirmRecharge() {
   if (selectedRechargeAmount <= 0) { showToast('请选择充值金额'); return; }
+  paymentContext = { amount: selectedRechargeAmount, reason: '余额充值', source: 'recharge' };
   previousTab = currentTab;
   renderPaymentPage();
   switchTab('payment');
 }
 
 // ============ Payment Page ============
+function goToPayment(amount, reason, source) {
+  paymentContext = { amount: amount, reason: reason, source: source, el: paymentContext.el };
+  previousTab = currentTab;
+  renderPaymentPage();
+  switchTab('payment');
+}
+
 function renderPaymentPage() {
-  document.getElementById('paymentAmountVal').textContent = '¥' + selectedRechargeAmount.toFixed(2);
-  document.getElementById('paymentSubmitBtn').textContent = '确认支付 ¥' + selectedRechargeAmount.toFixed(2);
+  document.getElementById('paymentAmountVal').textContent = '¥' + paymentContext.amount.toFixed(2);
+  document.getElementById('paymentReason').textContent = paymentContext.reason;
+  document.getElementById('paymentSubmitBtn').textContent = '确认支付 ¥' + paymentContext.amount.toFixed(2);
+  // Reset method selection to default (balance)
+  selectedPaymentMethod = 'balance';
+  document.querySelectorAll('.payment-method-item').forEach(function(el) { el.classList.remove('selected'); });
+  document.getElementById('paymentMethodBalance').classList.add('selected');
+}
+
+function selectPaymentMethod(method) {
+  selectedPaymentMethod = method;
+  document.querySelectorAll('.payment-method-item').forEach(function(el) { el.classList.remove('selected'); });
+  var idMap = { balance: 'paymentMethodBalance', wechat: 'paymentMethodWx', combo: 'paymentMethodCombo' };
+  document.getElementById(idMap[method]).classList.add('selected');
 }
 
 function confirmPayment() {
-  showToast('支付成功！');
-  // Add recharge record to balanceData
-  balanceData[0].items.unshift({ type:'income', icon:'💳', reason:'充值余额', time:new Date().toISOString().slice(0,16).replace('T',' '), amount:'+' + selectedRechargeAmount.toFixed(2) });
-  setTimeout(function() {
-    switchTab('balance-detail');
-    renderBalanceDetail();
-  }, 1500);
+  var methodNames = { balance: '余额支付', wechat: '微信支付', combo: '组合支付' };
+  showToast('支付成功！使用' + methodNames[selectedPaymentMethod]);
+
+  if (paymentContext.source === 'recharge') {
+    balanceData[0].items.unshift({ type:'income', icon:'💳', reason:'充值余额', time:new Date().toISOString().slice(0,16).replace('T',' '), amount:'+' + paymentContext.amount.toFixed(2) });
+    setTimeout(function() {
+      switchTab('balance-detail');
+      renderBalanceDetail();
+    }, 1500);
+  } else if (paymentContext.source === 'publish-pin') {
+    // Paid for pin promotion, now submit the post
+    pubTodayCount++;
+    updatePublishRemain();
+    showToast('置顶推广已生效，帖子发布成功！');
+    resetPublishForm();
+    setTimeout(function() { switchTab('home'); }, 1500);
+  } else if (paymentContext.source === 'paid-post') {
+    showToast('付费发帖成功！');
+    setTimeout(function() { switchTab('home'); }, 1500);
+  } else if (paymentContext.source === 'unlock-idle') {
+    var el = paymentContext.el;
+    if (el) {
+      var parent = el.parentElement;
+      parent.querySelector('.field-value').textContent = '13912345678';
+      unlockBtnToDial(el);
+      showToast('解锁成功！完整号码：13912345678');
+    }
+    setTimeout(function() { goBack(); }, 1500);
+  } else if (paymentContext.source === 'unlock-detail') {
+    var el = paymentContext.el;
+    if (el) {
+      var parent = el.parentElement;
+      parent.querySelector('.field-value').textContent = '13912345678';
+      unlockBtnToDial(el);
+      showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+    }
+    setTimeout(function() { goBack(); }, 1500);
+  }
 }
 
 // ============ Notifications ============
@@ -3457,17 +3536,13 @@ function handleUnlockPhone(id, el) {
 }
 
 function handleIdleDetailUnlock(el) {
-  var parent = el.parentElement;
-  parent.querySelector('.field-value').textContent = '13912345678';
-  unlockBtnToDial(el);
-  showToast('解锁成功！完整号码：13912345678');
+  paymentContext.el = el;
+  goToPayment(1.00, '解锁查看完整号码', 'unlock-idle');
 }
 
 function handleDetailUnlock(el) {
-  var parent = el.parentElement;
-  parent.querySelector('.field-value').textContent = '13912345678';
-  unlockBtnToDial(el);
-  showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+  paymentContext.el = el;
+  goToPayment(2.00, '解锁查看完整号码', 'unlock-detail');
 }
 
 // ============ Publish ============
@@ -3663,13 +3738,31 @@ function submitPublish() {
     return;
   }
 
+  var pin = document.getElementById('pubPin').value;
+  var pinPrices = { '7': 9.9, '15': 18.8, '30': 29.9 };
+
   if (pubTodayCount >= 1) {
-    showToast('今日免费发布额度已用完\n（模拟：支付¥2发布）');
+    // No free quota — go to payment for paid posting
+    if (pin && pinPrices[pin]) {
+      goToPayment(pinPrices[pin] + 2.00, '付费发帖+置顶推广 ' + pin + '天', 'publish-pin');
+    } else {
+      goToPayment(2.00, '付费发帖', 'paid-post');
+    }
     pubTodayCount++;
-  } else {
-    pubTodayCount++;
-    showToast('提交成功！等待审核中...');
+    updatePublishRemain();
+    resetPublishForm();
+    return;
   }
+
+  // Has free quota — check if pin selected
+  if (pin && pinPrices[pin]) {
+    goToPayment(pinPrices[pin], '置顶推广 ' + pin + '天', 'publish-pin');
+    return;
+  }
+
+  // Free posting
+  pubTodayCount++;
+  showToast('提交成功！等待审核中...');
   updatePublishRemain();
 
   // Reset form
