@@ -166,7 +166,10 @@ body {
 /* City list page */
 .city-page-header {
   padding: 20px 32px; background: #fff; border-bottom: 2px solid var(--border);
-  display: flex; align-items: center; gap: 16px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.city-page-header .loc-row {
+  display: flex; align-items: center; justify-content: space-between;
 }
 .city-page-header .current-city {
   font-size: var(--fs-body); color: var(--text-muted);
@@ -174,8 +177,29 @@ body {
 .city-page-header .current-city b {
   color: var(--primary); margin-left: 4px;
 }
+.city-page-header .relocate-btn {
+  background: none; border: 1px solid var(--primary); color: var(--primary);
+  font-size: var(--fs-caption); padding: 8px 16px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+.city-page-header .relocate-btn:active { background: var(--primary); color: #fff; }
+.city-page-header .hot-section {
+  padding-top: 16px; border-top: 1px solid #f3f4f6; margin-top: 16px;
+}
+.city-page-header .hot-title {
+  font-size: var(--fs-caption); color: var(--text-muted); margin-bottom: 12px;
+}
+.city-page-header .hot-tags {
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.hot-tag {
+  padding: 10px 24px; background: #f3f4f6; border-radius: 8px;
+  font-size: var(--fs-caption); color: var(--text); cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.hot-tag:active { background: var(--primary); color: #fff; }
 .city-list-wrap {
-  display: flex; flex: 1; overflow: hidden;
+  flex: 1; overflow: hidden; position: relative;
 }
 .city-list-scroll {
   flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -183,7 +207,7 @@ body {
 .city-group { padding: 0 32px 24px; }
 .city-group .group-letter {
   font-size: var(--fs-section); font-weight: 700; color: var(--text);
-  padding: 24px 0 12px; position: sticky; top: 0; background: #fff; z-index: 2;
+  padding: 24px 0 12px; position: sticky; top: 0; z-index: 2;
 }
 .city-group .city-item {
   padding: 16px 0; font-size: var(--fs-body); color: var(--text);
@@ -192,17 +216,19 @@ body {
 .city-group .city-item:active { color: var(--primary); }
 .city-group .city-item.selected { color: var(--primary); font-weight: 600; }
 
-/* Letter index bar */
+/* Letter index bar - fixed on right */
 .letter-index {
+  position: fixed; right: 8px; top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 40px; padding: 8px 0; gap: 2px; flex-shrink: 0;
+  width: 36px; padding: 8px 0; gap: 1px; z-index: 10;
 }
 .letter-index .letter-dot {
-  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
   font-size: var(--fs-mini); color: var(--text-muted); cursor: pointer;
-  border-radius: 8px; transition: all 0.15s;
+  border-radius: 50%; transition: all 0.15s;
 }
-.letter-index .letter-dot:active { color: var(--primary); font-weight: 700; background: var(--primary-light); }
+.letter-index .letter-dot:active,
+.letter-index .letter-dot.active { color: #fff; font-weight: 700; background: var(--primary); }
 
 /* Category Tabs - horizontal scroll */
 .cat-scroll {
@@ -308,6 +334,15 @@ body {
 .detail-header .title { font-size: var(--fs-section); font-weight: 600; }
 .detail-body { padding: 32px; }
 #page-detail .detail-body { padding: 24px 32px 160px; }
+#page-idle-detail .detail-body { padding: 32px 32px 160px; }
+/* News detail */
+#page-news-detail .detail-body { padding: 0 0 32px; }
+.news-detail-header { padding: 32px 32px 24px; background: #fff; border-bottom: 2px solid var(--border); }
+.news-detail-header .nd-title { font-size: var(--fs-title-lg); font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 16px; }
+.news-detail-header .nd-meta { display: flex; align-items: center; gap: 24px; font-size: var(--fs-caption); color: var(--text-muted); }
+.news-detail-content { padding: 32px; }
+.news-detail-content p { font-size: var(--fs-body); color: var(--text); line-height: 1.9; margin-bottom: 20px; text-indent: 2em; }
+.news-detail-content p strong { display: block; font-size: var(--fs-section); color: var(--text); margin-bottom: 12px; text-indent: 0; }
 .detail-body .detail-img-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
   margin: 24px 0;
@@ -318,6 +353,89 @@ body {
 .detail-body .detail-field { margin-bottom: 24px; }
 .detail-body .detail-field .field-label { font-size: var(--fs-caption); color: var(--text-muted); margin-bottom: 8px; }
 .detail-body .detail-field .field-value { font-size: var(--fs-body); color: var(--text); }
+
+/* ============ Detail Bottom Bar ============ */
+.detail-bottom-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 750px; background: #fff;
+  border-top: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 20px 32px; z-index: 100;
+}
+.detail-bottom-bar .bar-btn {
+  cursor: pointer; font-size: var(--fs-body); display: flex; align-items: center; gap: 6px;
+  color: var(--text-muted); user-select: none;
+}
+.detail-bottom-bar .bar-btn.liked { color: #ef4444; font-weight: 600; }
+.detail-bottom-bar .bar-btn.favorited { color: #f59e0b; font-weight: 600; }
+.detail-bottom-bar .bar-btn.comment-btn {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: #fff; font-weight: 600; border: none;
+  padding: 12px 32px; border-radius: 12px; font-size: var(--fs-body);
+}
+.detail-bottom-bar .bar-btn.comment-btn:active { opacity: 0.85; }
+/* Bar input mode */
+.detail-bottom-bar .bar-input-wrap { display: flex; gap: 10px; flex: 1; align-items: center; padding: 0 4px; }
+.detail-bottom-bar .bar-input-wrap input { flex: 1; min-width: 0; padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; font-size: var(--fs-caption); outline: none; background: #fff; }
+.detail-bottom-bar .bar-input-wrap input:focus { border-color: var(--primary); }
+.detail-bottom-bar .bar-input-wrap button { padding: 12px 20px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 10px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.detail-bottom-bar .bar-input-wrap button:active { opacity: 0.85; }
+
+/* ============ Comment Section ============ */
+.comment-section { margin-top: 24px; border-top: 2px solid var(--border); padding-top: 24px; }
+.comment-section .cs-title { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); margin-bottom: 20px; }
+.comment-section .cs-empty { text-align: center; padding: 48px 0; color: var(--text-muted); font-size: var(--fs-caption); }
+.comment-section .cs-empty .cs-empty-icon { font-size: 60px; margin-bottom: 16px; }
+
+/* Comment input area */
+.comment-input-wrap { display: flex; gap: 12px; margin-bottom: 20px; padding: 16px; background: #f9fafb; border-radius: 16px; }
+.comment-input-wrap input { flex: 1; min-width: 0; padding: 14px 18px; border: 2px solid var(--border); border-radius: 12px; font-size: var(--fs-caption); outline: none; background: #fff; }
+.comment-input-wrap input:focus { border-color: var(--primary); }
+.comment-input-wrap button { padding: 14px 24px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 12px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.comment-input-wrap button:active { opacity: 0.85; }
+
+/* Comment item */
+.comment-item { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); flex-direction: column; }
+.comment-item:last-child { border-bottom: none; }
+.comment-item .ci-main { display: flex; gap: 16px; }
+.comment-item .ci-avatar {
+  width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0;
+}
+.comment-item .ci-body { flex: 1; min-width: 0; }
+.comment-item .ci-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.comment-item .ci-nickname { font-size: var(--fs-caption); font-weight: 600; color: var(--text); }
+.comment-item .ci-time { font-size: var(--fs-mini); color: var(--text-muted); }
+.comment-item .ci-content { font-size: var(--fs-caption); color: var(--text-secondary); line-height: 1.6; }
+.comment-item .ci-actions { margin-top: 10px; display: flex; align-items: center; gap: 16px; }
+.comment-item .ci-like { cursor: pointer; font-size: var(--fs-mini); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.comment-item .ci-like.active { color: #ef4444; }
+.comment-item .ci-reply { cursor: pointer; font-size: var(--fs-caption); color: #3b82f6; display: flex; align-items: center; gap: 4px; }
+.comment-item .ci-reply:active { opacity: 0.7; }
+
+/* Reply items */
+.reply-list { margin-top: 12px; padding-left: 52px; }
+.reply-item { display: flex; gap: 12px; padding: 12px 0; }
+.reply-item .ri-avatar {
+  width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0;
+}
+.reply-item .ri-avatar.ri-author { background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; }
+.reply-item .ri-body { flex: 1; min-width: 0; }
+.reply-item .ri-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.reply-item .ri-nickname { font-size: var(--fs-caption); font-weight: 600; color: var(--text); }
+.reply-item .ri-time { font-size: var(--fs-mini); color: var(--text-muted); }
+.reply-item .ri-content { font-size: var(--fs-caption); color: var(--text-secondary); line-height: 1.5; }
+.reply-item .ri-actions { margin-top: 8px; }
+.reply-item .ri-reply { cursor: pointer; font-size: var(--fs-caption); color: #3b82f6; }
+
+/* Reply input area (inside comment) */
+.reply-input-wrap { display: flex; gap: 10px; margin-top: 12px; padding-left: 52px; }
+.reply-input-wrap input { flex: 1; min-width: 0; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: var(--fs-mini); outline: none; background: #fff; }
+.reply-input-wrap input:focus { border-color: var(--primary); }
+.reply-input-wrap button { padding: 12px 20px; background: linear-gradient(135deg, var(--primary), #4f46e5); color: #fff; border: none; border-radius: 10px; font-size: var(--fs-mini); font-weight: 600; cursor: pointer; white-space: nowrap; }
 
 /* Publish Form */
 .publish-form { padding: 24px 32px; }
@@ -540,6 +658,7 @@ body {
 .profile-header {
   background: linear-gradient(135deg, #1e40af, #2563eb);
   padding: 48px 32px 40px; text-align: center; color: #fff;
+  position: relative; z-index: 1;
 }
 .profile-header .profile-avatar {
   width: 128px; height: 128px; border-radius: 50%; background: rgba(255,255,255,0.2);
@@ -547,9 +666,9 @@ body {
   font-size: 56px;
 }
 .profile-header .profile-name { font-size: 36px; font-weight: 600; margin-bottom: 8px; }
-.profile-header .profile-phone { font-size: var(--fs-body-sm); opacity: 0.8; }
+.profile-header .profile-phone { font-size: var(--fs-body-sm); opacity: 0.8; line-height: 1.2; }
 .wallet-row {
-  display: flex; gap: 0; margin: -60px 32px 0;
+  display: flex; gap: 0; margin: 56px 32px 0;
   background: #fff; border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   overflow: hidden;
@@ -576,10 +695,226 @@ body {
 .menu-item .menu-right { font-size: var(--fs-body); color: var(--text-muted); }
 .menu-item .menu-arrow { color: #d1d5db; font-size: var(--fs-body); }
 
+/* ============ Points Detail Page ============ */
+.points-header {
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 48px 32px 40px; text-align: center; color: #fff;
+}
+.points-header .points-total-label { font-size: var(--fs-caption); opacity: 0.8; margin-bottom: 8px; }
+.points-header .points-total-val { font-size: 80px; font-weight: 700; line-height: 1; }
+.points-list { padding: 24px 32px; }
+.points-list .pl-date { font-size: var(--fs-caption-sm); color: var(--text-muted); padding: 20px 0 12px; }
+.points-list .pl-date:first-child { padding-top: 0; }
+.pl-item {
+  display: flex; align-items: center; padding: 24px 0;
+  border-bottom: 1px solid var(--border); gap: 16px;
+}
+.pl-item:last-child { border-bottom: none; }
+.pl-item .pl-icon {
+  width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 28px; flex-shrink: 0;
+}
+.pl-item .pl-icon.income { background: #dbeafe; }
+.pl-item .pl-icon.expense { background: #fee2e2; }
+.pl-item .pl-info { flex: 1; min-width: 0; }
+.pl-item .pl-reason { font-size: var(--fs-caption); color: var(--text); font-weight: 500; }
+.pl-item .pl-time { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 4px; }
+.pl-item .pl-amount { font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0; }
+.pl-item .pl-amount.income { color: #16a34a; }
+.pl-item .pl-amount.expense { color: #dc2626; }
+/* +++++ 余额明细 +++++ */
+.balance-header { background: linear-gradient(135deg, #16a34a, #22c55e); padding: 40px 32px 32px; color: #fff; text-align: center; }
+.balance-header .balance-total-label { font-size: var(--fs-caption); opacity: 0.85; margin-bottom: 8px; }
+.balance-header .balance-total-val { font-size: 72px; font-weight: 700; line-height: 1; margin-bottom: 24px; }
+.balance-recharge-btn { display: inline-block; background: rgba(255,255,255,0.25); color: #fff; border: 2px solid rgba(255,255,255,0.5); border-radius: 48px; padding: 12px 40px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.balance-recharge-btn:active { background: rgba(255,255,255,0.4); }
+.balance-list { padding: 24px 32px; }
+.balance-list .bl-date { font-size: var(--fs-caption-sm); color: var(--text-muted); padding: 20px 0 12px; }
+.balance-list .bl-date:first-child { padding-top: 0; }
+.bl-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+.bl-item:last-child { border-bottom: none; }
+.bl-item .bl-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--fs-body-sm); flex-shrink: 0; }
+.bl-item .bl-icon.income { background: #dcfce7; }
+.bl-item .bl-icon.expense { background: #fee2e2; }
+.bl-item .bl-info { flex: 1; min-width: 0; }
+.bl-item .bl-reason { font-size: var(--fs-caption); color: var(--text); font-weight: 500; }
+.bl-item .bl-time { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 4px; }
+.bl-item .bl-amount { font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0; }
+.bl-item .bl-amount.income { color: #16a34a; }
+.bl-item .bl-amount.expense { color: #dc2626; }
+/* +++++ 充值页面 +++++ */
+.recharge-balance-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 28px 32px; background: #fff; border-bottom: 1px solid var(--border); }
+.recharge-balance-bar .recharge-balance-label { font-size: var(--fs-caption); color: var(--text-secondary); }
+.recharge-balance-bar .recharge-balance-val { font-size: var(--fs-section); font-weight: 700; color: var(--primary); }
+.recharge-section { padding: 24px 32px; }
+.recharge-section-title { font-size: var(--fs-caption); color: var(--text-secondary); margin-bottom: 16px; font-weight: 500; }
+.recharge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.rg-item { background: #fff; border: 2px solid var(--border); border-radius: 16px; padding: 24px 0; text-align: center; font-size: var(--fs-section); font-weight: 700; color: var(--primary); cursor: pointer; transition: all 0.2s; }
+.rg-item:active { transform: scale(0.97); }
+.rg-item.selected { border-color: var(--primary); background: var(--primary-light); }
+.recharge-custom-wrap { margin-top: 20px; }
+.recharge-custom-label { font-size: var(--fs-caption); color: var(--text-secondary); margin-bottom: 12px; display: block; font-weight: 500; }
+.recharge-custom-input-box { display: flex; align-items: center; background: #fff; border: 2px solid var(--border); border-radius: 16px; padding: 0 20px; height: 64px; transition: border-color 0.2s; }
+.recharge-custom-input-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.08); }
+.recharge-custom-input-box.selected { border-color: var(--primary); background: var(--primary-light); }
+.recharge-custom-unit { font-size: var(--fs-section); color: var(--primary); font-weight: 700; }
+.recharge-custom-input { flex: 1; border: none; outline: none; font-size: var(--fs-section); padding: 0 12px; color: var(--text); background: transparent; font-weight: 600; }
+.recharge-custom-input::placeholder { color: var(--text-muted); font-weight: 400; font-size: var(--fs-body); }
+.recharge-notice { margin-top: 32px; background: #fff; border-radius: 16px; padding: 20px 24px; }
+.recharge-notice-title { font-size: var(--fs-caption); color: var(--text); font-weight: 600; margin-bottom: 12px; }
+.recharge-notice-text { font-size: var(--fs-mini); color: var(--text-muted); line-height: 1.8; }
+.recharge-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; padding: 16px 32px 24px; display: flex; align-items: center; gap: 16px; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 10; box-sizing: border-box; }
+.recharge-bottom-bar .recharge-bottom-info { flex: 1; font-size: var(--fs-caption); color: var(--text-secondary); }
+.recharge-bottom-bar .recharge-bottom-amount { font-weight: 700; color: var(--danger); font-size: var(--fs-section); }
+.recharge-submit-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; padding: 14px 32px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.recharge-submit-btn:active { opacity: 0.85; }
+#page-recharge .page-inner { padding-bottom: 120px; }
+/* +++++ 支付页面 +++++ */
+.payment-amount-card { background: linear-gradient(135deg, #16a34a, #22c55e); padding: 40px 32px; color: #fff; text-align: center; }
+.payment-amount-card .payment-amount-label { font-size: var(--fs-caption); opacity: 0.85; margin-bottom: 12px; }
+.payment-amount-card .payment-amount-val { font-size: 64px; font-weight: 700; line-height: 1; }
+.payment-amount-card .payment-amount-reason { font-size: var(--fs-caption-sm); opacity: 0.75; margin-top: 8px; }
+.payment-method-section { padding: 24px 32px; }
+.payment-method-title { font-size: var(--fs-caption); color: var(--text-secondary); margin-bottom: 16px; font-weight: 500; }
+.payment-method-item { background: #fff; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.payment-method-item.selected { border-color: var(--primary); }
+.pm-left { display: flex; align-items: center; gap: 16px; }
+.pm-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.pm-icon.wx { background: #dcfce7; }
+.pm-icon.balance { background: #fef3c7; }
+.pm-icon.combo { background: #ede9fe; }
+.payment-method-item + .payment-method-item { margin-top: 12px; }
+.pm-text .pm-name { font-size: var(--fs-body-sm); color: var(--text); font-weight: 600; }
+.pm-text .pm-desc { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 2px; }
+.pm-check { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+.payment-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; padding: 16px 32px 24px; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 10; box-sizing: border-box; }
+.payment-submit-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; padding: 16px; border-radius: 48px; font-size: var(--fs-caption); font-weight: 700; text-align: center; cursor: pointer; transition: all 0.2s; }
+.payment-submit-btn:active { opacity: 0.85; }
+#page-payment { padding-bottom: 120px; }
+
+/* My Posts Page */
+.mp-tabs { display: flex; gap: 0; padding: 0; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.mp-tabs::-webkit-scrollbar { display: none; }
+.mp-tab { flex: 1; min-width: 0; padding: 16px 0; font-size: var(--fs-body-sm); color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; text-align: center; white-space: nowrap; }
+.mp-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+#page-my-posts .my-posts-list { padding: 16px 32px 32px; }
+.mp-item { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.mp-item:last-child { margin-bottom: 0; }
+.mp-header { display: flex; align-items: center; justify-content: space-between; }
+.mp-title { font-size: var(--fs-body); color: var(--text); font-weight: 600; flex: 1; min-width: 0; }
+.mp-content { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 8px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.mp-content-danger { color: var(--danger); }
+.mp-images { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.mp-images::-webkit-scrollbar { display: none; }
+.mp-img { width: 140px; height: 100px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #e5e7eb; }
+.mp-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.mp-time { font-size: var(--fs-caption-sm); color: var(--text-muted); }
+.mp-status-tag { font-size: var(--fs-caption-sm); padding: 4px 12px; border-radius: 6px; font-weight: 500; }
+.mp-status-tag.pending { color: var(--warning); background: var(--warning-light); }
+.mp-status-tag.published { color: var(--success); background: var(--success-light); }
+.mp-status-tag.rejected { color: var(--danger); background: var(--danger-light); }
+.mp-actions { display: flex; gap: 16px; margin-top: 12px; }
+.mp-btn { padding: 10px 24px; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-caption); cursor: pointer; }
+.mp-btn.danger { color: var(--danger); }
+.mp-empty { text-align: center; padding: 80px 32px; font-size: var(--fs-caption); color: var(--text-muted); }
+
+/* Notification Page */
+.notif-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 24px 32px 12px; background: #fff; }
+.notif-header-title { font-size: var(--fs-section); font-weight: 700; color: var(--text); }
+.notif-mark-all { font-size: var(--fs-caption); color: var(--primary); cursor: pointer; }
+.notif-list { padding: 16px 32px 32px; }
+.notif-item { display: flex; align-items: flex-start; gap: 16px; padding: 24px; background: #fff; border-radius: 16px; margin-top: 12px; cursor: pointer; transition: background 0.2s; position: relative; }
+.notif-item:first-child { margin-top: 0; }
+.notif-item:active { background: #f9fafb; }
+.notif-item.unread { background: #eff6ff; }
+.notif-item.unread:active { background: #dbeafe; }
+.notif-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--danger); flex-shrink: 0; margin-top: 6px; display: none; }
+.notif-item.unread .notif-dot { display: block; }
+.notif-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: var(--fs-body); font-weight: 600; flex-shrink: 0; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-nickname { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); }
+.notif-action { font-size: var(--fs-caption); color: var(--text-secondary); margin-top: 4px; }
+.notif-content { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 6px; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-post-title { font-size: var(--fs-caption-sm); color: var(--primary); margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-time { font-size: var(--fs-caption-sm); color: var(--text-muted); margin-top: 6px; }
+.notif-empty { text-align: center; padding: 100px 32px; font-size: var(--fs-body-sm); color: var(--text-muted); }
+.notif-empty-icon { font-size: 80px; margin-bottom: 20px; }
+
+/* Favorites & Browsing History Pages */
+#page-favorites .fav-list,
+#page-browsing-history .bh-list { padding: 8px 0 32px; }
+#page-favorites .info-card,
+#page-browsing-history .info-card { margin-bottom: 16px; }
+#page-favorites .empty-state,
+#page-browsing-history .empty-state { padding: 100px 24px; }
+
+/* ==================== 付费订单中心 ==================== */
+.order-list { padding: 8px 0 32px; }
+.order-item { display: flex; justify-content: space-between; align-items: flex-start; background: #fff; margin: 16px 24px; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.order-item:last-child { margin-bottom: 0; }
+.oi-left { flex: 1; min-width: 0; }
+.oi-left .oi-reason { font-size: var(--fs-body); color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+.oi-left .oi-meta { display: flex; align-items: center; gap: 10px; font-size: var(--fs-mini); color: var(--text-muted); }
+.oi-left .oi-meta .oi-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.oi-right { flex-shrink: 0; text-align: right; margin-left: 16px; display: flex; flex-direction: column; align-items: flex-end; }
+.oi-right .oi-amount { font-size: var(--fs-section); font-weight: 700; color: var(--text); }
+.oi-right .oi-method { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
+#page-orders .empty-state { padding: 100px 24px; }
+
+/* Feedback Page */
+#page-feedback .feedback-form { padding: 32px; }
+#page-feedback .fb-form-group { margin-bottom: 28px; }
+
+/* Settings Page */
+#page-settings { background: var(--bg); padding: 24px 0; }
+.settings-avatar-row { display: flex; align-items: center; margin: 0 32px; padding: 32px 28px; background: #fff; border-radius: 16px; cursor: pointer; gap: 24px; }
+.settings-avatar-row:active { background: #f9fafb; }
+.settings-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); display: flex; align-items: center; justify-content: center; font-size: 52px; flex-shrink: 0; }
+.settings-avatar-text { flex: 1; min-width: 0; }
+.settings-avatar-label { font-size: var(--fs-body); font-weight: 600; color: var(--text); }
+.settings-avatar-hint { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
+.settings-list { background: #fff; border-radius: 16px; margin: 24px 32px 0; overflow: hidden; }
+.settings-item { display: flex; align-items: center; padding: 28px 28px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+.settings-item:last-child { border-bottom: none; }
+.settings-item:active { background: #f9fafb; }
+.settings-item-label { font-size: var(--fs-body); color: var(--text); flex-shrink: 0; }
+.settings-item-val { flex: 1; text-align: right; font-size: var(--fs-body); color: var(--text-muted); margin-right: 12px; }
+.settings-arrow { font-size: 36px; color: var(--text-muted); flex-shrink: 0; }
+.settings-logout-wrap { position: absolute; bottom: 48px; left: 0; right: 0; padding: 0 32px; }
+.settings-logout-btn { width: 100%; height: 88px; border-radius: 16px; border: none; background: #fff; color: var(--danger); font-size: var(--fs-body); font-weight: 600; cursor: pointer; }
+.settings-logout-btn:active { background: #fef2f2; }
+
+/* Login Page */
+#page-login { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 48px; }
+.login-logo { font-size: 80px; margin-bottom: 32px; }
+.login-title { font-size: 40px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.login-subtitle { font-size: var(--fs-body); color: var(--text-muted); margin-bottom: 64px; text-align: center; }
+.login-btn { width: 100%; height: 96px; border-radius: 16px; border: none; background: var(--primary); color: #fff; font-size: var(--fs-section); font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+.login-btn:active { background: var(--primary-dark); }
+.login-btn.wechat { background: #07c160; }
+.login-btn.wechat:active { background: #06ad56; }
+.login-agreement { display: flex; align-items: flex-start; gap: 12px; margin-top: 24px; cursor: pointer; padding: 8px 0; }
+.login-checkbox { font-size: 24px; color: var(--text-muted); flex-shrink: 0; line-height: 1.4; transition: color 0.15s; }
+.login-checkbox.checked { color: #07c160; }
+.login-agree-text { font-size: var(--fs-mini); color: var(--text-muted); line-height: 1.6; }
+.login-link { color: var(--primary); text-decoration: none; }
+
+/* Tab Badge */
+.tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
+.tab-badge.show { display: flex; }
+
+/* Confirm Dialog */
+.confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.confirm-overlay.show { opacity: 1; pointer-events: auto; }
+.confirm-box { width: 560px; max-width: 86vw; background: #fff; border-radius: 20px; padding: 40px 32px 24px; text-align: center; }
+.confirm-msg { font-size: var(--fs-body); color: var(--text); margin-bottom: 28px; line-height: 1.6; }
+.confirm-btns { display: flex; gap: 16px; }
+.confirm-btn { flex: 1; padding: 14px 0; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-body-sm); cursor: pointer; }
+.confirm-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+
 /* Floating Button */
 .floating-cs {
   position: absolute; right: 32px; bottom: 200px; z-index: 50;
-  display: flex; flex-direction: column; gap: 16px;
 }
 .floating-btn {
   width: 84px; height: 84px; border-radius: 50%; background: #fff;
@@ -588,18 +923,25 @@ body {
   transition: all 0.2s;
 }
 .floating-btn:active { transform: scale(0.92); }
-.cs-menu {
-  display: flex; flex-direction: column; gap: 12px;
-  background: #fff; border-radius: 24px; padding: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-}
-.cs-item {
-  padding: 16px 24px; font-size: var(--fs-caption); color: var(--text);
-  cursor: pointer; border-radius: 16px; white-space: nowrap;
-  display: flex; align-items: center; gap: 12px;
-}
-.cs-item:active { background: var(--primary-light); color: var(--primary); }
-.hidden { display: none !important; }
+
+/* CS Popup Overlay */
+.cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.cs-overlay.show { opacity: 1; pointer-events: auto; }
+.cs-popup { width: 560px; max-width: 86vw; max-height: 80vh; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
+@keyframes popupIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.cs-popup-header { display: flex; align-items: center; justify-content: space-between; padding: 32px 32px 20px; border-bottom: 1px solid #f3f4f6; }
+.cs-popup-title { font-size: 36px; font-weight: 700; color: var(--text); }
+.cs-popup-close { width: 48px; height: 48px; border-radius: 50%; border: none; background: #f3f4f6; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.cs-popup-close:active { background: #e5e7eb; }
+.cs-popup-body { padding: 24px 32px 32px; }
+.cs-option { display: flex; align-items: center; padding: 24px 20px; border-radius: 16px; cursor: pointer; transition: background 0.15s; gap: 20px; }
+.cs-option:active { background: rgba(37,99,235,0.06); }
+.cs-option + .cs-option { margin-top: 12px; }
+.cs-option-icon { font-size: 44px; flex-shrink: 0; width: 64px; text-align: center; }
+.cs-option-info { flex: 1; min-width: 0; }
+.cs-option-title { font-size: var(--fs-body); font-weight: 600; color: var(--text); }
+.cs-option-desc { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 4px; }
+.cs-option-arrow { font-size: 36px; color: var(--text-muted); flex-shrink: 0; }
 
 /* Back to Top */
 .back-to-top {
@@ -1004,14 +1346,24 @@ body {
     <!-- ==================== 城市列表 ==================== -->
     <div class="page" id="page-city">
       <div class="city-page-header">
-        <span class="current-city">当前定位：<b id="cityCurrentShow">长沙</b></span>
+        <div class="loc-row">
+          <span class="current-city">当前定位：<b id="cityCurrentShow">长沙</b></span>
+          <button class="relocate-btn" onclick="relocateCity()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            重新定位
+          </button>
+        </div>
+        <div class="hot-section" id="hotCitySection">
+          <div class="hot-title">热门城市</div>
+          <div class="hot-tags" id="hotCityTags"></div>
+        </div>
       </div>
       <div class="city-list-wrap">
         <div class="city-list-scroll" id="cityListScroll">
           <div id="cityGroups"></div>
         </div>
-        <div class="letter-index" id="letterIndex"></div>
       </div>
+      <div class="letter-index" id="letterIndex"></div>
     </div>
 
     <!-- ==================== 搜索页 ==================== -->
@@ -1243,9 +1595,19 @@ body {
       <div id="newsCards"></div>
     </div>
 
+    <!-- ==================== 资讯详情 ==================== -->
+    <div class="page" id="page-news-detail">
+      <div class="detail-body" id="newsDetailBody"></div>
+    </div>
+
     <!-- ==================== 供需详情 ==================== -->
     <div class="page" id="page-detail">
       <div class="detail-body" id="detailPageBody"></div>
+      <div class="detail-bottom-bar" id="detailBottomBar">
+        <span class="bar-btn" id="detailBarLike" onclick="toggleDetailLike(currentDetailId)">♡ 点赞</span>
+        <span class="bar-btn" id="detailBarFav" onclick="toggleDetailFav(currentDetailId)">☆ 收藏</span>
+        <span class="bar-btn comment-btn" onclick="showBarInput('detail','comment')">评论</span>
+      </div>
     </div>
 
     <!-- ==================== 分类列表 ==================== -->
@@ -1296,6 +1658,11 @@ body {
     <!-- ==================== 闲置详情 ==================== -->
     <div class="page" id="page-idle-detail">
       <div class="detail-body" id="idleDetailBody"></div>
+      <div class="detail-bottom-bar" id="idleDetailBar">
+        <span class="bar-btn" id="idleBarLike" onclick="toggleIdleLike(this)">♡ 点赞</span>
+        <span class="bar-btn" id="idleBarFav" onclick="toggleIdleDetailFav(currentIdleDetailId)">☆ 收藏</span>
+        <span class="bar-btn comment-btn" id="idleBarCommentBtn" onclick="showBarInput('idle','comment')">评论</span>
+      </div>
     </div>
 
     <!-- ==================== 个人中心 ==================== -->
@@ -1307,38 +1674,38 @@ body {
       </div>
 
       <div class="wallet-row">
-        <div class="wallet-item divider" onclick="showToast('积分获取：新用户注册赠送500积分')">
+        <div class="wallet-item divider" onclick="openPointsDetail()">
           <div class="val">500</div>
           <div class="label">我的积分</div>
         </div>
-        <div class="wallet-item divider" onclick="showToast('余额可充值使用，点击进入充值')">
+        <div class="wallet-item divider" onclick="openBalanceDetail()">
           <div class="val">¥28.50</div>
           <div class="label">我的余额</div>
         </div>
-        <div class="wallet-item" onclick="showToast('共发布 3 条信息，2条已上架')">
+        <div class="wallet-item" onclick="openMyPosts()">
           <div class="val">3</div>
           <div class="label">发布数量</div>
         </div>
       </div>
 
       <div class="menu-section" style="margin-top:40px">
-        <div class="menu-item" onclick="showMyPosts()">
+        <div class="menu-item" onclick="openMyPosts()">
           <span class="menu-icon">📋</span>
           <span class="menu-text">我的发布</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('暂无未读消息')">
+        <div class="menu-item" onclick="openNotifications()">
           <span class="menu-icon">🔔</span>
           <span class="menu-text">消息通知</span>
-          <span class="menu-badge" style="display:none">0</span>
+          <span class="menu-badge" id="menuNotifBadge">3</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('查看我的收藏列表')">
+        <div class="menu-item" onclick="openFavorites()">
           <span class="menu-icon">⭐</span>
           <span class="menu-text">我的收藏</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showToast('查看浏览记录')">
+        <div class="menu-item" onclick="openBrowsingHistory()">
           <span class="menu-icon">👁</span>
           <span class="menu-text">浏览足迹</span>
           <span class="menu-arrow">›</span>
@@ -1346,13 +1713,13 @@ body {
       </div>
 
       <div class="menu-section">
-        <div class="menu-item" onclick="showToast('查看所有付费订单')">
+        <div class="menu-item" onclick="openOrders()">
           <span class="menu-icon">💳</span>
           <span class="menu-text">付费订单中心</span>
           <span class="menu-right">查看详情</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="showFeedback()">
+        <div class="menu-item" onclick="openFeedback()">
           <span class="menu-icon">💬</span>
           <span class="menu-text">意见反馈</span>
           <span class="menu-arrow">›</span>
@@ -1362,6 +1729,203 @@ body {
           <span class="menu-text">在线客服</span>
           <span class="menu-arrow">›</span>
         </div>
+        <div class="menu-item" onclick="openSettings()">
+          <span class="menu-icon">⚙</span>
+          <span class="menu-text">个人设置</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 积分明细 ==================== -->
+    <div class="page" id="page-points-detail">
+      <div class="points-header">
+        <div class="points-total-label">当前积分</div>
+        <div class="points-total-val" id="pointsTotalVal">500</div>
+      </div>
+      <div class="points-list" id="pointsList"></div>
+    </div>
+
+    <!-- ==================== 余额明细 ==================== -->
+    <div class="page" id="page-balance-detail">
+      <div class="balance-header">
+        <div class="balance-total-label">当前余额</div>
+        <div class="balance-total-val" id="balanceTotalVal">¥28.50</div>
+        <div class="balance-recharge-btn" onclick="openRechargePage()">充值</div>
+      </div>
+      <div class="balance-list" id="balanceList"></div>
+    </div>
+
+    <!-- ==================== 充值页面 ==================== -->
+    <div class="page" id="page-recharge">
+      <div class="recharge-balance-bar">
+        <span class="recharge-balance-label">当前余额</span>
+        <span class="recharge-balance-val" id="rechargeBalanceVal">¥28.50</span>
+      </div>
+      <div class="recharge-section">
+        <div class="recharge-section-title">选择充值金额</div>
+        <div class="recharge-grid" id="rechargeGrid">
+          <div class="rg-item" data-amount="10" onclick="selectRechargeAmount(this)">¥10.00</div>
+          <div class="rg-item" data-amount="30" onclick="selectRechargeAmount(this)">¥30.00</div>
+          <div class="rg-item" data-amount="50" onclick="selectRechargeAmount(this)">¥50.00</div>
+          <div class="rg-item" data-amount="100" onclick="selectRechargeAmount(this)">¥100.00</div>
+          <div class="rg-item" data-amount="200" onclick="selectRechargeAmount(this)">¥200.00</div>
+          <div class="rg-item" data-amount="500" onclick="selectRechargeAmount(this)">¥500.00</div>
+        </div>
+        <div class="recharge-custom-wrap">
+          <span class="recharge-custom-label">自定义金额</span>
+          <div class="recharge-custom-input-box" id="rechargeCustomBox">
+            <span class="recharge-custom-unit">¥</span>
+            <input type="number" class="recharge-custom-input" id="rechargeCustomInput" placeholder="输入充值金额" min="1" step="0.01" oninput="onCustomAmountInput()">
+          </div>
+        </div>
+        <div class="recharge-notice">
+          <div class="recharge-notice-title">充值说明</div>
+          <div class="recharge-notice-text">1. 充值金额仅限在本平台使用，不支持提现或转账；</div>
+          <div class="recharge-notice-text">2. 充值成功后余额立即到账，可在余额明细中查看记录；</div>
+          <div class="recharge-notice-text">3. 如遇充值问题请联系客服：400-XXX-XXXX。</div>
+        </div>
+      </div>
+      <div class="recharge-bottom-bar">
+        <div class="recharge-bottom-info" id="rechargeBottomInfo">
+          <span>已选金额：</span>
+          <span class="recharge-bottom-amount" id="rechargeSelectedAmount">¥0.00</span>
+        </div>
+        <div class="recharge-submit-btn" id="rechargeSubmitBtn" onclick="confirmRecharge()">确认充值</div>
+      </div>
+    </div>
+
+    <!-- ==================== 支付页面 ==================== -->
+    <div class="page" id="page-payment">
+      <div class="payment-amount-card">
+        <div class="payment-amount-label">支付金额</div>
+        <div class="payment-amount-val" id="paymentAmountVal">¥0.00</div>
+        <div class="payment-amount-reason" id="paymentReason">—</div>
+      </div>
+      <div class="payment-method-section">
+        <div class="payment-method-title">选择支付方式</div>
+        <div class="payment-method-item selected" id="paymentMethodBalance" onclick="selectPaymentMethod('balance')">
+          <div class="pm-left">
+            <div class="pm-icon balance">💰</div>
+            <div class="pm-text">
+              <div class="pm-name">余额支付</div>
+              <div class="pm-desc">使用账户余额支付</div>
+            </div>
+          </div>
+          <div class="pm-check">✓</div>
+        </div>
+        <div class="payment-method-item" id="paymentMethodWx" onclick="selectPaymentMethod('wechat')">
+          <div class="pm-left">
+            <div class="pm-icon wx">💚</div>
+            <div class="pm-text">
+              <div class="pm-name">微信支付</div>
+              <div class="pm-desc">推荐已安装微信的用户使用</div>
+            </div>
+          </div>
+          <div class="pm-check">✓</div>
+        </div>
+        <div class="payment-method-item" id="paymentMethodCombo" onclick="selectPaymentMethod('combo')">
+          <div class="pm-left">
+            <div class="pm-icon combo">🔄</div>
+            <div class="pm-text">
+              <div class="pm-name">组合支付</div>
+              <div class="pm-desc">余额 + 微信组合支付</div>
+            </div>
+          </div>
+          <div class="pm-check">✓</div>
+        </div>
+      </div>
+      <div class="payment-bottom-bar">
+        <div class="payment-submit-btn" id="paymentSubmitBtn" onclick="confirmPayment()">确认支付 ¥0.00</div>
+      </div>
+    </div>
+
+    <!-- ==================== 我的发布 ==================== -->
+    <div class="page" id="page-my-posts">
+      <div class="mp-tabs">
+        <div class="mp-tab active" data-status="all" onclick="switchMyPostsTab(this, 'all')">全部</div>
+        <div class="mp-tab" data-status="pending" onclick="switchMyPostsTab(this, 'pending')">审核中</div>
+        <div class="mp-tab" data-status="published" onclick="switchMyPostsTab(this, 'published')">已发布</div>
+        <div class="mp-tab" data-status="rejected" onclick="switchMyPostsTab(this, 'rejected')">已驳回</div>
+      </div>
+      <div class="my-posts-list" id="myPostsList"></div>
+    </div>
+
+    <!-- ==================== 消息通知 ==================== -->
+    <div class="page" id="page-notifications">
+      <div class="notif-header-bar">
+        <span class="notif-header-title">消息通知</span>
+        <span class="notif-mark-all" onclick="markAllNotificationsRead()">全部已读</span>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ==================== 我的收藏 ==================== -->
+    <div class="page" id="page-favorites">
+      <div class="fav-list" id="favList"></div>
+    </div>
+
+    <!-- ==================== 浏览足迹 ==================== -->
+    <div class="page" id="page-browsing-history">
+      <div class="bh-list" id="bhList"></div>
+    </div>
+
+    <!-- ==================== 付费订单中心 ==================== -->
+    <div class="page" id="page-orders">
+      <div class="order-list" id="orderList"></div>
+    </div>
+
+    <!-- ==================== 意见反馈 ==================== -->
+    <div class="page" id="page-feedback">
+      <div class="feedback-form" id="feedbackForm"></div>
+    </div>
+
+    <!-- ==================== 个人设置 ==================== -->
+    <div class="page" id="page-settings">
+      <div class="settings-avatar-row">
+        <div class="settings-avatar" id="settingsAvatar">👤</div>
+        <div class="settings-avatar-text">
+          <div class="settings-avatar-label">更换头像</div>
+          <div class="settings-avatar-hint">点击更换头像</div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="editNickname()">
+          <span class="settings-item-label">昵称</span>
+          <span class="settings-item-val" id="settingsNickname">餐饮创业者小王</span>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="changePhone()">
+          <span class="settings-item-label">绑定手机号</span>
+          <span class="settings-item-val" id="settingsPhone">138****5678</span>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+      <div class="settings-list" style="margin-top:24px">
+        <div class="settings-item" onclick="showToast('查看用户协议')">
+          <span class="settings-item-label" style="flex:1">用户协议</span>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="showToast('查看隐私政策')">
+          <span class="settings-item-label" style="flex:1">隐私政策</span>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+      <div class="settings-logout-wrap">
+        <button class="settings-logout-btn" onclick="showLogoutConfirm()">退出登录</button>
+      </div>
+    </div>
+
+    <!-- ==================== 登录页面 ==================== -->
+    <div class="page" id="page-login">
+      <div class="login-logo">🏪</div>
+      <div class="login-title">万铺优选</div>
+      <div class="login-subtitle">高校餐饮商业信息平台</div>
+      <button class="login-btn wechat" onclick="handleLogin('wechat')" id="loginWechatBtn">微信一键登录</button>
+      <div class="login-agreement" onclick="toggleLoginAgree()">
+        <span class="login-checkbox" id="loginCheckbox">☐</span>
+        <span class="login-agree-text">我已阅读并同意<span class="login-link" onclick="event.stopPropagation();showToast('查看用户协议')">《用户协议》</span>与<span class="login-link" onclick="event.stopPropagation();showToast('查看隐私政策')">《隐私政策》</span></span>
       </div>
     </div>
   </div>
@@ -1387,17 +1951,13 @@ body {
     <div class="tab-item" data-page="me" onclick="switchTab('me')">
       <span class="tab-icon">👤</span>
       <span class="tab-label">我的</span>
+      <span class="tab-badge show" id="tabMeBadge">3</span>
     </div>
   </div>
 
   <!-- Floating CS Button -->
   <div class="floating-cs" id="floatingCs">
-    <div class="floating-btn" id="csToggle" onclick="toggleCsMenu()" style="font-size:32px">💬</div>
-    <div class="cs-menu hidden" id="csMenu">
-      <div class="cs-item" onclick="showToast('正在拨打客服电话：400-XXX-XXXX')">📞 客服电话</div>
-      <div class="cs-item" onclick="showToast('请添加客服微信：wanyue_cs')">💚 客服微信</div>
-      <div class="cs-item" onclick="showToast('正在连接在线客服...')">🎧 在线客服</div>
-    </div>
+    <div class="floating-btn" id="csToggle" onclick="openCsPopup()" style="font-size:32px">💬</div>
   </div>
 
   <!-- Back to Top -->
@@ -1409,14 +1969,53 @@ body {
   <div class="detail-panel" id="detailPanel"></div>
 </div>
 
-<!-- My Posts Overlay -->
-<div class="detail-overlay" id="mypostsOverlay" onclick="if(event.target===this)closeMyPosts()">
-  <div class="detail-panel" id="mypostsPanel"></div>
 </div>
 
-<!-- Feedback Overlay -->
-<div class="detail-overlay" id="feedbackOverlay" onclick="if(event.target===this)closeFeedback()">
-  <div class="detail-panel" id="feedbackPanel"></div>
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-msg" id="confirmMsg"></div>
+    <div class="confirm-btns">
+      <button class="confirm-btn" onclick="closeConfirm()">取消</button>
+      <button class="confirm-btn primary" id="confirmOkBtn" onclick="">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Service Popup -->
+<div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
+  <div class="cs-popup">
+    <div class="cs-popup-header">
+      <span class="cs-popup-title">联系客服</span>
+      <button class="cs-popup-close" onclick="closeCsPopup()">✕</button>
+    </div>
+    <div class="cs-popup-body">
+      <div class="cs-option" onclick="handleCsOption('phone')">
+        <div class="cs-option-icon">📞</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">客服电话</div>
+          <div class="cs-option-desc">400-XXX-XXXX</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
+      <div class="cs-option" onclick="handleCsOption('wechat')">
+        <div class="cs-option-icon">💚</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">客服微信</div>
+          <div class="cs-option-desc">微信号：wanyue_cs</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
+      <div class="cs-option" onclick="handleCsOption('online')">
+        <div class="cs-option-icon">🎧</div>
+        <div class="cs-option-info">
+          <div class="cs-option-title">在线客服</div>
+          <div class="cs-option-desc">在线实时对话</div>
+        </div>
+        <span class="cs-option-arrow">›</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1450,10 +2049,23 @@ body {
 // ============ Data ============
 var locIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>';
 const mockData = [
-  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340 },
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340,
+    comments: [
+      { id:1, avatar:'张', nickname:'张老板', time:'30分钟前', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', liked:false, likes:5,
+        replies: [
+          { id:101, avatar:'湖', nickname:'湖南大学餐饮部', time:'20分钟前', content:'在三楼食堂西区，最小的15㎡的还在，面食类可以经营的。', isAuthor: true },
+          { id:102, avatar:'张', nickname:'张老板', time:'10分钟前', content:'好的，我下午过去看看行吗？', isAuthor: false },
+        ] },
+      { id:2, avatar:'李', nickname:'李师傅', time:'1小时前', content:'请问进场费还要另外交吗？押金多少？', liked:true, likes:12 },
+      { id:3, avatar:'王', nickname:'小王餐饮', time:'2小时前', content:'学生消费能力怎么样？客单价大概多少？', liked:false, likes:2 },
+    ] },
   { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
   { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
-  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520,
+    comments: [
+      { id:1, avatar:'刘', nickname:'奶茶小哥', time:'3小时前', content:'转让费大概多少？设备都包哪些？', liked:false, likes:8 },
+      { id:2, avatar:'赵', nickname:'赵姐', time:'5小时前', content:'请问租金一个月多少？合同还有几年？', liked:false, likes:3 },
+    ] },
   { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
   { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
   { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
@@ -1466,7 +2078,10 @@ const mockData = [
 ];
 
 const idleData = [
-  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', userFaved:false, favorites:5 },
+  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', userFaved:false, favorites:5,
+    comments: [
+      { id:1, avatar:'周', nickname:'周厨', time:'2小时前', content:'还在吗？可以现场看货吗？我在岳麓区。', liked:false, likes:2 },
+    ] },
   { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前', userFaved:false, favorites:3 },
   { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前', userFaved:false, favorites:2 },
   { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前', userFaved:false, favorites:1 },
@@ -1477,12 +2092,18 @@ const idleData = [
 ];
 
 const newsData = [
-  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1' },
-  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2' },
-  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3' },
-  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1' },
-  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2' },
-  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3' },
+  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1',
+    content:'<p>近日，湖南省教育厅联合省市场监督管理局正式发布《2026年高校食堂食品安全管理办法》（以下简称《办法》），对全省高校食堂档口经营提出了一系列新的卫生标准和操作规范。</p><p><strong>一、从业人员健康管理升级</strong></p><p>《办法》明确要求所有档口从业人员必须持有效健康证上岗，且每季度进行一次食品安全知识考核。从事直接入口食品加工的岗位，还需额外取得食品安全专项培训证书。</p><p><strong>二、原材料采购溯源体系</strong></p><p>新规要求各档口建立完整的原材料采购台账，所有食材来源必须可追溯。肉类、禽类、水产品等高风险食材需提供检疫检验合格证明，严禁采购来源不明的食材。</p><p><strong>三、加工操作规范细化</strong></p><p>《办法》对食品加工各环节作出了详细规定，包括：生熟分开、荤素分开；烹饪中心温度不低于70℃；成品存放时间不超过2小时等。同时要求档口安装明厨亮灶监控设备，接受师生实时监督。</p><p><strong>四、处罚力度加大</strong></p><p>对违反规定的档口，首次警告并限期整改；二次违规罚款2000-5000元；三次以上违规将取消校内经营资格。造成食品安全事故的，依法追究法律责任。</p><p>业内专家表示，此次新规的出台将进一步提升高校食堂的食品安全水平，也为广大档口经营者提供了更明确的经营标准。建议档口经营者尽快对照新规进行自查整改。</p>' },
+  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2',
+    content:'<p>长沙市多所高校近日陆续发布2026年秋季学期食堂档口招标公告。与往年相比，今年的招标政策出现了多项重要调整，值得广大餐饮经营者关注。</p><p><strong>招标范围扩大</strong></p><p>今年参与招标的高校数量较去年增加30%，包括中南大学、湖南大学、湖南师范大学等多所重点高校。招标档口涵盖早餐、快餐、特色小吃、饮品等多个品类，总招标数量超过200个。</p><p><strong>评分标准变化</strong></p><p>新政策在评分标准上更加注重经营者的品牌实力和食品安全记录。品牌连锁企业可获得额外加分，而有食品安全不良记录的企业将被一票否决。此外，\"明厨亮灶\"建设和智慧食堂系统接入也成为评分的重要加分项。</p><p><strong>合同期限延长</strong></p><p>为鼓励经营者长期投入，今年的合同期限从往年的1年延长至1-3年，表现优秀的档口可优先续约。同时，租金支付方式也更加灵活，支持按月、按季度支付。</p><p>业内人士分析，此次政策调整体现了长沙高校对食堂服务质量的更高追求，也为优质餐饮企业提供了更好的发展机遇。</p>' },
+  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3',
+    content:'<p>在高校食堂经营档口，选址可以说是决定成败的第一要素。一个好的位置，即使产品一般也能活得不错；而一个差的位置，再好的产品也可能无人问津。今天我们就来盘点高校档口选址最常见的3个大坑。</p><p><strong>坑一：只看人流量，忽视动线</strong></p><p>很多新手经营者看到某个位置人流量很大就盲目入驻，结果发现大部分人只是\"路过\"而非\"停留\"。正确的做法是分析学生的就餐动线——食堂入口附近的档口曝光度最高，但竞争也最激烈；食堂深处的档口虽然人流量略少，但顾客目的性更强，转化率反而更高。</p><p><strong>坑二：盲目扎堆热门品类区</strong></p><p>有些经营者喜欢把档口开在热门品类聚集的区域，认为可以\"蹭流量\"。但现实是，同品类聚集区竞争异常激烈，价格战不可避免。与其正面硬刚，不如选择品类空白区的边缘位置，做差异化竞争。</p><p><strong>坑三：忽视档口硬件条件</strong></p><p>有些位置看似不错，但实际经营中才发现排烟不畅、排水困难、电力不足等问题，严重影响日常运营。建议在签约前务必实地考察档口的硬件设施，包括排烟系统、给排水、电力容量、仓储空间等。</p><p>记住：选对了位置，你就已经赢了50%。</p>' },
+  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1',
+    content:'<p>在湖南大学南校区食堂二楼，有一家名为\"小刘快餐\"的档口，月营收稳定在10万元以上。老板刘师傅从2024年开始经营，两年时间将一个小档口做成了校园网红店。近日，我们专访了刘师傅，请他分享成功经验。</p><p><strong>产品：少而精的爆品策略</strong></p><p>刘师傅的档口只卖5款产品——黄焖鸡米饭、红烧肉饭、宫保鸡丁饭、鱼香肉丝饭和招牌炒饭。\"刚开始我也想做很多品种，后来发现精力分散了什么也做不好。不如集中力量把几款核心产品做到极致。\"每款产品都有严格的标准配方，确保口味稳定。</p><p><strong>定价：锚定学生消费力</strong></p><p>所有产品定价在12-16元之间，恰好处于学生\"可以日常消费\"的价格区间。刘师傅分享了一个数据：\"我们做过调研，学生一顿饭的心理预期就是12-18元，超过18元就会犹豫，低于10元他们又觉得品质不行。\"</p><p><strong>运营：数据驱动的精细化</strong></p><p>刘师傅每天记录销售数据，分析各产品的销量趋势和毛利率。\"黄焖鸡米饭是我们最赚钱的单品，毛利率超过60%且销量稳定，是我们重点推广的产品。而鱼香肉丝饭毛利率低，我们就控制每天的量，避免浪费。\"</p><p><strong>营销：让学生帮你传播</strong></p><p>\"我们从来不打广告，全靠学生自发传播。\"刘师傅经常在档口搞一些小活动，比如\"带新同学来消费两人各减2元\"，很快就在学生群体中形成了口碑效应。</p><p>刘师傅说：\"高校食堂虽然竞争激烈，但只要用心经营，机会还是很多的。关键是要让学生吃得放心、吃得满意。\"</p>' },
+  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2',
+    content:'<p>湖南省卫生健康委员会联合省市场监督管理局日前印发《医院食堂食品安全等级评定管理办法》，将于2026年8月1日起正式实施。</p><p><strong>A/B/C/D四级评定</strong></p><p>新标准将医院食堂食品安全等级分为A（优秀）、B（良好）、C（合格）、D（不合格）四个等级。评定内容包括：许可管理、信息公示、人员管理、环境卫生、原料控制、加工制作过程、设施设备维护、餐饮具清洗消毒等8大项共32小项指标。</p><p><strong>评定结果应用</strong></p><p>评定结果将直接影响食堂的经营资质。A级食堂可优先承接大型会议用餐和特需供餐服务；B级为基本达标，需定期接受检查；C级将被约谈并要求限期整改；D级将被暂停经营资格，直至整改达标。</p><p><strong>患者膳食特殊管理</strong></p><p>新规特别强调了医院食堂在患者膳食管理方面的特殊要求，包括：营养膳食的配餐标准、特殊疾病饮食的制备规范、送餐保温及卫生要求等。医院食堂必须配备专职营养师，为住院患者提供个性化膳食方案。</p><p>据了解，首次评定将于2026年9月启动，届时全省各级医院食堂将统一接受等级评定。</p>' },
+  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3',
+    content:'<p>食材成本是高校档口最大的支出项，通常占总成本的40%-50%。如何在保证品质的前提下有效控制食材成本？我们邀请到湖南团餐协会采购专家王经理，分享5个实战省钱技巧。</p><p><strong>技巧一：集中采购，以量换价</strong></p><p>单个档口的采购量有限，议价能力弱。建议档口之间组建采购联盟，统一采购米面粮油、调味料等通用物资，采购量上去了，价格自然就下来了。据测算，集中采购可降低通用食材成本10%-15%。</p><p><strong>技巧二：锁定核心供应商</strong></p><p>对于使用量大、品质要求高的核心食材（如肉类、禽类），建议与1-2家优质供应商建立长期合作关系。不仅可以获得更优惠的价格，还能在节假日高峰期保证供货稳定。</p><p><strong>技巧三：应季采购，错峰囤货</strong></p><p>蔬菜水果等季节性食材，在上市高峰期价格最低。可以适当加大采购量，采用冷藏、腌制等方式延长保存期。例如，夏季辣椒便宜时可大量采购制作剁椒酱，全年使用。</p><p><strong>技巧四：半成品替代，减少损耗</strong></p><p>有些食材自己加工的损耗率很高，不如直接采购半成品。比如净菜加工、肉丝肉片等预制食材，虽然单价略高，但省去了人工和损耗成本，综合算下来反而更划算。</p><p><strong>技巧五：数据化管理，动态调整</strong></p><p>建立食材使用台账，定期分析各品种的使用量和损耗率。对损耗高的品种及时调整采购量或更换供应商。数据化管理是精细化运营的基础。</p><p>王经理建议：\"成本控制不是一味地节省，而是在保证品质的基础上做到最优性价比。品质降了，学生不来了，省再多钱也是亏本生意。\"</p>' },
 ];
 
 // ============ State ============
@@ -1499,6 +2120,8 @@ let idleRegionPickWorking = { province:'', city:'', district:'' };
 let catListFilters = { region:'all', category:'all', type:'all', sort:'newest' };
 let currentCatListCat = 'all';
 let pubTodayCount = 0; // simulated daily publish count
+let paymentContext = { amount:0, reason:'', source:'' }; // payment flow context
+let selectedPaymentMethod = 'balance'; // default payment method
 let photoCount = 0;
 
 // ============ Navigation ============
@@ -1510,9 +2133,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1524,13 +2147,483 @@ function switchTab(page) {
   if (page === 'home') renderHomeCards();
   if (page === 'idle') renderIdleCards();
   if (page === 'news') renderNewsCards();
-  if (page === 'publish') updatePublishRemain();
+  if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); }
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
   if (page === 'city') renderCityPage();
+  if (page === 'points-detail') renderPointsDetail();
+  if (page === 'balance-detail') renderBalanceDetail();
+  if (page === 'recharge') renderRechargePage();
+  if (page === 'payment') renderPaymentPage();
+  if (page === 'notifications') renderNotifications();
+  if (page === 'favorites') renderFavorites();
+  if (page === 'browsing-history') renderBrowsingHistory();
+  if (page === 'orders') renderOrders();
+  if (page === 'feedback') renderFeedback();
 }
 
 var previousTab = 'home';
+
+// ============ Points Detail ============
+var pointsData = [
+  { date:'2026-07-08', items:[
+    { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-08 08:30', amount:'+50' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-08 10:15', amount:'-30' },
+    { type:'expense', icon:'📋', reason:'发帖置顶推广消耗积分', time:'2026-07-08 14:20', amount:'-50' }
+  ]},
+  { date:'2026-07-07', items:[
+    { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-07 09:00', amount:'+50' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-07 11:30', amount:'-30' },
+    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-07 16:45', amount:'-50' }
+  ]},
+  { date:'2026-07-06', items:[
+    { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-06 07:55', amount:'+50' },
+    { type:'income', icon:'⚙', reason:'系统增加积分', time:'2026-07-06 10:00', amount:'+30' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-06 12:30', amount:'-30' }
+  ]},
+  { date:'2026-07-05', items:[
+    { type:'expense', icon:'📋', reason:'发帖置顶推广消耗积分', time:'2026-07-05 08:20', amount:'-50' },
+    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-05 15:10', amount:'-50' },
+    { type:'expense', icon:'⚙', reason:'系统扣减积分', time:'2026-07-05 17:30', amount:'-20' }
+  ]},
+  { date:'2026-07-04', items:[
+    { type:'income', icon:'🎁', reason:'新用户注册赠送积分', time:'2026-07-04 18:00', amount:'+500' }
+  ]}
+];
+
+function openPointsDetail() {
+  previousTab = currentTab;
+  renderPointsDetail();
+  switchTab('points-detail');
+}
+
+function renderPointsDetail() {
+  var total = 0;
+  pointsData.forEach(function(day) {
+    day.items.forEach(function(item) {
+      total += parseInt(item.amount);
+    });
+  });
+
+  document.getElementById('pointsTotalVal').textContent = total;
+
+  var html = '';
+  pointsData.forEach(function(day) {
+    html += '<div class="pl-date">' + day.date + '</div>';
+    day.items.forEach(function(item) {
+      html +=
+      '<div class="pl-item">' +
+        '<div class="pl-icon ' + item.type + '">' + item.icon + '</div>' +
+        '<div class="pl-info">' +
+          '<div class="pl-reason">' + item.reason + '</div>' +
+          '<div class="pl-time">' + item.time + '</div>' +
+        '</div>' +
+        '<div class="pl-amount ' + item.type + '">' + item.amount + '</div>' +
+      '</div>';
+    });
+  });
+  document.getElementById('pointsList').innerHTML = html;
+}
+
+// ============ Balance Detail ============
+var balanceData = [
+  { date:'2026-07-08', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-08 09:00', amount:'+100.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-08 10:15', amount:'-5.00' },
+    { type:'expense', icon:'📋', reason:'发帖置顶推广', time:'2026-07-08 14:20', amount:'-10.00' }
+  ]},
+  { date:'2026-07-07', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-07 08:30', amount:'+50.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-07 11:30', amount:'-5.00' },
+    { type:'expense', icon:'💰', reason:'付费发帖', time:'2026-07-07 16:45', amount:'-15.00' }
+  ]},
+  { date:'2026-07-06', items:[
+    { type:'income', icon:'⚙', reason:'系统增加余额', time:'2026-07-06 10:00', amount:'+20.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-06 14:30', amount:'-5.00' }
+  ]},
+  { date:'2026-07-05', items:[
+    { type:'expense', icon:'📋', reason:'发帖置顶推广', time:'2026-07-05 09:20', amount:'-10.00' },
+    { type:'expense', icon:'⚙', reason:'系统扣减余额', time:'2026-07-05 15:10', amount:'-30.00' }
+  ]},
+  { date:'2026-07-04', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-04 12:00', amount:'+200.00' },
+    { type:'expense', icon:'💰', reason:'付费发帖', time:'2026-07-04 18:30', amount:'-15.00' }
+  ]}
+];
+
+// ============ 付费订单中心 ============
+var orderData = [
+  { orderNo:'WP202607080001', reason:'充值余额', time:'2026-07-08 09:00', method:'微信支付', amount:'100.00', type:'income' },
+  { orderNo:'WP202607080002', reason:'解锁联系方式', time:'2026-07-08 10:15', method:'余额支付', amount:'5.00', type:'expense' },
+  { orderNo:'WP202607080003', reason:'发帖置顶推广', time:'2026-07-08 14:20', method:'组合支付', amount:'10.00', type:'expense' },
+  { orderNo:'WP202607070001', reason:'充值余额', time:'2026-07-07 08:30', method:'微信支付', amount:'50.00', type:'income' },
+  { orderNo:'WP202607070002', reason:'解锁联系方式', time:'2026-07-07 11:30', method:'余额支付', amount:'5.00', type:'expense' },
+  { orderNo:'WP202607070003', reason:'付费发帖', time:'2026-07-07 16:45', method:'组合支付', amount:'15.00', type:'expense' },
+  { orderNo:'WP202607040001', reason:'充值余额', time:'2026-07-04 12:00', method:'微信支付', amount:'200.00', type:'income' },
+  { orderNo:'WP202607040002', reason:'付费发帖', time:'2026-07-04 18:30', method:'余额支付', amount:'15.00', type:'expense' }
+];
+
+function openOrders() {
+  previousTab = 'me';
+  currentTab = 'orders';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-orders').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '付费订单中心';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderOrders();
+}
+
+function renderOrders() {
+  var html = '';
+  if (orderData.length === 0) {
+    html = '<div class="empty-state"><div class="icon">💳</div><div class="text">暂无交易记录</div></div>';
+  } else {
+    orderData.forEach(function(item) {
+      html +=
+      '<div class="order-item">' +
+        '<div class="oi-left">' +
+          '<div class="oi-reason">' + item.reason + '</div>' +
+          '<div class="oi-meta">' +
+            '<span>' + item.orderNo + '</span>' +
+            '<span class="oi-dot"></span>' +
+            '<span>' + item.time + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="oi-right">' +
+          '<div class="oi-amount">¥' + item.amount + '</div>' +
+          '<div class="oi-method">' + item.method + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+  }
+  document.getElementById('orderList').innerHTML = html;
+}
+
+function openBalanceDetail() {
+  previousTab = currentTab;
+  renderBalanceDetail();
+  switchTab('balance-detail');
+}
+
+function renderBalanceDetail() {
+  var total = 0;
+  balanceData.forEach(function(day) {
+    day.items.forEach(function(item) {
+      var v = parseFloat(item.amount);
+      total += v;
+    });
+  });
+  document.getElementById('balanceTotalVal').textContent = '¥' + total.toFixed(2);
+
+  var html = '';
+  balanceData.forEach(function(day) {
+    html += '<div class="bl-date">' + day.date + '</div>';
+    day.items.forEach(function(item) {
+      html +=
+      '<div class="bl-item">' +
+        '<div class="bl-icon ' + item.type + '">' + item.icon + '</div>' +
+        '<div class="bl-info">' +
+          '<div class="bl-reason">' + item.reason + '</div>' +
+          '<div class="bl-time">' + item.time + '</div>' +
+        '</div>' +
+        '<div class="bl-amount ' + item.type + '">' + item.amount + '</div>' +
+      '</div>';
+    });
+  });
+  document.getElementById('balanceList').innerHTML = html;
+}
+
+// ============ Recharge Page ============
+var selectedRechargeAmount = 0;
+
+function openRechargePage() {
+  selectedRechargeAmount = 0;
+  previousTab = currentTab;
+  renderRechargePage();
+  switchTab('recharge');
+}
+
+function renderRechargePage() {
+  // Update balance display
+  var total = 0;
+  balanceData.forEach(function(day) {
+    day.items.forEach(function(item) { total += parseFloat(item.amount); });
+  });
+  document.getElementById('rechargeBalanceVal').textContent = '¥' + total.toFixed(2);
+  // Reset selection
+  document.querySelectorAll('.rg-item').forEach(function(el) { el.classList.remove('selected'); });
+  document.getElementById('rechargeCustomInput').value = '';
+  document.getElementById('rechargeCustomBox').classList.remove('selected');
+  updateRechargeBottom();
+}
+
+function selectRechargeAmount(el) {
+  document.querySelectorAll('.rg-item').forEach(function(e) { e.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedRechargeAmount = parseFloat(el.getAttribute('data-amount'));
+  document.getElementById('rechargeCustomInput').value = '';
+  document.getElementById('rechargeCustomBox').classList.remove('selected');
+  updateRechargeBottom();
+}
+
+function onCustomAmountInput() {
+  var val = document.getElementById('rechargeCustomInput').value;
+  var box = document.getElementById('rechargeCustomBox');
+  document.querySelectorAll('.rg-item').forEach(function(e) { e.classList.remove('selected'); });
+  selectedRechargeAmount = parseFloat(val) || 0;
+  if (selectedRechargeAmount > 0) {
+    box.classList.add('selected');
+  } else {
+    box.classList.remove('selected');
+  }
+  updateRechargeBottom();
+}
+
+function updateRechargeBottom() {
+  document.getElementById('rechargeSelectedAmount').textContent = '¥' + selectedRechargeAmount.toFixed(2);
+  var btn = document.getElementById('rechargeSubmitBtn');
+  if (selectedRechargeAmount > 0) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+function confirmRecharge() {
+  if (selectedRechargeAmount <= 0) { showToast('请选择充值金额'); return; }
+  paymentContext = { amount: selectedRechargeAmount, reason: '余额充值', source: 'recharge' };
+  previousTab = currentTab;
+  renderPaymentPage();
+  switchTab('payment');
+}
+
+// ============ Payment Page ============
+function goToPayment(amount, reason, source) {
+  paymentContext = { amount: amount, reason: reason, source: source, el: paymentContext.el };
+  previousTab = currentTab;
+  renderPaymentPage();
+  switchTab('payment');
+}
+
+function renderPaymentPage() {
+  document.getElementById('paymentAmountVal').textContent = '¥' + paymentContext.amount.toFixed(2);
+  document.getElementById('paymentReason').textContent = paymentContext.reason;
+  document.getElementById('paymentSubmitBtn').textContent = '确认支付 ¥' + paymentContext.amount.toFixed(2);
+  // Reset method selection to default (balance)
+  selectedPaymentMethod = 'balance';
+  document.querySelectorAll('.payment-method-item').forEach(function(el) { el.classList.remove('selected'); });
+  document.getElementById('paymentMethodBalance').classList.add('selected');
+}
+
+function selectPaymentMethod(method) {
+  selectedPaymentMethod = method;
+  document.querySelectorAll('.payment-method-item').forEach(function(el) { el.classList.remove('selected'); });
+  var idMap = { balance: 'paymentMethodBalance', wechat: 'paymentMethodWx', combo: 'paymentMethodCombo' };
+  document.getElementById(idMap[method]).classList.add('selected');
+}
+
+function confirmPayment() {
+  var methodNames = { balance: '余额支付', wechat: '微信支付', combo: '组合支付' };
+  showToast('支付成功！使用' + methodNames[selectedPaymentMethod]);
+
+  if (paymentContext.source === 'recharge') {
+    balanceData[0].items.unshift({ type:'income', icon:'💳', reason:'充值余额', time:new Date().toISOString().slice(0,16).replace('T',' '), amount:'+' + paymentContext.amount.toFixed(2) });
+    setTimeout(function() {
+      switchTab('balance-detail');
+      renderBalanceDetail();
+    }, 1500);
+  } else if (paymentContext.source === 'publish-pin') {
+    // Paid for pin promotion, now submit the post
+    pubTodayCount++;
+    updatePublishRemain();
+    showToast('置顶推广已生效，帖子发布成功！');
+    resetPublishForm();
+    setTimeout(function() { switchTab('home'); }, 1500);
+  } else if (paymentContext.source === 'paid-post') {
+    showToast('付费发帖成功！');
+    setTimeout(function() { switchTab('home'); }, 1500);
+  } else if (paymentContext.source === 'unlock-idle') {
+    var el = paymentContext.el;
+    if (el) {
+      var parent = el.parentElement;
+      parent.querySelector('.field-value').textContent = '13912345678';
+      unlockBtnToDial(el);
+      showToast('解锁成功！完整号码：13912345678');
+    }
+    setTimeout(function() { goBack(); }, 1500);
+  } else if (paymentContext.source === 'unlock-detail') {
+    var el = paymentContext.el;
+    if (el) {
+      var parent = el.parentElement;
+      parent.querySelector('.field-value').textContent = '13912345678';
+      unlockBtnToDial(el);
+      showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+    }
+    setTimeout(function() { goBack(); }, 1500);
+  }
+}
+
+// ============ Notifications ============
+var notificationsData = [
+  { id:1, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'comment', commentId:1, userAvatar:'张', userNickname:'张老板', action:'评论了你的帖子', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', time:'30分钟前', read:false },
+  { id:2, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'reply', commentId:1, replyId:101, userAvatar:'湖', userNickname:'湖南大学餐饮部', action:'回复了你的评论', content:'在三楼食堂西区，最小的15㎡的还在，面食类可以经营的。', time:'20分钟前', read:false },
+  { id:3, postId:4, postType:'detail', postTitle:'中南大学校内商业街档口转让', type:'comment', commentId:1, userAvatar:'刘', userNickname:'奶茶小哥', action:'评论了你的帖子', content:'转让费大概多少？设备都包哪些？', time:'3小时前', read:false },
+  { id:4, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'reply', commentId:1, replyId:102, userAvatar:'张', userNickname:'张老板', action:'回复了你的评论', content:'好的，我下午过去看看行吗？', time:'10分钟前', read:true },
+  { id:5, postId:4, postType:'detail', postTitle:'中南大学校内商业街档口转让', type:'comment', commentId:2, userAvatar:'赵', userNickname:'赵姐', action:'评论了你的帖子', content:'请问租金一个月多少？合同还有几年？', time:'5小时前', read:true },
+  { id:6, postId:1, postType:'detail', postTitle:'湖南大学学生食堂档口招商', type:'comment', commentId:2, userAvatar:'李', userNickname:'李师傅', action:'评论了你的帖子', content:'请问进场费还要另外交吗？押金多少？', time:'1小时前', read:true },
+];
+
+function getUnreadCount() {
+  return notificationsData.filter(function(n) { return !n.read; }).length;
+}
+
+function updateUnreadBadge() {
+  var count = getUnreadCount();
+  var menuBadge = document.getElementById('menuNotifBadge');
+  var tabBadge = document.getElementById('tabMeBadge');
+  if (count > 0) {
+    if (menuBadge) { menuBadge.style.display = 'inline-block'; menuBadge.textContent = count; }
+    if (tabBadge) { tabBadge.classList.add('show'); tabBadge.textContent = count; }
+  } else {
+    if (menuBadge) { menuBadge.style.display = 'none'; }
+    if (tabBadge) { tabBadge.classList.remove('show'); }
+  }
+}
+
+function openNotifications() {
+  previousTab = currentTab;
+  currentTab = 'notifications';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-notifications').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var homeTab = document.querySelector('.tab-item[data-page="home"]');
+  if (homeTab) homeTab.classList.add('active');
+  document.getElementById('navTitle').textContent = '消息通知';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderNotifications();
+}
+
+function renderNotifications() {
+  var html = '';
+  if (notificationsData.length === 0) {
+    html = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div><div>暂无消息通知</div></div>';
+  } else {
+    notificationsData.forEach(function(n) {
+      var unreadClass = n.read ? '' : ' unread';
+      var icon = n.type === 'reply' ? '💬' : '📝';
+      html += '<div class="notif-item' + unreadClass + '" onclick="openNotifDetail(' + n.id + ')" id="notif-' + n.id + '">';
+      html += '<div class="notif-dot"></div>';
+      html += '<div class="notif-avatar">' + n.userAvatar + '</div>';
+      html += '<div class="notif-body">';
+      html += '<div class="notif-nickname">' + n.userNickname + '</div>';
+      html += '<div class="notif-action">' + icon + ' ' + n.action + '</div>';
+      html += '<div class="notif-content">' + n.content + '</div>';
+      html += '<div class="notif-post-title">📌 ' + n.postTitle + '</div>';
+      html += '<div class="notif-time">' + n.time + '</div>';
+      html += '</div></div>';
+    });
+  }
+  document.getElementById('notifList').innerHTML = html;
+  updateUnreadBadge();
+}
+
+function markAllNotificationsRead() {
+  notificationsData.forEach(function(n) { n.read = true; });
+  renderNotifications();
+  showToast('已全部标记为已读');
+}
+
+function openNotifDetail(notifId) {
+  var n = notificationsData.find(function(item) { return item.id === notifId; });
+  if (!n) return;
+  // Mark as read
+  if (!n.read) { n.read = true; renderNotifications(); }
+  // Open the post detail page
+  var item = mockData.find(function(d) { return d.id === n.postId; });
+  if (!item) return;
+  previousTab = currentTab;
+  renderDetailPage(item);
+  switchTab('detail');
+  // Scroll to comment section after a short delay to allow DOM to render
+  setTimeout(function() {
+    var commentEl = document.querySelector('.comment-item[data-cid="' + n.commentId + '"]');
+    if (commentEl) {
+      commentEl.scrollIntoView({ behavior:'smooth', block:'center' });
+      // Highlight briefly
+      commentEl.style.transition = 'background 0.3s';
+      commentEl.style.background = '#fef3c7';
+      setTimeout(function() { commentEl.style.background = ''; }, 2000);
+    }
+  }, 300);
+}
+
+// ============ Favorites & Browsing History ============
+// Use post IDs from mockData to simulate favorited/viewed posts
+var favoritesIds = [1, 4, 6]; // 供应帖 id=1, 闲置帖 id=4, 供应帖 id=6
+var browsingHistoryIds = [1, 2, 4, 6, 8]; // mix of supply and idle posts
+
+function openFavorites() {
+  previousTab = currentTab;
+  currentTab = 'favorites';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-favorites').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '我的收藏';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderFavorites();
+}
+
+function renderFavorites() {
+  var html = '';
+  if (favoritesIds.length === 0) {
+    html = '<div class="empty-state"><div class="icon">⭐</div><div class="text">暂无收藏</div></div>';
+  } else {
+    favoritesIds.forEach(function(id) {
+      var item = mockData.find(function(d) { return d.id === id; });
+      if (item) {
+        html += renderInfoCard(item, id - 1, true);
+      }
+    });
+  }
+  document.getElementById('favList').innerHTML = html;
+}
+
+function openBrowsingHistory() {
+  previousTab = currentTab;
+  currentTab = 'browsing-history';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-browsing-history').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('navTitle').textContent = '浏览足迹';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  renderBrowsingHistory();
+}
+
+function renderBrowsingHistory() {
+  var html = '';
+  if (browsingHistoryIds.length === 0) {
+    html = '<div class="empty-state"><div class="icon">👁</div><div class="text">暂无浏览记录</div></div>';
+  } else {
+    browsingHistoryIds.forEach(function(id) {
+      var item = mockData.find(function(d) { return d.id === id; });
+      if (item) {
+        html += renderInfoCard(item, id - 1);
+      }
+    });
+  }
+  document.getElementById('bhList').innerHTML = html;
+}
 
 // ============ City Select ============
 var currentCity = '长沙';
@@ -1568,6 +2661,14 @@ function openCityList() {
 }
 
 function renderCityPage() {
+  // Render hot cities
+  var hotCities = ['北京','上海','广州','深圳','杭州','成都','重庆','武汉','南京','天津'];
+  var hotHtml = '';
+  hotCities.forEach(function(c) {
+    hotHtml += '<span class="hot-tag" onclick="selectHotCity(\'' + c + '\')">' + c + '</span>';
+  });
+  document.getElementById('hotCityTags').innerHTML = hotHtml;
+
   var html = '';
   var letters = [];
   cityGroups.forEach(function(g) {
@@ -1603,15 +2704,35 @@ function selectCity(city) {
   showToast('已切换至：' + city);
 }
 
+function selectHotCity(city) {
+  selectCity(city);
+  switchTab('home');
+}
+
+function relocateCity() {
+  showToast('正在获取当前位置…');
+  // Simulate geolocation
+  setTimeout(function() {
+    selectCity('长沙');
+    showToast('已定位至：长沙');
+  }, 800);
+}
+
 function scrollToCityGroup(letter) {
   var el = document.getElementById('cityGroup_' + letter);
   if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function goBack() {
+  // If editing a post on publish page, go back to my-posts
+  if (editingPostId && currentTab === 'publish') {
+    resetPublishForm();
+    openMyPosts();
+    return;
+  }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback', 'settings'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -1987,7 +3108,8 @@ function renderHomeCards() {
   document.getElementById('homeCards').innerHTML = html;
 }
 
-function renderInfoCard(item, idx) {
+function renderInfoCard(item, idx, forceFaved) {
+  var faved = forceFaved || item.userFaved;
   const imagesHtml = item.images.length ? `
     <div class="card-images">
       ${item.images.map((img,i) => `<div class="card-img" style="${cardImgStyle(img, i)}">${imgContent(i)}</div>`).join('')}
@@ -2015,7 +3137,7 @@ function renderInfoCard(item, idx) {
       </div>
       <div class="card-actions">
         <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
-        <span class="${item.userFaved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${item.userFaved ? '★' : '☆'} ${item.favorites}</span>
+        <span class="${faved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${faved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
         <span onclick="event.stopPropagation();showToast('已复制分享链接')">↗ 转发</span>
       </div>
@@ -2272,13 +3394,14 @@ function renderIdleDetailPage(item) {
       <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">138****6789</div>
       <button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>
     </div>
-    <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="toggleIdleLike(this)">♡ 点赞</span>
-      <span id="idleDetailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleIdleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
-    </div>`;
+    <div class="comment-section">
+      <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
+      ${renderComments(item.comments)}</div>`;
 
   document.getElementById('idleDetailBody').innerHTML = html;
+  currentIdleDetailId = item.id;
+  currentPostType = 'idle';
+  updateIdleDetailBottomBar(item);
 }
 
 // ============ News Page ============
@@ -2296,7 +3419,7 @@ function renderNewsCards() {
   let html = '';
   data.forEach(item => {
     html += `
-    <div class="news-card" onclick="showToast('查看资讯详情: ${item.title}')">
+    <div class="news-card" onclick="openNewsDetail(${item.id})">
       <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':'💡'}</div>
       <div class="news-info">
         <div class="news-title">${item.title}</div>
@@ -2309,6 +3432,37 @@ function renderNewsCards() {
     </div>`;
   });
   document.getElementById('newsCards').innerHTML = html;
+}
+
+// ============ News Detail ============
+let currentNewsDetail = null;
+let currentDetailId = null;
+let currentIdleDetailId = null;
+let currentPostType = null; // 'detail' | 'idle'
+
+function openNewsDetail(id) {
+  var item = newsData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  currentNewsDetail = item;
+  renderNewsDetail();
+  var prev = currentTab;
+  if (!['news', 'news-detail'].includes(prev)) previousTab = prev;
+  switchTab('news-detail');
+}
+
+function renderNewsDetail() {
+  var item = currentNewsDetail;
+  if (!item) return;
+  var body = document.getElementById('newsDetailBody');
+  body.innerHTML =
+    '<div class="news-detail-header">' +
+      '<div class="nd-title">' + item.title + '</div>' +
+      '<div class="nd-meta">' +
+        '<span>👁 ' + item.views + '次阅读</span>' +
+        '<span>' + item.time + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="news-detail-content">' + item.content + '</div>';
 }
 
 // ============ Detail View ============
@@ -2346,13 +3500,14 @@ function renderDetailPage(item) {
       <div class="field-value" style="font-size:32px;letter-spacing:2px">${item.phone}</div>
       <button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>
     </div>
-    <div style="display:flex;justify-content:space-around;padding:24px 0;margin-top:24px;border-top:2px solid var(--border)">
-      <span id="detailLikeBtn" class="${item.userLiked ? 'liked' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userLiked ? 'color:#ef4444;font-weight:600;' : ''}" onclick="toggleDetailLike(${item.id})">${item.userLiked ? '❤' : '♡'} 点赞 ${item.likes}</span>
-      <span id="detailFavBtn" class="${item.userFaved ? 'favorited' : ''}" style="cursor:pointer;font-size:var(--fs-body);${item.userFaved ? 'color:#f59e0b;font-weight:600;' : ''}" onclick="toggleDetailFav(${item.id})">${item.userFaved ? '★' : '☆'} 收藏 ${item.favorites}</span>
-      <span style="cursor:pointer;font-size:var(--fs-body)" onclick="showToast('已复制分享链接')">↗ 分享</span>
-    </div>`;
+    <div class="comment-section">
+      <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
+      ${renderComments(item.comments)}</div>`;
 
   document.getElementById('detailPageBody').innerHTML = html;
+  currentDetailId = item.id;
+  currentPostType = 'detail';
+  updateDetailBottomBar(item);
 }
 
 function closeDetail() {
@@ -2381,17 +3536,13 @@ function handleUnlockPhone(id, el) {
 }
 
 function handleIdleDetailUnlock(el) {
-  var parent = el.parentElement;
-  parent.querySelector('.field-value').textContent = '13912345678';
-  unlockBtnToDial(el);
-  showToast('解锁成功！完整号码：13912345678');
+  paymentContext.el = el;
+  goToPayment(1.00, '解锁查看完整号码', 'unlock-idle');
 }
 
 function handleDetailUnlock(el) {
-  var parent = el.parentElement;
-  parent.querySelector('.field-value').textContent = '13912345678';
-  unlockBtnToDial(el);
-  showToast('解锁成功！完整号码：13912345678（24小时内有效）');
+  paymentContext.el = el;
+  goToPayment(2.00, '解锁查看完整号码', 'unlock-detail');
 }
 
 // ============ Publish ============
@@ -2566,16 +3717,62 @@ function submitPublish() {
     return;
   }
 
-  if (pubTodayCount >= 1) {
-    showToast('今日免费发布额度已用完\n（模拟：支付¥2发布）');
-    pubTodayCount++;
-  } else {
-    pubTodayCount++;
-    showToast('提交成功！等待审核中...');
+  // Editing existing post (from rejected)
+  if (editingPostId) {
+    var post = myPostsData.find(function(p) { return p.id === editingPostId; });
+    if (post) {
+      post.title = title;
+      post.content = desc;
+      post.status = 'pending';
+      post.category = cat;
+      post.region = region;
+      post.time = new Date().toISOString().slice(0,16).replace('T',' ').replace(/-/g,'-');
+      delete post.contentDanger;
+    }
+    showToast('已重新提交审核');
+    editingPostId = null;
+    // Reset form
+    resetPublishForm();
+    // Switch to my-posts
+    setTimeout(function() { openMyPosts(); }, 1000);
+    return;
   }
+
+  var pin = document.getElementById('pubPin').value;
+  var pinPrices = { '7': 9.9, '15': 18.8, '30': 29.9 };
+
+  if (pubTodayCount >= 1) {
+    // No free quota — go to payment for paid posting
+    if (pin && pinPrices[pin]) {
+      goToPayment(pinPrices[pin] + 2.00, '付费发帖+置顶推广 ' + pin + '天', 'publish-pin');
+    } else {
+      goToPayment(2.00, '付费发帖', 'paid-post');
+    }
+    pubTodayCount++;
+    updatePublishRemain();
+    resetPublishForm();
+    return;
+  }
+
+  // Has free quota — check if pin selected
+  if (pin && pinPrices[pin]) {
+    goToPayment(pinPrices[pin], '置顶推广 ' + pin + '天', 'publish-pin');
+    return;
+  }
+
+  // Free posting
+  pubTodayCount++;
+  showToast('提交成功！等待审核中...');
   updatePublishRemain();
 
   // Reset form
+  resetPublishForm();
+
+  // Switch to home after 1s
+  setTimeout(() => switchTab('home'), 1000);
+}
+
+function resetPublishForm() {
   document.getElementById('pubCategory').value = '';
   document.getElementById('pubCategoryText').textContent = '请选择分类';
   document.getElementById('pubCategoryText').classList.add('placeholder');
@@ -2596,92 +3793,230 @@ function submitPublish() {
   document.getElementById('photoPreview').innerHTML = '';
   photoCount = 0;
   document.getElementById('pubTags').value = '';
-
-  // Switch to home after 1s
-  setTimeout(() => switchTab('home'), 1000);
+  document.querySelector('#page-publish .submit-btn').textContent = '确认发布';
+  editingPostId = null;
 }
 
 // ============ My Posts ============
-function showMyPosts() {
-  const html = `
-    <div class="detail-header">
-      <button class="close-btn" onclick="closeMyPosts()">✕</button>
-      <span class="title">我的发布</span>
-      <span style="width:48px"></span>
-    </div>
-    <div class="detail-body">
-      <div style="padding:16px 0">
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--warning);background:var(--warning-light);padding:4px 16px;border-radius:8px">审核中</span>
-          <div class="card-title" style="margin-top:16px">湖南大学食堂档口招商</div>
-          <div class="card-desc">刚刚提交，等待审核...</div>
-          <div style="font-size:var(--fs-caption);color:var(--text-muted);margin-top:8px">2026-07-07 10:25</div>
-        </div>
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--success);background:var(--success-light);padding:4px 16px;border-radius:8px">✓ 已上架</span>
-          <div class="card-title" style="margin-top:16px">招聘面点师傅</div>
-          <div class="card-desc">急招面点师傅2名...</div>
-          <div style="display:flex;gap:16px;margin-top:16px">
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('已刷新')">🔄 刷新</button>
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer;color:var(--danger)" onclick="showToast('已下架')">⬇ 下架</button>
-          </div>
-        </div>
-        <div class="info-card">
-          <span style="font-size:var(--fs-caption-sm);color:var(--danger);background:var(--danger-light);padding:4px 16px;border-radius:8px">审核驳回</span>
-          <div class="card-title" style="margin-top:16px">闲置冰柜转让</div>
-          <div class="card-desc" style="color:var(--danger)">驳回原因：图片模糊，请重新上传清晰图片</div>
-          <div style="display:flex;gap:16px;margin-top:16px">
-            <button style="padding:12px 28px;border-radius:32px;border:2px solid var(--border);background:white;font-size:var(--fs-caption);cursor:pointer" onclick="showToast('进入编辑页面')">✏ 重新编辑</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  document.getElementById('mypostsPanel').innerHTML = html;
-  document.getElementById('mypostsOverlay').classList.add('show');
+var myPostsData = [
+  { id:1, status:'pending', title:'湖南大学食堂档口招商', content:'湖南大学天马学生食堂一楼档口对外招商，面积20㎡，适合做快餐、小吃等品类，水电齐全，客流量大，月租面议。', images:['',''], time:'2026-07-07 10:25', actions:[] },
+  { id:2, status:'published', title:'招聘面点师傅', content:'急招面点师傅2名，要求3年以上白案经验，会做包子、馒头、花卷等，月薪5000-8000，包吃住。', images:['','',''], time:'2026-07-06 15:30', actions:[
+    { label:'删除', cls:'danger', action:'delete' }
+  ]},
+  { id:3, status:'rejected', title:'闲置冰柜转让', content:'九成新商用冰柜低价转让，使用不到一年，制冷效果好的，因店面升级更换大容量设备，低价处理。', images:['',''], time:'2026-07-05 09:15', contentDanger:'驳回原因：图片模糊，请重新上传清晰图片', actions:[
+    { label:'编辑', cls:'', action:'edit', id:3 }
+  ]},
+  { id:4, status:'pending', title:'中南大学档口招租', content:'中南大学南校区食堂二楼档口招租，面积15㎡，适合奶茶、轻食等项目，学校人流量大，价格面议。', images:[], time:'2026-07-08 09:00', actions:[] },
+  { id:5, status:'published', title:'转让奶茶设备一套', content:'全套奶茶设备打包转让，含封口机、果糖机、蒸汽机、制冰机等，九成新，打包价格面议。', images:['',''], time:'2026-07-04 11:20', actions:[
+    { label:'删除', cls:'danger', action:'delete' }
+  ]}
+];
+
+var myPostsCurrentTab = 'all';
+
+function openMyPosts() {
+  previousTab = currentTab;
+  currentTab = 'my-posts';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-my-posts').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('navTitle').textContent = '我的发布';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  // Reset tab to 全部
+  myPostsCurrentTab = 'all';
+  document.querySelectorAll('.mp-tab').forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-status') === 'all'); });
+  renderMyPosts('all');
 }
 
-function closeMyPosts() {
-  document.getElementById('mypostsOverlay').classList.remove('show');
+function switchMyPostsTab(el, status) {
+  document.querySelectorAll('.mp-tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  myPostsCurrentTab = status;
+  renderMyPosts(status);
+}
+
+function renderMyPosts(statusFilter) {
+  var items = myPostsData;
+  if (statusFilter && statusFilter !== 'all') {
+    items = myPostsData.filter(function(p) { return p.status === statusFilter; });
+  }
+  var html = '';
+  var statusLabels = { pending:'审核中', published:'已发布', rejected:'已驳回' };
+  if (items.length === 0) {
+    html = '<div class="mp-empty">暂无发布记录</div>';
+  } else {
+    items.forEach(function(p) {
+      html += '<div class="mp-item" id="mp-' + p.id + '">';
+      html += '<div class="mp-header">';
+      html += '<div class="mp-title">' + p.title + '</div>';
+      html += '<span class="mp-status-tag ' + p.status + '">' + (statusLabels[p.status] || p.status) + '</span>';
+      html += '</div>';
+      // content
+      if (p.content) {
+        html += '<div class="mp-content">' + p.content + '</div>';
+        if (p.contentDanger) {
+          html += '<div class="mp-content-danger" style="margin-top:8px;font-size:var(--fs-caption)">' + p.contentDanger + '</div>';
+        }
+      }
+      // images (placeholder colored blocks)
+      if (p.images && p.images.length > 0) {
+        html += '<div class="mp-images">';
+        var imgColors = ['#fef2f2','#ecfdf5','#eff6ff','#fefce8'];
+        p.images.forEach(function(_, i) {
+          html += '<div class="mp-img" style="background:' + imgColors[i % 4] + '"></div>';
+        });
+        html += '</div>';
+      }
+      // footer: time only
+      html += '<div class="mp-footer">';
+      html += '<span class="mp-time">' + p.time + '</span>';
+      html += '</div>';
+      // actions
+      if (p.actions.length > 0) {
+        html += '<div class="mp-actions">';
+        p.actions.forEach(function(a) {
+          if (a.action === 'delete') {
+            html += '<button class="mp-btn danger" onclick="deleteMyPost(' + p.id + ')">删除</button>';
+          } else if (a.action === 'edit') {
+            html += '<button class="mp-btn" onclick="editMyPost(' + a.id + ')">' + a.label + '</button>';
+          } else {
+            html += '<button class="mp-btn' + (a.cls ? ' ' + a.cls : '') + '" onclick="showToast(\'' + a.toast + '\')">' + a.label + '</button>';
+          }
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+  }
+  document.getElementById('myPostsList').innerHTML = html;
+}
+
+function deleteMyPost(id) {
+  showConfirm('确定要删除该发布吗？删除后不可恢复。', function() {
+    myPostsData = myPostsData.filter(function(p) { return p.id !== id; });
+    renderMyPosts(myPostsCurrentTab);
+    showToast('删除成功');
+  });
+}
+
+var editingPostId = null;
+
+function editMyPost(id) {
+  var post = myPostsData.find(function(p) { return p.id === id; });
+  if (!post) return;
+  editingPostId = id;
+  // Pre-fill the publish form
+  document.getElementById('pubTitle').value = post.title || '';
+  document.getElementById('pubDesc').value = post.content || '';
+  // Set category (default to 招商招租 if not specified)
+  var catVal = post.category || 'recruit';
+  document.getElementById('pubCategory').value = catVal;
+  var catMap = { recruit:'招商招租', job:'招聘求职', supply:'食材供应', service:'餐饮服务', secondhand:'二手设备', other:'其他' };
+  document.getElementById('pubCategoryText').textContent = catMap[catVal] || '请选择分类';
+  document.getElementById('pubCategoryText').classList.remove('placeholder');
+  // Set region
+  if (post.region) {
+    document.getElementById('pubRegion1').value = post.region;
+    document.getElementById('pubRegionText').textContent = post.region;
+    document.getElementById('pubRegionText').classList.remove('placeholder');
+  }
+  // Update button
+  document.querySelector('#page-publish .submit-btn').textContent = '重新提交审核';
+  // Navigate to publish page
+  previousTab = currentTab;
+  currentTab = 'publish';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-publish').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var tabEl = document.querySelector('.tab-item[data-page="publish"]');
+  if (tabEl) tabEl.classList.add('active');
+  document.getElementById('navTitle').textContent = '编辑发布';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  updatePublishRemain();
+}
+
+function showConfirm(msg, onConfirm) {
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOkBtn').onclick = function() {
+    closeConfirm();
+    onConfirm();
+  };
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
 }
 
 // ============ Feedback ============
-function showFeedback() {
-  const html = `
-    <div class="detail-header">
-      <button class="close-btn" onclick="closeFeedback()">✕</button>
-      <span class="title">意见反馈</span>
-      <span style="width:48px"></span>
-    </div>
-    <div class="detail-body">
-      <div class="form-group">
-        <div class="form-label">反馈标题</div>
-        <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
-      </div>
-      <div class="form-group">
-        <div class="form-label">反馈内容</div>
-        <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
-      </div>
-      <div class="form-group">
-        <div class="form-label">上传截图（选填）</div>
-        <div class="photo-upload">
-          <div class="upload-box" onclick="showToast('模拟上传图片')">
-            <span class="icon">📷</span><span>添加图片</span>
-          </div>
-        </div>
-      </div>
-      <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>
-    </div>`;
-  document.getElementById('feedbackPanel').innerHTML = html;
-  document.getElementById('feedbackOverlay').classList.add('show');
+function openFeedback() {
+  switchTab('feedback');
 }
 
-function closeFeedback() {
-  document.getElementById('feedbackOverlay').classList.remove('show');
+function renderFeedback() {
+  var html = `
+    <div class="fb-form-group">
+      <div class="form-label">反馈标题</div>
+      <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
+    </div>
+    <div class="fb-form-group">
+      <div class="form-label">反馈内容</div>
+      <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
+    </div>
+    <div class="fb-form-group">
+      <div class="form-label">上传截图（选填）</div>
+      <div class="photo-upload">
+        <div class="upload-box" onclick="showToast('模拟上传图片')">
+          <span class="icon">📷</span><span>添加图片</span>
+        </div>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>`;
+  document.getElementById('feedbackForm').innerHTML = html;
 }
 
 function submitFeedback() {
   showToast('感谢您的反馈！我们会尽快处理');
-  setTimeout(() => closeFeedback(), 800);
+  setTimeout(function() { goBack(); }, 800);
+}
+
+// ============ Settings ============
+function openSettings() {
+  switchTab('settings');
+}
+function editNickname() {
+  showToast('模拟打开昵称编辑');
+}
+function changePhone() {
+  showToast('模拟打开手机号更换');
+}
+function showLogoutConfirm() {
+  var confirmFn = function() {
+    closeConfirm();
+    switchTab('login');
+    showToast('已退出登录');
+  };
+  showConfirm('确定要退出登录吗？', confirmFn);
+}
+function handleLogin(type) {
+  var cb = document.getElementById('loginCheckbox');
+  if (!cb.classList.contains('checked')) {
+    showToast('请先阅读并同意用户协议和隐私政策');
+    return;
+  }
+  if (type === 'wechat') {
+    showToast('模拟微信登录成功');
+    setTimeout(function() { switchTab('home'); }, 800);
+  }
+}
+function toggleLoginAgree() {
+  var cb = document.getElementById('loginCheckbox');
+  cb.classList.toggle('checked');
+  cb.textContent = cb.classList.contains('checked') ? '☑' : '☐';
 }
 
 // ============ Interactions ============
@@ -2715,76 +4050,272 @@ function toggleFav(el, id) {
   }
 }
 
+// ============ Comment & Bottom Bar Helpers ============
+
+// Sensitive words list
+var SENSITIVE_WORDS = ['广告', '兼职', '刷单', '诈骗', '赌博', '色情', '招嫖', '毒品', '枪支', '代考', '替考', '传销', '高利贷', '办证', '假证', '迷药', '催情', '窃听', '赌博', '刷钻', '套现', '洗钱'];
+
+function hasSensitiveWord(text) {
+  var t = text.toLowerCase();
+  for (var i = 0; i < SENSITIVE_WORDS.length; i++) {
+    if (t.indexOf(SENSITIVE_WORDS[i].toLowerCase()) !== -1) return true;
+  }
+  return false;
+}
+
+// Current reply target
+var currentReplyTarget = null; // { commentId: number, replyTo: 'comment' | replyId }
+
+// === Bar input: replaces bottom bar with input + confirm button ===
+function showBarInput(type, mode) {
+  /* type: 'detail' | 'idle',  mode: 'comment' | 'reply' */
+  if (mode === 'comment') currentReplyTarget = null;
+  currentPostType = type;
+  var barId = type === 'detail' ? 'detailBottomBar' : 'idleDetailBar';
+  var bar = document.getElementById(barId);
+  if (!bar) return;
+  if (bar.querySelector('.bar-input-wrap')) { bar.querySelector('input').focus(); return; }
+  bar.setAttribute('data-original', bar.innerHTML);
+  var placeholder = mode === 'comment' ? '请输入评论内容' : '请输入回复内容';
+  var btnText = mode === 'comment' ? '发表' : '回复';
+  var handler = mode === 'comment' ? 'submitBarComment()' : 'submitBarReply()';
+  bar.innerHTML = '<div class="bar-input-wrap">' +
+    '<input type="text" id="barInputText" placeholder="' + placeholder + '" maxlength="200" onkeydown="if(event.key===\'Enter\')' + handler + '">' +
+    '<button onclick="' + handler + '">' + btnText + '</button>' +
+    '</div>';
+  setTimeout(function() { var inp = document.getElementById('barInputText'); if (inp) inp.focus(); }, 100);
+}
+
+function showReplyInput(commentId, replyToId) {
+  currentReplyTarget = { commentId: commentId, replyTo: replyToId || 'comment' };
+  showBarInput(currentPostType, 'reply');
+}
+
+function submitBarComment() {
+  var inp = document.getElementById('barInputText');
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) { showToast('请输入评论内容'); return; }
+  if (text.length < 2) { showToast('评论内容至少2个字符'); return; }
+  if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
+  var item = findCurrentPost();
+  if (!item) return;
+  if (!item.comments) item.comments = [];
+  item.comments.push({
+    id: Date.now(), avatar: '我', nickname: '当前用户', time: '刚刚',
+    content: text, liked: false, likes: 0, replies: [], isAuthor: false
+  });
+  restoreAndReRender();
+  showToast('评论发表成功');
+}
+
+function submitBarReply() {
+  var inp = document.getElementById('barInputText');
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) { showToast('请输入回复内容'); return; }
+  if (hasSensitiveWord(text)) { showToast('评论/回复内容涉及违规词汇'); return; }
+  if (!currentReplyTarget) return;
+  var commentId = currentReplyTarget.commentId;
+  var item = findCurrentPost();
+  if (!item || !item.comments) return;
+  var comment = item.comments.find(function(c) { return c.id === commentId; });
+  if (!comment) return;
+  if (!comment.replies) comment.replies = [];
+  var targetNickname = '';
+  if (currentReplyTarget.replyTo !== 'comment') {
+    var targetReply = comment.replies.find(function(r) { return r.id === currentReplyTarget.replyTo; });
+    if (targetReply) targetNickname = targetReply.nickname;
+  } else { targetNickname = comment.nickname; }
+  comment.replies.push({
+    id: Date.now(), avatar: '我', nickname: '当前用户', time: '刚刚',
+    content: (targetNickname ? '@' + targetNickname + ' ' : '') + text, isAuthor: false
+  });
+  currentReplyTarget = null;
+  restoreAndReRender();
+  showToast('回复成功');
+}
+
+function findCurrentPost() {
+  var postId = currentPostType === 'detail' ? currentDetailId : currentIdleDetailId;
+  return currentPostType === 'detail'
+    ? mockData.find(function(d) { return d.id === postId; })
+    : idleData.find(function(d) { return d.id === postId; });
+}
+
+function restoreAndReRender() {
+  var item = findCurrentPost();
+  if (!item) return;
+  // Restore bottom bar from saved original
+  var barId = currentPostType === 'detail' ? 'detailBottomBar' : 'idleDetailBar';
+  var bar = document.getElementById(barId);
+  if (bar && bar.getAttribute('data-original')) {
+    bar.innerHTML = bar.getAttribute('data-original');
+    bar.removeAttribute('data-original');
+  }
+  // Re-render body
+  if (currentPostType === 'detail') { renderDetailPage(item); updateDetailBottomBar(item); }
+  else { renderIdleDetailPage(item); updateIdleDetailBottomBar(item); }
+}
+
+function renderComments(comments) {
+  if (!comments || !comments.length) {
+    return '<div class="cs-empty"><div class="cs-empty-icon">💬</div><div>暂无评论，快来抢沙发吧~</div></div>';
+  }
+  var html = '';
+  comments.forEach(function(c) {
+    html +=
+    '<div class="comment-item" data-cid="' + c.id + '">' +
+      '<div class="ci-main">' +
+        '<div class="ci-avatar">' + c.avatar + '</div>' +
+        '<div class="ci-body">' +
+          '<div class="ci-header">' +
+            '<span class="ci-nickname">' + c.nickname + '</span>' +
+            '<span class="ci-time">' + c.time + '</span>' +
+          '</div>' +
+          '<div class="ci-content">' + c.content + '</div>' +
+          '<div class="ci-actions">' +
+            '<span class="ci-like' + (c.liked ? ' active' : '') + '" onclick="toggleCommentLike(this,' + c.id + ')">' + (c.liked ? '❤' : '♡') + ' <span class="ci-like-count">' + c.likes + '</span></span>' +
+            '<span class="ci-reply" onclick="showReplyInput(' + c.id + ')">回复</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      renderReplies(c.replies, c.id) +
+    '</div>';
+  });
+  return html;
+}
+
+function renderReplies(replies, commentId) {
+  if (!replies || !replies.length) return '';
+  var html = '<div class="reply-list">';
+  replies.forEach(function(r) {
+    html +=
+    '<div class="reply-item">' +
+      '<div class="ri-avatar' + (r.isAuthor ? ' ri-author' : '') + '">' + r.avatar + '</div>' +
+      '<div class="ri-body">' +
+        '<div class="ri-header">' +
+          '<span class="ri-nickname">' + r.nickname + (r.isAuthor ? ' <span style="font-size:var(--fs-caption);color:var(--primary);font-weight:400">(作者)</span>' : '') + '</span>' +
+          '<span class="ri-time">' + r.time + '</span>' +
+        '</div>' +
+        '<div class="ri-content">' + r.content + '</div>' +
+        '<div class="ri-actions">' +
+          '<span class="ri-reply" onclick="showReplyInput(' + commentId + ',' + r.id + ')">回复</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function toggleCommentLike(el, commentId) {
+  if (el.classList.contains('active')) {
+    el.classList.remove('active');
+    var countEl = el.querySelector('.ci-like-count');
+    var cur = parseInt(countEl.textContent) || 0;
+    countEl.textContent = Math.max(0, cur - 1);
+    el.innerHTML = '♡ <span class="ci-like-count">' + countEl.textContent + '</span>';
+  } else {
+    el.classList.add('active');
+    var countEl = el.querySelector('.ci-like-count');
+    var cur = parseInt(countEl.textContent) || 0;
+    countEl.textContent = cur + 1;
+    el.innerHTML = '❤ <span class="ci-like-count">' + countEl.textContent + '</span>';
+    el.classList.add('active');
+  }
+}
+
+function updateDetailBottomBar(item) {
+  var likeEl = document.getElementById('detailBarLike');
+  var favEl = document.getElementById('detailBarFav');
+  if (item.userLiked) {
+    likeEl.className = 'bar-btn liked';
+    likeEl.innerHTML = '❤ 点赞 ' + (item.likes + 1);
+  } else {
+    likeEl.className = 'bar-btn';
+    likeEl.innerHTML = '♡ 点赞 ' + item.likes;
+  }
+  if (item.userFaved) {
+    favEl.className = 'bar-btn favorited';
+    favEl.innerHTML = '★ 收藏 ' + item.favorites;
+  } else {
+    favEl.className = 'bar-btn';
+    favEl.innerHTML = '☆ 收藏 ' + item.favorites;
+  }
+}
+
+function updateIdleDetailBottomBar(item) {
+  var favEl = document.getElementById('idleBarFav');
+  // Idle like is simple toggle without count
+  if (item.userFaved) {
+    favEl.className = 'bar-btn favorited';
+    favEl.innerHTML = '★ 收藏 ' + item.favorites;
+  } else {
+    favEl.className = 'bar-btn';
+    favEl.innerHTML = '☆ 收藏 ' + item.favorites;
+  }
+}
+
 function toggleIdleLike(el) {
   if (el.classList.contains('liked')) {
     el.classList.remove('liked');
     el.innerHTML = '♡ 点赞';
-    el.style.color = '';
-    el.style.fontWeight = '';
     showToast('已取消点赞');
   } else {
     el.classList.add('liked');
     el.innerHTML = '❤ 点赞';
-    el.style.color = '#ef4444';
-    el.style.fontWeight = '600';
     showToast('已点赞');
   }
 }
 
 function toggleIdleDetailFav(id) {
-  var el = document.getElementById('idleDetailFavBtn');
+  var el = document.getElementById('idleBarFav');
   var item = idleData.find(function(d) { return d.id === id; });
   if (!item) return;
   if (el.classList.contains('favorited')) {
     el.classList.remove('favorited');
     item.userFaved = false;
-    el.style.color = '';
-    el.style.fontWeight = '';
     el.innerHTML = '☆ 收藏 ' + item.favorites;
     showToast('已取消收藏');
   } else {
     el.classList.add('favorited');
     item.userFaved = true;
-    el.style.color = '#f59e0b';
-    el.style.fontWeight = '600';
     el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
     showToast('已收藏');
   }
 }
 
-// Detail page toggle
+// Detail page toggle (bottom bar)
 function toggleDetailLike(id) {
-  var el = document.getElementById('detailLikeBtn');
+  var el = document.getElementById('detailBarLike');
   var item = mockData.find(d=>d.id===id);
+  if (!item) return;
   if (el.classList.contains('liked')) {
     el.classList.remove('liked');
     item.userLiked = false;
-    el.style.color = ''; el.style.fontWeight = '';
     el.innerHTML = '♡ 点赞 ' + item.likes;
-    // Also update the card list
     updateCardActions(id);
   } else {
     el.classList.add('liked');
     item.userLiked = true;
-    el.style.color = '#ef4444'; el.style.fontWeight = '600';
     el.innerHTML = '❤ 点赞 ' + (item.likes + 1);
     updateCardActions(id);
   }
 }
 
 function toggleDetailFav(id) {
-  var el = document.getElementById('detailFavBtn');
+  var el = document.getElementById('detailBarFav');
   var item = mockData.find(d=>d.id===id);
+  if (!item) return;
   if (el.classList.contains('favorited')) {
     el.classList.remove('favorited');
     item.userFaved = false;
-    el.style.color = ''; el.style.fontWeight = '';
     el.innerHTML = '☆ 收藏 ' + item.favorites;
     updateCardActions(id);
   } else {
     el.classList.add('favorited');
     item.userFaved = true;
-    el.style.color = '#f59e0b'; el.style.fontWeight = '600';
     el.innerHTML = '★ 收藏 ' + (item.favorites + 1);
     updateCardActions(id);
   }
@@ -2796,13 +4327,21 @@ function updateCardActions(id) {
 }
 
 // ============ CS Menu ============
-function toggleCsMenu() {
-  document.getElementById('csMenu').classList.toggle('hidden');
+function openCsPopup() {
+  document.getElementById('csOverlay').classList.add('show');
+}
+function closeCsPopup() {
+  document.getElementById('csOverlay').classList.remove('show');
+}
+function handleCsOption(type) {
+  closeCsPopup();
+  if (type === 'phone') showToast('正在拨打客服电话：400-XXX-XXXX');
+  else if (type === 'wechat') showToast('请添加客服微信：wanyue_cs');
+  else if (type === 'online') showToast('正在连接在线客服...');
 }
 
 function scrollToTop() {
   document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
-  document.getElementById('csMenu').classList.add('hidden');
 }
 
 // ============ Toast ============
@@ -3152,7 +4691,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
     if (newsResults.length > 0) {
       html += '<div class="section-title" style="padding-top:32px">📰 行业资讯</div>';
       newsResults.forEach(function(item) {
-        html += '<div class="news-card" onclick="showToast(\'查看资讯详情: ' + item.title + '\')">' +
+        html += '<div class="news-card" onclick="openNewsDetail(' + item.id + ')">' +
           '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : '💡') + '</div>' +
           '<div class="news-info"><div class="news-title">' + item.title + '</div>' +
           '<div class="news-desc">' + item.desc + '</div>' +
@@ -3165,9 +4704,8 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
   document.getElementById('searchResults').style.display = 'block';
 }
 
-// Close CS menu on scroll + toggle back-to-top
+// Toggle back-to-top button on scroll
 document.getElementById('pageContainer').addEventListener('scroll', function() {
-  document.getElementById('csMenu').classList.add('hidden');
   var scrollTop = document.getElementById('pageContainer').scrollTop;
   var btn = document.getElementById('backToTop');
   if (scrollTop > 800) {
@@ -3182,7 +4720,6 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeDetail();
     closeMyPosts();
-    closeFeedback();
   }
 });
 </script>
