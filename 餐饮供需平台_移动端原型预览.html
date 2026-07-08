@@ -337,9 +337,6 @@ body {
 /* News detail */
 #page-news-detail .detail-body { padding: 0 0 32px; }
 .news-detail-header { padding: 32px 32px 24px; background: #fff; border-bottom: 2px solid var(--border); }
-.news-detail-header .nd-cat { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: var(--fs-caption-sm); margin-bottom: 16px; }
-.news-detail-header .nd-cat.policy { background: #dbeafe; color: #2563eb; }
-.news-detail-header .nd-cat.skill { background: #fef3c7; color: #d97706; }
 .news-detail-header .nd-title { font-size: var(--fs-title-lg); font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 16px; }
 .news-detail-header .nd-meta { display: flex; align-items: center; gap: 24px; font-size: var(--fs-caption); color: var(--text-muted); }
 .news-detail-content { padding: 32px; }
@@ -2408,10 +2405,8 @@ function renderNewsDetail() {
   var item = currentNewsDetail;
   if (!item) return;
   var body = document.getElementById('newsDetailBody');
-  var catLabel = item.cat === 'policy' ? '行业政策' : '创业干货';
   body.innerHTML =
     '<div class="news-detail-header">' +
-      '<span class="nd-cat ' + item.cat + '">' + catLabel + '</span>' +
       '<div class="nd-title">' + item.title + '</div>' +
       '<div class="nd-meta">' +
         '<span>👁 ' + item.views + '次阅读</span>' +
