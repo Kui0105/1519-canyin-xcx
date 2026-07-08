@@ -845,14 +845,17 @@ body {
 
 /* ==================== 付费订单中心 ==================== */
 .order-list { padding: 8px 0 32px; }
-.order-item { background: #fff; margin: 16px 24px; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.order-item { display: flex; justify-content: space-between; align-items: flex-start; background: #fff; margin: 16px 24px; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .order-item:last-child { margin-bottom: 0; }
-.order-item .oi-reason { font-size: var(--fs-body); color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
-.order-item .oi-meta { display: flex; align-items: center; gap: 16px; font-size: var(--fs-mini); color: var(--text-muted); }
-.order-item .oi-meta .oi-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
-.order-item .oi-amount { margin-top: 12px; font-size: var(--fs-section); font-weight: 700; }
-.order-item .oi-amount.income { color: #16a34a; }
-.order-item .oi-amount.expense { color: #dc2626; }
+.oi-left { flex: 1; min-width: 0; }
+.oi-left .oi-reason { font-size: var(--fs-body); color: var(--text); font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+.oi-left .oi-meta { display: flex; align-items: center; gap: 10px; font-size: var(--fs-mini); color: var(--text-muted); }
+.oi-left .oi-meta .oi-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.oi-right { flex-shrink: 0; text-align: right; margin-left: 16px; display: flex; flex-direction: column; align-items: flex-end; }
+.oi-right .oi-amount { font-size: var(--fs-section); font-weight: 700; }
+.oi-right .oi-amount.income { color: #16a34a; }
+.oi-right .oi-amount.expense { color: #dc2626; }
+.oi-right .oi-method { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 6px; }
 #page-orders .empty-state { padding: 100px 24px; }
 
 /* Tab Badge */
@@ -2124,15 +2127,18 @@ function renderOrders() {
       var cls = item.type === 'income' ? 'income' : 'expense';
       html +=
       '<div class="order-item">' +
-        '<div class="oi-reason">' + item.reason + '</div>' +
-        '<div class="oi-meta">' +
-          '<span>' + item.orderNo + '</span>' +
-          '<span class="oi-dot"></span>' +
-          '<span>' + item.time + '</span>' +
-          '<span class="oi-dot"></span>' +
-          '<span>' + item.method + '</span>' +
+        '<div class="oi-left">' +
+          '<div class="oi-reason">' + item.reason + '</div>' +
+          '<div class="oi-meta">' +
+            '<span>' + item.orderNo + '</span>' +
+            '<span class="oi-dot"></span>' +
+            '<span>' + item.time + '</span>' +
+          '</div>' +
         '</div>' +
-        '<div class="oi-amount ' + cls + '">¥' + item.amount + '</div>' +
+        '<div class="oi-right">' +
+          '<div class="oi-amount ' + cls + '">¥' + item.amount + '</div>' +
+          '<div class="oi-method">' + item.method + '</div>' +
+        '</div>' +
       '</div>';
     });
   }
