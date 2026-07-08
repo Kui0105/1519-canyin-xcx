@@ -658,6 +658,7 @@ body {
 .profile-header {
   background: linear-gradient(135deg, #1e40af, #2563eb);
   padding: 48px 32px 40px; text-align: center; color: #fff;
+  position: relative; z-index: 1;
 }
 .profile-header .profile-avatar {
   width: 128px; height: 128px; border-radius: 50%; background: rgba(255,255,255,0.2);
@@ -667,10 +668,10 @@ body {
 .profile-header .profile-name { font-size: 36px; font-weight: 600; margin-bottom: 8px; }
 .profile-header .profile-phone { font-size: var(--fs-body-sm); opacity: 0.8; }
 .wallet-row {
-  display: flex; gap: 0; margin: 24px 32px 0;
+  display: flex; gap: 0; margin: 32px 32px 0;
   background: #fff; border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  overflow: hidden; position: relative; z-index: 10;
+  overflow: hidden;
 }
 .wallet-item {
   flex: 1; padding: 28px 20px; text-align: center; cursor: pointer;
