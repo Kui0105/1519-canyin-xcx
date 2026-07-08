@@ -888,15 +888,20 @@ body {
 .login-btn:active { background: var(--primary-dark); }
 .login-btn.wechat { background: #07c160; }
 .login-btn.wechat:active { background: #06ad56; }
+.login-agreement { display: flex; align-items: flex-start; gap: 12px; margin-top: 24px; cursor: pointer; padding: 8px 0; }
+.login-checkbox { font-size: 24px; color: var(--text-muted); flex-shrink: 0; line-height: 1.4; transition: color 0.15s; }
+.login-checkbox.checked { color: #07c160; }
+.login-agree-text { font-size: var(--fs-mini); color: var(--text-muted); line-height: 1.6; }
+.login-link { color: var(--primary); text-decoration: none; }
 
 /* Tab Badge */
 .tab-badge { position: absolute; top: 2px; right: 50%; transform: translateX(18px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--danger); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px; display: none; }
 .tab-badge.show { display: flex; }
 
 /* Confirm Dialog */
-.confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
-.confirm-overlay.show { display: flex; }
-.confirm-box { width: 560px; background: #fff; border-radius: 20px; padding: 40px 32px 24px; text-align: center; }
+.confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.confirm-overlay.show { opacity: 1; pointer-events: auto; }
+.confirm-box { width: 560px; max-width: 86vw; background: #fff; border-radius: 20px; padding: 40px 32px 24px; text-align: center; }
 .confirm-msg { font-size: var(--fs-body); color: var(--text); margin-bottom: 28px; line-height: 1.6; }
 .confirm-btns { display: flex; gap: 16px; }
 .confirm-btn { flex: 1; padding: 14px 0; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-body-sm); cursor: pointer; }
@@ -915,9 +920,9 @@ body {
 .floating-btn:active { transform: scale(0.92); }
 
 /* CS Popup Overlay */
-.cs-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
-.cs-overlay.show { display: flex; }
-.cs-popup { width: 600px; max-height: 1100px; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
+.cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.cs-overlay.show { opacity: 1; pointer-events: auto; }
+.cs-popup { width: 560px; max-width: 86vw; max-height: 80vh; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); animation: popupIn 0.25s ease; }
 @keyframes popupIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .cs-popup-header { display: flex; align-items: center; justify-content: space-between; padding: 32px 32px 20px; border-bottom: 1px solid #f3f4f6; }
 .cs-popup-title { font-size: 36px; font-weight: 700; color: var(--text); }
@@ -1873,11 +1878,11 @@ body {
       </div>
       <div class="settings-list" style="margin-top:24px">
         <div class="settings-item" onclick="showToast('查看用户协议')">
-          <span class="settings-item-label">用户协议</span>
+          <span class="settings-item-label" style="flex:1">用户协议</span>
           <span class="settings-arrow">›</span>
         </div>
         <div class="settings-item" onclick="showToast('查看隐私政策')">
-          <span class="settings-item-label">隐私政策</span>
+          <span class="settings-item-label" style="flex:1">隐私政策</span>
           <span class="settings-arrow">›</span>
         </div>
       </div>
@@ -1891,8 +1896,11 @@ body {
       <div class="login-logo">🏪</div>
       <div class="login-title">万铺优选</div>
       <div class="login-subtitle">高校餐饮商业信息平台</div>
-      <button class="login-btn wechat" onclick="handleLogin('wechat')">微信一键登录</button>
-      <button class="login-btn" onclick="handleLogin('phone')">手机号登录</button>
+      <button class="login-btn wechat" onclick="handleLogin('wechat')" id="loginWechatBtn">微信一键登录</button>
+      <div class="login-agreement" onclick="toggleLoginAgree()">
+        <span class="login-checkbox" id="loginCheckbox">☐</span>
+        <span class="login-agree-text">我已阅读并同意<span class="login-link" onclick="event.stopPropagation();showToast('查看用户协议')">《用户协议》</span>与<span class="login-link" onclick="event.stopPropagation();showToast('查看隐私政策')">《隐私政策》</span></span>
+      </div>
     </div>
   </div>
 
@@ -1933,6 +1941,8 @@ body {
 <!-- Detail Overlay -->
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="detail-panel" id="detailPanel"></div>
+</div>
+
 </div>
 
 <!-- Confirm Dialog -->
@@ -1980,8 +1990,6 @@ body {
       </div>
     </div>
   </div>
-</div>
-
 </div>
 
 <script>
@@ -3902,13 +3910,20 @@ function showLogoutConfirm() {
   showConfirm('确定要退出登录吗？', confirmFn);
 }
 function handleLogin(type) {
+  var cb = document.getElementById('loginCheckbox');
+  if (!cb.classList.contains('checked')) {
+    showToast('请先阅读并同意用户协议和隐私政策');
+    return;
+  }
   if (type === 'wechat') {
     showToast('模拟微信登录成功');
     setTimeout(function() { switchTab('home'); }, 800);
-  } else {
-    showToast('模拟手机号登录成功');
-    setTimeout(function() { switchTab('home'); }, 800);
   }
+}
+function toggleLoginAgree() {
+  var cb = document.getElementById('loginCheckbox');
+  cb.classList.toggle('checked');
+  cb.textContent = cb.classList.contains('checked') ? '☑' : '☐';
 }
 
 // ============ Interactions ============
