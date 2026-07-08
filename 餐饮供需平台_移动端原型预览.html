@@ -334,6 +334,23 @@ body {
 .detail-header .title { font-size: var(--fs-section); font-weight: 600; }
 .detail-body { padding: 32px; }
 #page-detail .detail-body { padding: 24px 32px 160px; }
+/* News detail */
+#page-news-detail .detail-body { padding: 0 0 120px; }
+.news-detail-header { padding: 32px 32px 24px; background: #fff; border-bottom: 2px solid var(--border); }
+.news-detail-header .nd-cat { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: var(--fs-caption-sm); margin-bottom: 16px; }
+.news-detail-header .nd-cat.policy { background: #dbeafe; color: #2563eb; }
+.news-detail-header .nd-cat.skill { background: #fef3c7; color: #d97706; }
+.news-detail-header .nd-title { font-size: var(--fs-title-lg); font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 16px; }
+.news-detail-header .nd-meta { display: flex; align-items: center; gap: 24px; font-size: var(--fs-caption); color: var(--text-muted); }
+.news-detail-content { padding: 32px; }
+.news-detail-content p { font-size: var(--fs-body); color: var(--text); line-height: 1.9; margin-bottom: 20px; text-indent: 2em; }
+.news-detail-content p strong { display: block; font-size: var(--fs-section); color: var(--text); margin-bottom: 12px; text-indent: 0; }
+.news-detail-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 750px; background: #fff; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; z-index: 100; }
+.news-detail-bar .ndb-left { display: flex; align-items: center; gap: 32px; font-size: var(--fs-caption); color: var(--text-muted); }
+.news-detail-bar .ndb-left span { cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.news-detail-bar .ndb-left span.liked { color: #ef4444; font-weight: 600; }
+.news-detail-bar .ndb-left span.favorited { color: #f59e0b; font-weight: 600; }
+.news-detail-bar .ndb-share { padding: 12px 32px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: var(--fs-caption); cursor: pointer; }
 .detail-body .detail-img-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
   margin: 24px 0;
@@ -1279,6 +1296,11 @@ body {
       <div id="newsCards"></div>
     </div>
 
+    <!-- ==================== 资讯详情 ==================== -->
+    <div class="page" id="page-news-detail">
+      <div class="detail-body" id="newsDetailBody"></div>
+    </div>
+
     <!-- ==================== 供需详情 ==================== -->
     <div class="page" id="page-detail">
       <div class="detail-body" id="detailPageBody"></div>
@@ -1513,12 +1535,18 @@ const idleData = [
 ];
 
 const newsData = [
-  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1' },
-  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2' },
-  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3' },
-  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1' },
-  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2' },
-  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3' },
+  { id:1, cat:'policy', title:'2026年高校食堂食品安全管理新规解读', desc:'湖南省教育厅发布最新高校食堂食品安全管理办法，对档口经营者提出更高卫生要求...', views:2300, time:'2026-07-05', cover:'c1',
+    content:'<p>近日，湖南省教育厅联合省市场监督管理局正式发布《2026年高校食堂食品安全管理办法》（以下简称《办法》），对全省高校食堂档口经营提出了一系列新的卫生标准和操作规范。</p><p><strong>一、从业人员健康管理升级</strong></p><p>《办法》明确要求所有档口从业人员必须持有效健康证上岗，且每季度进行一次食品安全知识考核。从事直接入口食品加工的岗位，还需额外取得食品安全专项培训证书。</p><p><strong>二、原材料采购溯源体系</strong></p><p>新规要求各档口建立完整的原材料采购台账，所有食材来源必须可追溯。肉类、禽类、水产品等高风险食材需提供检疫检验合格证明，严禁采购来源不明的食材。</p><p><strong>三、加工操作规范细化</strong></p><p>《办法》对食品加工各环节作出了详细规定，包括：生熟分开、荤素分开；烹饪中心温度不低于70℃；成品存放时间不超过2小时等。同时要求档口安装明厨亮灶监控设备，接受师生实时监督。</p><p><strong>四、处罚力度加大</strong></p><p>对违反规定的档口，首次警告并限期整改；二次违规罚款2000-5000元；三次以上违规将取消校内经营资格。造成食品安全事故的，依法追究法律责任。</p><p>业内专家表示，此次新规的出台将进一步提升高校食堂的食品安全水平，也为广大档口经营者提供了更明确的经营标准。建议档口经营者尽快对照新规进行自查整改。</p>' },
+  { id:2, cat:'policy', title:'长沙市校园餐饮后勤招标政策更新', desc:'长沙市多所高校发布2026年秋季学期食堂档口招标公告，招标政策有重要调整...', views:1800, time:'2026-07-03', cover:'c2',
+    content:'<p>长沙市多所高校近日陆续发布2026年秋季学期食堂档口招标公告。与往年相比，今年的招标政策出现了多项重要调整，值得广大餐饮经营者关注。</p><p><strong>招标范围扩大</strong></p><p>今年参与招标的高校数量较去年增加30%，包括中南大学、湖南大学、湖南师范大学等多所重点高校。招标档口涵盖早餐、快餐、特色小吃、饮品等多个品类，总招标数量超过200个。</p><p><strong>评分标准变化</strong></p><p>新政策在评分标准上更加注重经营者的品牌实力和食品安全记录。品牌连锁企业可获得额外加分，而有食品安全不良记录的企业将被一票否决。此外，\"明厨亮灶\"建设和智慧食堂系统接入也成为评分的重要加分项。</p><p><strong>合同期限延长</strong></p><p>为鼓励经营者长期投入，今年的合同期限从往年的1年延长至1-3年，表现优秀的档口可优先续约。同时，租金支付方式也更加灵活，支持按月、按季度支付。</p><p>业内人士分析，此次政策调整体现了长沙高校对食堂服务质量的更高追求，也为优质餐饮企业提供了更好的发展机遇。</p>' },
+  { id:3, cat:'skill', title:'高校食堂档口选址：这3个坑千万别踩', desc:'档口选址决定了80%的营收，本文分析选址常见的3大误区及避坑策略...', views:5600, time:'2026-07-04', cover:'c3',
+    content:'<p>在高校食堂经营档口，选址可以说是决定成败的第一要素。一个好的位置，即使产品一般也能活得不错；而一个差的位置，再好的产品也可能无人问津。今天我们就来盘点高校档口选址最常见的3个大坑。</p><p><strong>坑一：只看人流量，忽视动线</strong></p><p>很多新手经营者看到某个位置人流量很大就盲目入驻，结果发现大部分人只是\"路过\"而非\"停留\"。正确的做法是分析学生的就餐动线——食堂入口附近的档口曝光度最高，但竞争也最激烈；食堂深处的档口虽然人流量略少，但顾客目的性更强，转化率反而更高。</p><p><strong>坑二：盲目扎堆热门品类区</strong></p><p>有些经营者喜欢把档口开在热门品类聚集的区域，认为可以\"蹭流量\"。但现实是，同品类聚集区竞争异常激烈，价格战不可避免。与其正面硬刚，不如选择品类空白区的边缘位置，做差异化竞争。</p><p><strong>坑三：忽视档口硬件条件</strong></p><p>有些位置看似不错，但实际经营中才发现排烟不畅、排水困难、电力不足等问题，严重影响日常运营。建议在签约前务必实地考察档口的硬件设施，包括排烟系统、给排水、电力容量、仓储空间等。</p><p>记住：选对了位置，你就已经赢了50%。</p>' },
+  { id:4, cat:'skill', title:'月营收10万的高校快餐档口是怎样炼成的', desc:'专访湖南大学校内快餐档口老板，分享从0到月入10万的运营秘籍...', views:8900, time:'2026-07-02', cover:'c1',
+    content:'<p>在湖南大学南校区食堂二楼，有一家名为\"小刘快餐\"的档口，月营收稳定在10万元以上。老板刘师傅从2024年开始经营，两年时间将一个小档口做成了校园网红店。近日，我们专访了刘师傅，请他分享成功经验。</p><p><strong>产品：少而精的爆品策略</strong></p><p>刘师傅的档口只卖5款产品——黄焖鸡米饭、红烧肉饭、宫保鸡丁饭、鱼香肉丝饭和招牌炒饭。\"刚开始我也想做很多品种，后来发现精力分散了什么也做不好。不如集中力量把几款核心产品做到极致。\"每款产品都有严格的标准配方，确保口味稳定。</p><p><strong>定价：锚定学生消费力</strong></p><p>所有产品定价在12-16元之间，恰好处于学生\"可以日常消费\"的价格区间。刘师傅分享了一个数据：\"我们做过调研，学生一顿饭的心理预期就是12-18元，超过18元就会犹豫，低于10元他们又觉得品质不行。\"</p><p><strong>运营：数据驱动的精细化</strong></p><p>刘师傅每天记录销售数据，分析各产品的销量趋势和毛利率。\"黄焖鸡米饭是我们最赚钱的单品，毛利率超过60%且销量稳定，是我们重点推广的产品。而鱼香肉丝饭毛利率低，我们就控制每天的量，避免浪费。\"</p><p><strong>营销：让学生帮你传播</strong></p><p>\"我们从来不打广告，全靠学生自发传播。\"刘师傅经常在档口搞一些小活动，比如\"带新同学来消费两人各减2元\"，很快就在学生群体中形成了口碑效应。</p><p>刘师傅说：\"高校食堂虽然竞争激烈，但只要用心经营，机会还是很多的。关键是要让学生吃得放心、吃得满意。\"</p>' },
+  { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2',
+    content:'<p>湖南省卫生健康委员会联合省市场监督管理局日前印发《医院食堂食品安全等级评定管理办法》，将于2026年8月1日起正式实施。</p><p><strong>A/B/C/D四级评定</strong></p><p>新标准将医院食堂食品安全等级分为A（优秀）、B（良好）、C（合格）、D（不合格）四个等级。评定内容包括：许可管理、信息公示、人员管理、环境卫生、原料控制、加工制作过程、设施设备维护、餐饮具清洗消毒等8大项共32小项指标。</p><p><strong>评定结果应用</strong></p><p>评定结果将直接影响食堂的经营资质。A级食堂可优先承接大型会议用餐和特需供餐服务；B级为基本达标，需定期接受检查；C级将被约谈并要求限期整改；D级将被暂停经营资格，直至整改达标。</p><p><strong>患者膳食特殊管理</strong></p><p>新规特别强调了医院食堂在患者膳食管理方面的特殊要求，包括：营养膳食的配餐标准、特殊疾病饮食的制备规范、送餐保温及卫生要求等。医院食堂必须配备专职营养师，为住院患者提供个性化膳食方案。</p><p>据了解，首次评定将于2026年9月启动，届时全省各级医院食堂将统一接受等级评定。</p>' },
+  { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3',
+    content:'<p>食材成本是高校档口最大的支出项，通常占总成本的40%-50%。如何在保证品质的前提下有效控制食材成本？我们邀请到湖南团餐协会采购专家王经理，分享5个实战省钱技巧。</p><p><strong>技巧一：集中采购，以量换价</strong></p><p>单个档口的采购量有限，议价能力弱。建议档口之间组建采购联盟，统一采购米面粮油、调味料等通用物资，采购量上去了，价格自然就下来了。据测算，集中采购可降低通用食材成本10%-15%。</p><p><strong>技巧二：锁定核心供应商</strong></p><p>对于使用量大、品质要求高的核心食材（如肉类、禽类），建议与1-2家优质供应商建立长期合作关系。不仅可以获得更优惠的价格，还能在节假日高峰期保证供货稳定。</p><p><strong>技巧三：应季采购，错峰囤货</strong></p><p>蔬菜水果等季节性食材，在上市高峰期价格最低。可以适当加大采购量，采用冷藏、腌制等方式延长保存期。例如，夏季辣椒便宜时可大量采购制作剁椒酱，全年使用。</p><p><strong>技巧四：半成品替代，减少损耗</strong></p><p>有些食材自己加工的损耗率很高，不如直接采购半成品。比如净菜加工、肉丝肉片等预制食材，虽然单价略高，但省去了人工和损耗成本，综合算下来反而更划算。</p><p><strong>技巧五：数据化管理，动态调整</strong></p><p>建立食材使用台账，定期分析各品种的使用量和损耗率。对损耗高的品种及时调整采购量或更换供应商。数据化管理是精细化运营的基础。</p><p>王经理建议：\"成本控制不是一味地节省，而是在保证品质的基础上做到最优性价比。品质降了，学生不来了，省再多钱也是亏本生意。\"</p>' },
 ];
 
 // ============ State ============
@@ -1546,9 +1574,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1669,7 +1697,7 @@ function scrollToCityGroup(letter) {
 function goBack() {
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -2354,7 +2382,7 @@ function renderNewsCards() {
   let html = '';
   data.forEach(item => {
     html += `
-    <div class="news-card" onclick="showToast('查看资讯详情: ${item.title}')">
+    <div class="news-card" onclick="openNewsDetail(${item.id})">
       <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':'💡'}</div>
       <div class="news-info">
         <div class="news-title">${item.title}</div>
@@ -2367,6 +2395,67 @@ function renderNewsCards() {
     </div>`;
   });
   document.getElementById('newsCards').innerHTML = html;
+}
+
+// ============ News Detail ============
+let currentNewsDetail = null;
+let newsDetailLiked = false;
+let newsDetailFaved = false;
+
+function openNewsDetail(id) {
+  var item = newsData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  currentNewsDetail = item;
+  newsDetailLiked = false;
+  newsDetailFaved = false;
+  renderNewsDetail();
+  var prev = currentTab;
+  if (!['news', 'news-detail'].includes(prev)) previousTab = prev;
+  switchTab('news-detail');
+}
+
+function renderNewsDetail() {
+  var item = currentNewsDetail;
+  if (!item) return;
+  var body = document.getElementById('newsDetailBody');
+  var catLabel = item.cat === 'policy' ? '行业政策' : '创业干货';
+  body.innerHTML =
+    '<div class="news-detail-header">' +
+      '<span class="nd-cat ' + item.cat + '">' + catLabel + '</span>' +
+      '<div class="nd-title">' + item.title + '</div>' +
+      '<div class="nd-meta">' +
+        '<span>👁 ' + item.views + '次阅读</span>' +
+        '<span>' + item.time + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="news-detail-content">' + item.content + '</div>' +
+    '<div class="news-detail-bar" id="newsDetailBar">' +
+      '<div class="ndb-left">' +
+        '<span id="ndbLike" onclick="toggleNewsLike()">' + (newsDetailLiked ? '❤' : '♡') + ' 点赞</span>' +
+        '<span id="ndbFav" onclick="toggleNewsFav()">' + (newsDetailFaved ? '★' : '☆') + ' 收藏</span>' +
+      '</div>' +
+      '<button class="ndb-share" onclick="showToast(\'已复制分享链接\')">分享</button>' +
+    '</div>';
+}
+
+function toggleNewsLike() {
+  newsDetailLiked = !newsDetailLiked;
+  var el = document.getElementById('ndbLike');
+  if (el) {
+    el.innerHTML = (newsDetailLiked ? '❤' : '♡') + ' 点赞';
+    if (newsDetailLiked) { el.classList.add('liked'); } else { el.classList.remove('liked'); }
+  }
+  showToast(newsDetailLiked ? '已点赞' : '已取消点赞');
+}
+
+function toggleNewsFav() {
+  newsDetailFaved = !newsDetailFaved;
+  var el = document.getElementById('ndbFav');
+  if (el) {
+    el.innerHTML = (newsDetailFaved ? '★' : '☆') + ' 收藏';
+    if (newsDetailFaved) { el.classList.add('favorited'); } else { el.classList.remove('favorited'); }
+  }
+  showToast(newsDetailFaved ? '已收藏' : '已取消收藏');
 }
 
 // ============ Detail View ============
@@ -3210,7 +3299,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
     if (newsResults.length > 0) {
       html += '<div class="section-title" style="padding-top:32px">📰 行业资讯</div>';
       newsResults.forEach(function(item) {
-        html += '<div class="news-card" onclick="showToast(\'查看资讯详情: ' + item.title + '\')">' +
+        html += '<div class="news-card" onclick="openNewsDetail(' + item.id + ')">' +
           '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : '💡') + '</div>' +
           '<div class="news-info"><div class="news-title">' + item.title + '</div>' +
           '<div class="news-desc">' + item.desc + '</div>' +
