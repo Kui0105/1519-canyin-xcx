@@ -3031,8 +3031,16 @@ function findCurrentPost() {
 function restoreAndReRender() {
   var item = findCurrentPost();
   if (!item) return;
-  if (currentPostType === 'detail') { renderDetailPage(item); }
-  else { renderIdleDetailPage(item); }
+  // Restore bottom bar from saved original
+  var barId = currentPostType === 'detail' ? 'detailBottomBar' : 'idleDetailBar';
+  var bar = document.getElementById(barId);
+  if (bar && bar.getAttribute('data-original')) {
+    bar.innerHTML = bar.getAttribute('data-original');
+    bar.removeAttribute('data-original');
+  }
+  // Re-render body
+  if (currentPostType === 'detail') { renderDetailPage(item); updateDetailBottomBar(item); }
+  else { renderIdleDetailPage(item); updateIdleDetailBottomBar(item); }
 }
 
 function renderComments(comments) {
