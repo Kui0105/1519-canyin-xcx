@@ -722,6 +722,26 @@ body {
 .pl-item .pl-amount { font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0; }
 .pl-item .pl-amount.income { color: #16a34a; }
 .pl-item .pl-amount.expense { color: #dc2626; }
+/* +++++ 余额明细 +++++ */
+.balance-header { background: linear-gradient(135deg, #16a34a, #22c55e); padding: 40px 32px 32px; color: #fff; text-align: center; }
+.balance-header .balance-total-label { font-size: var(--fs-caption); opacity: 0.85; margin-bottom: 8px; }
+.balance-header .balance-total-val { font-size: 72px; font-weight: 700; line-height: 1; margin-bottom: 24px; }
+.balance-recharge-btn { display: inline-block; background: rgba(255,255,255,0.25); color: #fff; border: 2px solid rgba(255,255,255,0.5); border-radius: 48px; padding: 12px 40px; font-size: var(--fs-caption); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.balance-recharge-btn:active { background: rgba(255,255,255,0.4); }
+.balance-list { padding: 24px 32px; }
+.balance-list .bl-date { font-size: var(--fs-caption-sm); color: var(--text-muted); padding: 20px 0 12px; }
+.balance-list .bl-date:first-child { padding-top: 0; }
+.bl-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+.bl-item:last-child { border-bottom: none; }
+.bl-item .bl-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--fs-body-sm); flex-shrink: 0; }
+.bl-item .bl-icon.income { background: #dcfce7; }
+.bl-item .bl-icon.expense { background: #fee2e2; }
+.bl-item .bl-info { flex: 1; min-width: 0; }
+.bl-item .bl-reason { font-size: var(--fs-caption); color: var(--text); font-weight: 500; }
+.bl-item .bl-time { font-size: var(--fs-mini); color: var(--text-muted); margin-top: 4px; }
+.bl-item .bl-amount { font-size: var(--fs-body-sm); font-weight: 600; flex-shrink: 0; }
+.bl-item .bl-amount.income { color: #16a34a; }
+.bl-item .bl-amount.expense { color: #dc2626; }
 
 /* Floating Button */
 .floating-cs {
@@ -1483,7 +1503,7 @@ body {
           <div class="val">500</div>
           <div class="label">我的积分</div>
         </div>
-        <div class="wallet-item divider" onclick="showToast('余额可充值使用，点击进入充值')">
+        <div class="wallet-item divider" onclick="openBalanceDetail()">
           <div class="val">¥28.50</div>
           <div class="label">我的余额</div>
         </div>
@@ -1544,6 +1564,16 @@ body {
         <div class="points-total-val" id="pointsTotalVal">500</div>
       </div>
       <div class="points-list" id="pointsList"></div>
+    </div>
+
+    <!-- ==================== 余额明细 ==================== -->
+    <div class="page" id="page-balance-detail">
+      <div class="balance-header">
+        <div class="balance-total-label">当前余额</div>
+        <div class="balance-total-val" id="balanceTotalVal">¥28.50</div>
+        <div class="balance-recharge-btn" onclick="showToast('充值功能开发中，敬请期待')">充值</div>
+      </div>
+      <div class="balance-list" id="balanceList"></div>
     </div>
   </div>
 
@@ -1713,9 +1743,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -1732,6 +1762,7 @@ function switchTab(page) {
   if (page === 'cat-list') renderCatListCards();
   if (page === 'city') renderCityPage();
   if (page === 'points-detail') renderPointsDetail();
+  if (page === 'balance-detail') renderBalanceDetail();
 }
 
 var previousTab = 'home';
@@ -1750,11 +1781,13 @@ var pointsData = [
   ]},
   { date:'2026-07-06', items:[
     { type:'income', icon:'🎉', reason:'分享新用户注册获得积分', time:'2026-07-06 07:55', amount:'+50' },
+    { type:'income', icon:'⚙', reason:'系统增加积分', time:'2026-07-06 10:00', amount:'+30' },
     { type:'expense', icon:'📞', reason:'解锁联系方式消耗积分', time:'2026-07-06 12:30', amount:'-30' }
   ]},
   { date:'2026-07-05', items:[
     { type:'expense', icon:'📋', reason:'发帖置顶推广消耗积分', time:'2026-07-05 08:20', amount:'-50' },
-    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-05 15:10', amount:'-50' }
+    { type:'expense', icon:'💰', reason:'付费发帖消耗积分', time:'2026-07-05 15:10', amount:'-50' },
+    { type:'expense', icon:'⚙', reason:'系统扣减积分', time:'2026-07-05 17:30', amount:'-20' }
   ]},
   { date:'2026-07-04', items:[
     { type:'income', icon:'🎁', reason:'新用户注册赠送积分', time:'2026-07-04 18:00', amount:'+500' }
@@ -1793,6 +1826,66 @@ function renderPointsDetail() {
     });
   });
   document.getElementById('pointsList').innerHTML = html;
+}
+
+// ============ Balance Detail ============
+var balanceData = [
+  { date:'2026-07-08', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-08 09:00', amount:'+100.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-08 10:15', amount:'-5.00' },
+    { type:'expense', icon:'📋', reason:'发帖置顶推广', time:'2026-07-08 14:20', amount:'-10.00' }
+  ]},
+  { date:'2026-07-07', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-07 08:30', amount:'+50.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-07 11:30', amount:'-5.00' },
+    { type:'expense', icon:'💰', reason:'付费发帖', time:'2026-07-07 16:45', amount:'-15.00' }
+  ]},
+  { date:'2026-07-06', items:[
+    { type:'income', icon:'⚙', reason:'系统增加余额', time:'2026-07-06 10:00', amount:'+20.00' },
+    { type:'expense', icon:'📞', reason:'解锁联系方式', time:'2026-07-06 14:30', amount:'-5.00' }
+  ]},
+  { date:'2026-07-05', items:[
+    { type:'expense', icon:'📋', reason:'发帖置顶推广', time:'2026-07-05 09:20', amount:'-10.00' },
+    { type:'expense', icon:'⚙', reason:'系统扣减余额', time:'2026-07-05 15:10', amount:'-30.00' }
+  ]},
+  { date:'2026-07-04', items:[
+    { type:'income', icon:'💳', reason:'充值余额', time:'2026-07-04 12:00', amount:'+200.00' },
+    { type:'expense', icon:'💰', reason:'付费发帖', time:'2026-07-04 18:30', amount:'-15.00' }
+  ]}
+];
+
+function openBalanceDetail() {
+  previousTab = currentTab;
+  renderBalanceDetail();
+  switchTab('balance-detail');
+}
+
+function renderBalanceDetail() {
+  var total = 0;
+  balanceData.forEach(function(day) {
+    day.items.forEach(function(item) {
+      var v = parseFloat(item.amount);
+      total += v;
+    });
+  });
+  document.getElementById('balanceTotalVal').textContent = '¥' + total.toFixed(2);
+
+  var html = '';
+  balanceData.forEach(function(day) {
+    html += '<div class="bl-date">' + day.date + '</div>';
+    day.items.forEach(function(item) {
+      html +=
+      '<div class="bl-item">' +
+        '<div class="bl-icon ' + item.type + '">' + item.icon + '</div>' +
+        '<div class="bl-info">' +
+          '<div class="bl-reason">' + item.reason + '</div>' +
+          '<div class="bl-time">' + item.time + '</div>' +
+        '</div>' +
+        '<div class="bl-amount ' + item.type + '">' + item.amount + '</div>' +
+      '</div>';
+    });
+  });
+  document.getElementById('balanceList').innerHTML = html;
 }
 
 // ============ City Select ============
@@ -1896,7 +1989,7 @@ function scrollToCityGroup(letter) {
 function goBack() {
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
