@@ -1916,7 +1916,7 @@ function switchTab(page) {
   if (page === 'home') renderHomeCards();
   if (page === 'idle') renderIdleCards();
   if (page === 'news') renderNewsCards();
-  if (page === 'publish') updatePublishRemain();
+  if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); }
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
   if (page === 'city') renderCityPage();
@@ -2229,6 +2229,12 @@ function scrollToCityGroup(letter) {
 }
 
 function goBack() {
+  // If editing a post on publish page, go back to my-posts
+  if (editingPostId && currentTab === 'publish') {
+    resetPublishForm();
+    openMyPosts();
+    return;
+  }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
   if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts'].indexOf(target) !== -1) target = 'home';
@@ -3219,6 +3225,27 @@ function submitPublish() {
     return;
   }
 
+  // Editing existing post (from rejected)
+  if (editingPostId) {
+    var post = myPostsData.find(function(p) { return p.id === editingPostId; });
+    if (post) {
+      post.title = title;
+      post.content = desc;
+      post.status = 'pending';
+      post.category = cat;
+      post.region = region;
+      post.time = new Date().toISOString().slice(0,16).replace('T',' ').replace(/-/g,'-');
+      delete post.contentDanger;
+    }
+    showToast('已重新提交审核');
+    editingPostId = null;
+    // Reset form
+    resetPublishForm();
+    // Switch to my-posts
+    setTimeout(function() { openMyPosts(); }, 1000);
+    return;
+  }
+
   if (pubTodayCount >= 1) {
     showToast('今日免费发布额度已用完\n（模拟：支付¥2发布）');
     pubTodayCount++;
@@ -3229,6 +3256,13 @@ function submitPublish() {
   updatePublishRemain();
 
   // Reset form
+  resetPublishForm();
+
+  // Switch to home after 1s
+  setTimeout(() => switchTab('home'), 1000);
+}
+
+function resetPublishForm() {
   document.getElementById('pubCategory').value = '';
   document.getElementById('pubCategoryText').textContent = '请选择分类';
   document.getElementById('pubCategoryText').classList.add('placeholder');
@@ -3249,9 +3283,8 @@ function submitPublish() {
   document.getElementById('photoPreview').innerHTML = '';
   photoCount = 0;
   document.getElementById('pubTags').value = '';
-
-  // Switch to home after 1s
-  setTimeout(() => switchTab('home'), 1000);
+  document.querySelector('#page-publish .submit-btn').textContent = '确认发布';
+  editingPostId = null;
 }
 
 // ============ My Posts ============
@@ -3261,7 +3294,7 @@ var myPostsData = [
     { label:'删除', cls:'danger', action:'delete' }
   ]},
   { id:3, status:'rejected', title:'闲置冰柜转让', content:'九成新商用冰柜低价转让，使用不到一年，制冷效果好的，因店面升级更换大容量设备，低价处理。', images:['',''], time:'2026-07-05 09:15', contentDanger:'驳回原因：图片模糊，请重新上传清晰图片', actions:[
-    { label:'编辑', cls:'', toast:'进入编辑页面' }
+    { label:'编辑', cls:'', action:'edit', id:3 }
   ]},
   { id:4, status:'pending', title:'中南大学档口招租', content:'中南大学南校区食堂二楼档口招租，面积15㎡，适合奶茶、轻食等项目，学校人流量大，价格面议。', images:[], time:'2026-07-08 09:00', actions:[] },
   { id:5, status:'published', title:'转让奶茶设备一套', content:'全套奶茶设备打包转让，含封口机、果糖机、蒸汽机、制冰机等，九成新，打包价格面议。', images:['',''], time:'2026-07-04 11:20', actions:[
@@ -3312,9 +3345,9 @@ function renderMyPosts(statusFilter) {
       html += '</div>';
       // content
       if (p.content) {
-        html += '<div class="mp-content' + (p.contentDanger ? ' mp-content-danger' : '') + '">' + p.content + '</div>';
+        html += '<div class="mp-content">' + p.content + '</div>';
         if (p.contentDanger) {
-          html += '<div class="mp-content mp-content-danger" style="margin-top:4px">' + p.contentDanger + '</div>';
+          html += '<div class="mp-content-danger" style="margin-top:8px;font-size:var(--fs-caption)">' + p.contentDanger + '</div>';
         }
       }
       // images (placeholder colored blocks)
@@ -3336,6 +3369,8 @@ function renderMyPosts(statusFilter) {
         p.actions.forEach(function(a) {
           if (a.action === 'delete') {
             html += '<button class="mp-btn danger" onclick="deleteMyPost(' + p.id + ')">删除</button>';
+          } else if (a.action === 'edit') {
+            html += '<button class="mp-btn" onclick="editMyPost(' + a.id + ')">' + a.label + '</button>';
           } else {
             html += '<button class="mp-btn' + (a.cls ? ' ' + a.cls : '') + '" onclick="showToast(\'' + a.toast + '\')">' + a.label + '</button>';
           }
@@ -3354,6 +3389,44 @@ function deleteMyPost(id) {
     renderMyPosts(myPostsCurrentTab);
     showToast('删除成功');
   });
+}
+
+var editingPostId = null;
+
+function editMyPost(id) {
+  var post = myPostsData.find(function(p) { return p.id === id; });
+  if (!post) return;
+  editingPostId = id;
+  // Pre-fill the publish form
+  document.getElementById('pubTitle').value = post.title || '';
+  document.getElementById('pubDesc').value = post.content || '';
+  // Set category (default to 招商招租 if not specified)
+  var catVal = post.category || 'recruit';
+  document.getElementById('pubCategory').value = catVal;
+  var catMap = { recruit:'招商招租', job:'招聘求职', supply:'食材供应', service:'餐饮服务', secondhand:'二手设备', other:'其他' };
+  document.getElementById('pubCategoryText').textContent = catMap[catVal] || '请选择分类';
+  document.getElementById('pubCategoryText').classList.remove('placeholder');
+  // Set region
+  if (post.region) {
+    document.getElementById('pubRegion1').value = post.region;
+    document.getElementById('pubRegionText').textContent = post.region;
+    document.getElementById('pubRegionText').classList.remove('placeholder');
+  }
+  // Update button
+  document.querySelector('#page-publish .submit-btn').textContent = '重新提交审核';
+  // Navigate to publish page
+  previousTab = currentTab;
+  currentTab = 'publish';
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-publish').classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  var tabEl = document.querySelector('.tab-item[data-page="publish"]');
+  if (tabEl) tabEl.classList.add('active');
+  document.getElementById('navTitle').textContent = '编辑发布';
+  document.getElementById('navBack').style.display = 'block';
+  document.getElementById('tabBar').style.display = 'none';
+  document.getElementById('pageContainer').scrollTop = 0;
+  updatePublishRemain();
 }
 
 function showConfirm(msg, onConfirm) {
