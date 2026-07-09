@@ -439,6 +439,15 @@ body {
 
 /* Publish Form */
 .publish-form { padding: 24px 32px; }
+.publish-notice { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 16px; padding: 20px; margin-bottom: 28px; display: flex; gap: 14px; align-items: flex-start; }
+.publish-notice .notice-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+.publish-notice .notice-title { font-size: var(--fs-body-sm); font-weight: 700; color: #1e40af; margin-bottom: 8px; }
+.publish-notice .notice-text { font-size: var(--fs-caption); color: #3b82f6; line-height: 1.8; }
+/* Tag Multi-Select */
+.tag-selector { display: flex; flex-wrap: wrap; gap: 12px; }
+.tag-chip { padding: 10px 20px; border-radius: 24px; font-size: var(--fs-caption); border: 2px solid #e5e7eb; background: #f9fafb; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; user-select: none; }
+.tag-chip:active { transform: scale(0.95); }
+.tag-chip.selected { background: #dbeafe; border-color: #2563eb; color: #2563eb; font-weight: 600; }
 .form-group { margin-bottom: 28px; }
 .form-group .form-label { font-size: var(--fs-body-sm); font-weight: 600; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .form-group .form-label .required { color: var(--danger); font-size: var(--fs-caption); }
@@ -1476,6 +1485,14 @@ body {
     <!-- ==================== 发布中心 ==================== -->
     <div class="page" id="page-publish">
       <div class="publish-form">
+        <div class="publish-notice">
+          <span class="notice-icon">📢</span>
+          <div class="notice-content">
+            <div class="notice-title">发布须知</div>
+            <div class="notice-text">1. 请确保发布信息真实有效，虚假信息将被下架处理；<br>2. 每日免费发布 1 条帖子，超出需付费发布；<br>3. 涉及违法违规内容将依法追究责任。</div>
+          </div>
+        </div>
+
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>发布分类</div>
           <div class="form-trigger" id="pubCategoryTrigger" onclick="openPubCategoryPanel()">
@@ -1498,12 +1515,12 @@ body {
         </div>
 
         <div class="form-group">
-          <div class="form-label"><span class="required">*</span>照片上传（最多9张）</div>
+          <div class="form-label"><span class="required">*</span>照片/视频上传（最多9个）</div>
           <div class="photo-upload">
             <div id="photoPreview"></div>
             <div class="upload-box" onclick="addPhoto()">
               <span class="icon">📷</span>
-              <span>添加图片</span>
+              <span>添加照片/视频</span>
             </div>
           </div>
         </div>
@@ -1514,8 +1531,30 @@ body {
         </div>
 
         <div class="form-group">
-          <div class="form-label">帖子标签</div>
-          <input type="text" class="form-input" id="pubTags" placeholder="多个标签以英文逗号隔开">
+          <div class="form-label">帖子标签（可多选）</div>
+          <div class="tag-selector" id="pubTagSelector">
+            <div class="tag-chip" data-tag="本科" onclick="toggleTagChip(this)">本科</div>
+            <div class="tag-chip" data-tag="专科" onclick="toggleTagChip(this)">专科</div>
+            <div class="tag-chip" data-tag="纯租金" onclick="toggleTagChip(this)">纯租金</div>
+            <div class="tag-chip" data-tag="倒扣抽点" onclick="toggleTagChip(this)">倒扣抽点</div>
+            <div class="tag-chip" data-tag="设备齐全" onclick="toggleTagChip(this)">设备齐全</div>
+            <div class="tag-chip" data-tag="含水电" onclick="toggleTagChip(this)">含水电</div>
+            <div class="tag-chip" data-tag="含设备" onclick="toggleTagChip(this)">含设备</div>
+            <div class="tag-chip" data-tag="人流量大" onclick="toggleTagChip(this)">人流量大</div>
+            <div class="tag-chip" data-tag="包吃住" onclick="toggleTagChip(this)">包吃住</div>
+            <div class="tag-chip" data-tag="低价转让" onclick="toggleTagChip(this)">低价转让</div>
+            <div class="tag-chip" data-tag="面食" onclick="toggleTagChip(this)">面食</div>
+            <div class="tag-chip" data-tag="饮品" onclick="toggleTagChip(this)">饮品</div>
+            <div class="tag-chip" data-tag="快餐" onclick="toggleTagChip(this)">快餐</div>
+            <div class="tag-chip" data-tag="小吃" onclick="toggleTagChip(this)">小吃</div>
+            <div class="tag-chip" data-tag="管理岗" onclick="toggleTagChip(this)">管理岗</div>
+            <div class="tag-chip" data-tag="技术岗" onclick="toggleTagChip(this)">技术岗</div>
+            <div class="tag-chip" data-tag="品牌加盟" onclick="toggleTagChip(this)">品牌加盟</div>
+            <div class="tag-chip" data-tag="沿街旺铺" onclick="toggleTagChip(this)">沿街旺铺</div>
+            <div class="tag-chip" data-tag="商业街" onclick="toggleTagChip(this)">商业街</div>
+            <div class="tag-chip" data-tag="中央厨房" onclick="toggleTagChip(this)">中央厨房</div>
+          </div>
+          <input type="hidden" id="pubTags" value="">
         </div>
 
         <div class="form-group">
@@ -1525,11 +1564,6 @@ body {
             <span class="arrow">▾</span>
           </div>
           <input type="hidden" id="pubRegion1" value="">
-        </div>
-
-        <div class="form-group">
-          <div class="form-label"><span class="required">*</span>详细地址</div>
-          <input class="form-input" type="text" placeholder="填写具体地址" id="pubAddress">
         </div>
 
         <div class="form-group">
@@ -2077,7 +2111,7 @@ body {
 // ============ Data ============
 var locIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>';
 const mockData = [
-  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', likes:128, favorites:56, views:2340,
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', publishDate:'2026-07-09', likes:128, favorites:56, views:2340,
     comments: [
       { id:1, avatar:'张', nickname:'张老板', time:'30分钟前', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', liked:false, likes:5,
         replies: [
@@ -2087,36 +2121,36 @@ const mockData = [
       { id:2, avatar:'李', nickname:'李师傅', time:'1小时前', content:'请问进场费还要另外交吗？押金多少？', liked:true, likes:12 },
       { id:3, avatar:'王', nickname:'小王餐饮', time:'2小时前', content:'学生消费能力怎么样？客单价大概多少？', liked:false, likes:2 },
     ] },
-  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', likes:96, favorites:42, views:1890 },
-  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', likes:75, favorites:31, views:1560 },
-  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', likes:203, favorites:89, views:4520,
+  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', publishDate:'2026-07-09', likes:96, favorites:42, views:1890 },
+  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', publishDate:'2026-07-09', likes:75, favorites:31, views:1560 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', publishDate:'2026-07-08', likes:203, favorites:89, views:4520,
     comments: [
       { id:1, avatar:'刘', nickname:'奶茶小哥', time:'3小时前', content:'转让费大概多少？设备都包哪些？', liked:false, likes:8 },
       { id:2, avatar:'赵', nickname:'赵姐', time:'5小时前', content:'请问租金一个月多少？合同还有几年？', liked:false, likes:3 },
     ] },
-  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', likes:56, favorites:23, views:1230 },
-  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', likes:45, favorites:18, views:890 },
-  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', likes:32, favorites:12, views:670 },
-  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', likes:89, favorites:36, views:2100 },
-  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', likes:112, favorites:47, views:1890 },
-  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', likes:67, favorites:29, views:1340 },
-  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', likes:45, favorites:15, views:980 },
-  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', likes:88, favorites:32, views:1670 },
-  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', likes:56, favorites:24, views:1120 },
+  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', publishDate:'2026-07-07', likes:56, favorites:23, views:1230 },
+  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', publishDate:'2026-07-09', likes:45, favorites:18, views:890 },
+  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', publishDate:'2026-07-09', likes:32, favorites:12, views:670 },
+  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', publishDate:'2026-07-08', likes:89, favorites:36, views:2100 },
+  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', publishDate:'2026-07-09', likes:112, favorites:47, views:1890 },
+  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', publishDate:'2026-07-09', likes:67, favorites:29, views:1340 },
+  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', publishDate:'2026-07-09', likes:45, favorites:15, views:980 },
+  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', publishDate:'2026-07-09', likes:88, favorites:32, views:1670 },
+  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', publishDate:'2026-07-08', likes:56, favorites:24, views:1120 },
 ];
 
 const idleData = [
-  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', userFaved:false, favorites:5,
+  { id:1, cat:'equip', catLabel:'餐饮设备', img:'equip1', title:'商用冰柜四门不锈钢九成新', price:2800, condition:'九成新', used:'使用8个月', location:'长沙 · 岳麓区', time:'3小时前', publishDate:'2026-07-09', userFaved:false, favorites:5,
     comments: [
       { id:1, avatar:'周', nickname:'周厨', time:'2小时前', content:'还在吗？可以现场看货吗？我在岳麓区。', liked:false, likes:2 },
     ] },
-  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前', userFaved:false, favorites:3 },
-  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前', userFaved:false, favorites:2 },
-  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前', userFaved:false, favorites:1 },
-  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前', userFaved:false, favorites:0 },
-  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前', userFaved:false, favorites:8 },
-  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前', userFaved:false, favorites:0 },
-  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前', userFaved:false, favorites:4 },
+  { id:2, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'炸炉+蒸箱组合 八成新低价转', price:1500, condition:'八成新', used:'使用1年', location:'长沙 · 天心区', time:'5小时前', publishDate:'2026-07-09', userFaved:false, favorites:3 },
+  { id:3, cat:'equip', catLabel:'餐饮设备', img:'equip3', title:'收银机含钱箱+小票打印机', price:800, condition:'八成新', used:'使用6个月', location:'株洲 · 芦淞区', time:'8小时前', publishDate:'2026-07-09', userFaved:false, favorites:2 },
+  { id:4, cat:'material', catLabel:'物料耗材', img:'material1', title:'打包盒清仓 500ml+750ml各5箱', price:200, condition:'全新未拆', used:'-', location:'长沙 · 望城区', time:'1天前', publishDate:'2026-07-08', userFaved:false, favorites:1 },
+  { id:5, cat:'material', catLabel:'物料耗材', img:'material2', title:'一次性竹筷 整箱5000双未拆封', price:60, condition:'全新', used:'-', location:'湘潭 · 雨湖区', time:'2天前', publishDate:'2026-07-07', userFaved:false, favorites:0 },
+  { id:6, cat:'resource', catLabel:'经营资源', img:'resource1', title:'特色卤味配方转让（含技术培训）', price:5000, condition:'配方+培训', used:'已验证', location:'长沙 · 全市', time:'1天前', publishDate:'2026-07-08', userFaved:false, favorites:8 },
+  { id:7, cat:'other', catLabel:'其他闲置', img:'equip1', title:'不锈钢操作台2米长 带水槽', price:1200, condition:'七成新', used:'使用2年', location:'长沙 · 开福区', time:'3天前', publishDate:'2026-07-06', userFaved:false, favorites:0 },
+  { id:8, cat:'equip', catLabel:'餐饮设备', img:'equip2', title:'商用微波炉+电饭煲组合', price:350, condition:'八成新', used:'使用1年', location:'长沙 · 岳麓区', time:'4天前', publishDate:'2026-07-05', userFaved:false, favorites:4 },
 ];
 
 const newsData = [
@@ -3237,7 +3271,7 @@ function renderInfoCard(item, idx, forceFaved) {
         <div class="user-avatar">${item.avatar}</div>
         <div class="user-info">
           <div class="user-name">${item.username}</div>
-          <div class="post-time">${item.time}</div>
+          <div class="post-time">${item.publishDate}</div>
         </div>
         <span style="font-size:var(--fs-caption);color:var(--text-muted);background:#f3f4f6;padding:6px 16px;border-radius:8px">${item.catLabel}</span>
       </div>
@@ -3317,7 +3351,7 @@ function renderIdleCards() {
         </div>
         <div>
           <div class="idle-price">¥${item.price}</div>
-          <div class="idle-location">${locIcon} ${item.location} · ${item.time}</div>
+          <div class="idle-location">${locIcon} ${item.location} · ${item.publishDate}</div>
         </div>
       </div>
     </div>`;
@@ -3503,7 +3537,7 @@ function renderIdleDetailPage(item) {
     </div>
     <div class="detail-field"><div class="field-label">商品描述</div><div class="field-value" style="line-height:1.8">${desc}</div></div>
     <div class="detail-field"><div class="field-label">所在地区</div><div class="field-value">${locIcon} ${item.location}</div></div>
-    <div class="detail-field"><div class="field-label">发布时间</div><div class="field-value">${item.time}</div></div>
+    <div class="detail-field"><div class="field-label">发布时间</div><div class="field-value">${item.publishDate}</div></div>
     <div class="detail-field" style="background:#f9fafb;padding:24px;border-radius:16px;margin-top:24px">
       <div class="field-label">联系卖家</div>
       <div class="field-value" style="font-size:32px;letter-spacing:2px;margin-bottom:4px">${unlockedPhoneIds.has(item.id) ? '13912345678' : '138****6789'}</div>
@@ -3603,7 +3637,7 @@ function renderDetailPage(item) {
       <div class="user-avatar" style="width:80px;height:80px;font-size:32px">${item.avatar}</div>
       <div>
         <div style="font-weight:600;font-size:var(--fs-section)">${item.username}</div>
-        <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.time} · ${item.catLabel}</div>
+        <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.publishDate} · ${item.catLabel}</div>
       </div>
       ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a">置顶</span>' : ''}
     </div>
@@ -3893,8 +3927,17 @@ function resetPublishForm() {
   document.getElementById('photoPreview').innerHTML = '';
   photoCount = 0;
   document.getElementById('pubTags').value = '';
+  document.querySelectorAll('#pubTagSelector .tag-chip').forEach(function(c) { c.classList.remove('selected'); });
   document.querySelector('#page-publish .submit-btn').textContent = '确认发布';
   editingPostId = null;
+}
+
+// ============ Tag Multi-Select ============
+function toggleTagChip(el) {
+  el.classList.toggle('selected');
+  var selected = [];
+  document.querySelectorAll('#pubTagSelector .tag-chip.selected').forEach(function(c) { selected.push(c.getAttribute('data-tag')); });
+  document.getElementById('pubTags').value = selected.join(',');
 }
 
 // ============ My Posts ============
@@ -4663,7 +4706,7 @@ function parseTimeScore(timeStr) {
   if (d) return parseInt(d[1]) * 24;
   var dt = timeStr.match(/(\d{4})-(\d{2})-(\d{2})/);
   if (dt) {
-    var refDate = new Date(2026, 6, 7); // today
+    var refDate = new Date(2026, 6, 9); // today
     var d2 = new Date(parseInt(dt[1]), parseInt(dt[2]) - 1, parseInt(dt[3]));
     return Math.floor((refDate - d2) / (1000 * 60 * 60));
   }
@@ -4785,7 +4828,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
           '<div class="idle-info"><div><div class="idle-title">' + item.title + '</div>' +
           '<div class="idle-condition">' + item.condition + ' · ' + item.used + '</div></div>' +
           '<div><div class="idle-price">¥' + item.price + '</div>' +
-          '<div class="idle-location">' + locIcon + ' ' + item.location + ' · ' + item.time + '</div></div></div></div>';
+          '<div class="idle-location">' + locIcon + ' ' + item.location + ' · ' + item.publishDate + '</div></div></div></div>';
       });
     }
     if (newsResults.length > 0) {
