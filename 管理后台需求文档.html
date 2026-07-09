@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>餐饮供需平台 - 管理后台细化需求文档</title>
+<style>
+:root { --primary: #2563eb; --primary-light: #dbeafe; --primary-dark: #1e40af; --success: #16a34a; --success-light: #dcfce7; --warning: #d97706; --warning-light: #fef3c7; --danger: #dc2626; --danger-light: #fee2e2; --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280; --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937; --gray-900: #111827; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--gray-100); color: var(--gray-800); line-height: 1.8; font-size: 15px; }
+.container { max-width: 1000px; margin: 0 auto; padding: 40px 24px 80px; }
+.cover { background: linear-gradient(135deg, #374151 0%, #1f2937 50%, #111827 100%); color: #fff; padding: 64px 48px; border-radius: 16px; margin-bottom: 40px; text-align: center; }
+.cover h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.cover .subtitle { font-size: 18px; opacity: 0.85; margin-bottom: 32px; }
+.cover .meta { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.cover .meta-item { text-align: center; }
+.cover .meta-item .label { font-size: 13px; opacity: 0.7; margin-bottom: 4px; }
+.cover .meta-item .value { font-size: 16px; font-weight: 600; }
+.section { background: #fff; border-radius: 12px; padding: 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--gray-100); padding-bottom: 12px; }
+.section-number { background: var(--primary); color: #fff; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.section-title { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+.section-subtitle { font-size: 14px; color: var(--gray-500); margin-left: 44px; margin-top: -16px; margin-bottom: 20px; }
+.subsection { margin-bottom: 28px; }
+.subsection-title { font-size: 17px; font-weight: 600; color: var(--primary-dark); margin-bottom: 14px; padding-left: 12px; border-left: 4px solid var(--primary); }
+.subsubsection-title { font-size: 15px; font-weight: 600; color: var(--gray-700); margin: 20px 0 10px; }
+p { margin-bottom: 10px; color: var(--gray-600); }
+ul, ol { margin: 8px 0 12px 20px; }
+li { margin-bottom: 6px; color: var(--gray-600); }
+strong { color: var(--gray-800); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+th { background: var(--gray-50); color: var(--gray-700); font-weight: 600; text-align: left; padding: 10px 14px; border: 1px solid var(--gray-200); }
+td { padding: 10px 14px; border: 1px solid var(--gray-200); color: var(--gray-600); vertical-align: top; }
+tr:nth-child(even) td { background: var(--gray-50); }
+td ul { margin: 4px 0 0 16px; }
+td ul li { margin-bottom: 2px; font-size: 13px; }
+.callout { border-radius: 8px; padding: 16px 20px; margin: 14px 0; }
+.callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+.callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+.callout-warning { background: var(--warning-light); border-left: 4px solid var(--warning); }
+.callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+.callout-title { font-weight: 600; margin-bottom: 6px; }
+.callout-info .callout-title { color: var(--primary-dark); }
+.callout-success .callout-title { color: #166534; }
+.callout-warning .callout-title { color: #92400e; }
+.callout-danger .callout-title { color: #991b1b; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.badge-p0 { background: var(--danger-light); color: #991b1b; }
+.badge-p1 { background: var(--warning-light); color: #92400e; }
+.badge-p2 { background: var(--primary-light); color: var(--primary-dark); }
+.toc { background: var(--gray-50); border-radius: 8px; padding: 24px 32px; margin-bottom: 28px; }
+.toc-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--gray-800); }
+.toc ol { margin-left: 20px; }
+.toc ol ol { margin-left: 16px; font-size: 14px; }
+.toc li { margin-bottom: 4px; }
+.toc a { color: var(--primary); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+.footer { text-align: center; color: var(--gray-400); font-size: 13px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200); }
+.field-table td:first-child { white-space: nowrap; font-family: monospace; font-size: 13px; color: var(--primary-dark); font-weight: 500; width: 16%; }
+.req-row td:first-child { width: 10%; text-align: center; font-weight: 700; }
+@media (max-width: 768px) { .container { padding: 16px 12px 60px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="cover">
+<h1>管理后台 · 细化需求文档</h1>
+<div class="subtitle">餐饮供需平台（万铺优选）</div>
+<div class="meta">
+<div class="meta-item"><div class="label">文档版本</div><div class="value">V1.0</div></div>
+<div class="meta-item"><div class="label">编制日期</div><div class="value">2026年7月9日</div></div>
+<div class="meta-item"><div class="label">对应原型</div><div class="value">v2.20.1</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header"><div class="section-number" style="background:#374151">说</div><div class="section-title">文档说明</div></div>
+<div class="subsection">
+<p>本文档基于<strong>《万户山生态科技有限公司 - 项目需求文档 V2.0》</strong>第8节"后台管理系统需求"进行深化，结合当前移动端原型（v2.20.1）中已实现的全部用户端功能，逐项拆解为管理后台的<strong>细化功能需求、页面结构、数据字段、交互规则和接口需求</strong>。文档采用「一个模块 → 一个管理页面」的映射方式，确保前后端开发人员可直接参照本文档进行设计开发。</p>
+</div>
+<div class="subsection">
+<div class="subsection-title">优先级标注说明</div>
+<table>
+<tr><th style="width:15%">优先级</th><th>含义</th></tr>
+<tr><td><span class="badge badge-p0">P0 核心</span></td><td>一期必须上线，缺失则无法运营</td></tr>
+<tr><td><span class="badge badge-p1">P1 重要</span></td><td>一期建议包含，显著提升运营效率</td></tr>
+<tr><td><span class="badge badge-p2">P2 可选</span></td><td>二期或后续迭代，锦上添花</td></tr>
+</table>
+</div>
+</div>
+
+<div class="toc">
+<div class="toc-title">目录</div>
+<ol>
+<li><a href="#s1">系统概述</a><ol><li><a href="#s1-1">角色与权限</a></li><li><a href="#s1-2">全局框架布局</a></li></ol></li>
+<li><a href="#s2">用户管理</a></li>
+<li><a href="#s3">内容审核</a></li>
+<li><a href="#s4">内容运营</a></li>
+<li><a href="#s5">订单与财务</a></li>
+<li><a href="#s6">价格与配置</a></li>
+<li><a href="#s7">资讯管理</a></li>
+<li><a href="#s8">客服管理</a></li>
+<li><a href="#s9">数据统计</a></li>
+<li><a href="#s10">系统管理</a></li>
+<li><a href="#s11">地区数据管理</a></li>
+</ol>
+</div>
+
+<!-- ======== 1. 系统概述 ======== -->
+<div class="section" id="s1">
+<div class="section-header"><div class="section-number">1</div><div class="section-title">系统概述</div></div>
+<p>管理后台是面向平台运营人员的<strong>PC端Web管理系统</strong>，用于对微信小程序（C端）的全部业务进行集中管理、监控和配置。采用Vue3 + Element Plus或React + Ant Design开发，与小程序共享后端API。</p>
+<div class="subsection">
+<div class="subsection-title" id="s1-1">1.1 管理员角色与权限</div>
+<table>
+<tr><th style="width:15%">角色</th><th style="width:10%">优先级</th><th>权限范围</th></tr>
+<tr><td><strong>超级管理员</strong></td><td><span class="badge badge-p0">P0</span></td><td>全部权限：系统配置、管理员账号管理、价格修改、功能开关、财务数据</td></tr>
+<tr><td><strong>内容审核员</strong></td><td><span class="badge badge-p0">P0</span></td><td>内容审核（通过/驳回/下架）、标签库、举报处理；<strong>不可修改价格与查看财务</strong></td></tr>
+<tr><td><strong>运营编辑</strong></td><td><span class="badge badge-p1">P1</span></td><td>资讯发布编辑、Banner管理、热搜词配置、用户反馈处理</td></tr>
+<tr><td><strong>财务人员</strong></td><td><span class="badge badge-p1">P1</span></td><td>订单查看、对账导出、退款处理（需超级管理员审批）</td></tr>
+</table>
+</div>
+<div class="subsection">
+<div class="subsection-title" id="s1-2">1.2 全局框架布局</div>
+<p>左侧导航菜单（常驻）+ 右侧内容区。一级菜单为功能模块，点击展开二级子菜单。</p>
+<table>
+<tr><th style="width:15%">一级菜单</th><th>二级子菜单</th><th style="width:10%">角色</th></tr>
+<tr><td>用户管理</td><td>用户列表 / 积分流水 / 余额流水</td><td>超管、审核员</td></tr>
+<tr><td>内容审核</td><td>审核队列 / 已通过 / 已驳回 / 举报管理</td><td>超管、审核员</td></tr>
+<tr><td>内容运营</td><td>内容列表 / 置顶管理 / 标签库 / 分类管理</td><td>超管、审核员、运营编辑</td></tr>
+<tr><td>订单财务</td><td>订单列表 / 对账报表 / 退款管理</td><td>超管、财务</td></tr>
+<tr><td>价格配置</td><td>付费价格 / 积分规则 / 功能开关</td><td>超管</td></tr>
+<tr><td>资讯管理</td><td>资讯列表 / 发布资讯 / 分类管理</td><td>超管、运营编辑</td></tr>
+<tr><td>客服管理</td><td>反馈列表 / 客服配置</td><td>超管、运营编辑</td></tr>
+<tr><td>数据统计</td><td>数据概览 / 用户分析 / 内容分析 / 收入分析</td><td>超管、财务</td></tr>
+<tr><td>系统管理</td><td>管理员账号 / Banner管理 / 热搜词 / 操作日志</td><td>超管</td></tr>
+<tr><td>地区管理</td><td>省份管理 / 城市管理 / 区域管理</td><td>超管</td></tr>
+</table>
+<div class="callout callout-info"><div class="callout-title">全局交互规则</div><ul><li>列表页默认分页20条，支持页码跳转和每页条数切换（20/50/100）</li><li>所有列表支持导出 Excel（部分含敏感数据需权限）</li><li>所有删除/封禁等不可逆操作需二次确认弹窗</li><li>所有管理员操作写入操作日志，包含操作人、时间、IP、操作内容</li><li>右上角显示当前管理员头像+名称+退出登录</li></ul></div>
+</div>
+</div>
+
+<!-- ======== 2. 用户管理 ======== -->
+<div class="section" id="s2">
+<div class="section-header"><div class="section-number">2</div><div class="section-title">用户管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span> | 角色：超级管理员、内容审核员</div>
+
+<div class="subsection">
+<div class="subsection-title">2.1 用户列表</div>
+<p>平台全部注册用户管理入口。</p>
+<div class="subsubsection-title">筛选条件</div>
+<table>
+<tr><th style="width:18%">筛选项</th><th style="width:18%">控件</th><th>说明</th></tr>
+<tr><td>手机号</td><td>文本输入</td><td>精确/模糊搜索</td></tr>
+<tr><td>注册时间</td><td>日期范围选择</td><td>起始~结束</td></tr>
+<tr><td>账号状态</td><td>下拉</td><td>全部/正常/已封禁</td></tr>
+<tr><td>区域</td><td>级联选择</td><td>省→市→区</td></tr>
+</table>
+<div class="subsubsection-title">列表字段</div>
+<table>
+<tr><th style="width:20%">字段</th><th>说明</th></tr>
+<tr><td>用户ID / 昵称 / 头像</td><td>基本信息</td></tr>
+<tr><td>绑定手机号</td><td>脱敏展示（审核员）；完整展示（超管）</td></tr>
+<tr><td>注册时间 / 最后登录</td><td>时间信息</td></tr>
+<tr><td>发布总数</td><td>供需+闲置累计</td></tr>
+<tr><td>积分余额 / 钱包余额</td><td>账户资产</td></tr>
+<tr><td>账号状态</td><td>正常 / 已封禁</td></tr>
+<tr><td>操作</td><td>【详情】【封禁】【解封】</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">2.2 用户详情页</div>
+<table class="field-table">
+<tr><th colspan="2">基本信息</th></tr>
+<tr><td>用户ID / openid</td><td>系统ID + 微信openid（敏感字段，超管可见）</td></tr>
+<tr><td>昵称 / 头像 / 手机号</td><td>用户资料</td></tr>
+<tr><td>注册时间 / 最后登录</td><td>时间信息</td></tr>
+<tr><td>累计登录天数</td><td>活跃度指标</td></tr>
+<tr><th colspan="2">账户资产</th></tr>
+<tr><td>积分余额 / 累计获取 / 累计消耗</td><td>积分统计</td></tr>
+<tr><td>钱包余额 / 累计充值 / 累计消费</td><td>余额统计</td></tr>
+<tr><th colspan="2">行为统计</th></tr>
+<tr><td>发布信息数</td><td>供需+闲置分别统计</td></tr>
+<tr><td>置顶购买次数 / 解锁手机号次数</td><td>付费行为</td></tr>
+<tr><td>收藏数 / 评论数 / 被举报次数</td><td>互动统计</td></tr>
+<tr><th colspan="2">状态管理</th></tr>
+<tr><td>账号状态 / 封禁原因 / 封禁时间</td><td>支持查看封禁历史</td></tr>
+<tr><td>操作日志</td><td>该用户关键操作时间线</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">2.3 封禁/解封</div>
+<table>
+<tr><th style="width:20%">项目</th><th>规则</th></tr>
+<tr><td>封禁方式</td><td>临时封禁（7/14/30天）+ 永久封禁</td></tr>
+<tr><td>封禁原因（必填）</td><td>下拉选择：发布违规信息 / 恶意骚扰 / 虚假身份 / 其他（手动补充）</td></tr>
+<tr><td>封禁效果</td><td>不可发布、不可付费、不可评论；已发布信息全部自动下架</td></tr>
+<tr><td>解封效果</td><td>恢复发布和付费权限；已下架信息不自动恢复，需手动操作</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">2.4 积分/余额流水</div>
+<table>
+<tr><th style="width:18%">功能</th><th>规则</th></tr>
+<tr><td>积分调整</td><td>管理员手动增减（需填写原因，如"活动奖励""违规扣减"），超管审批</td></tr>
+<tr><td>积分流水查询</td><td>按用户、日期、类型（获取/消耗）筛选；字段：用户信息、变动类型、数量、余额、时间、备注</td></tr>
+<tr><td>余额调整</td><td>管理员手动增减（退款到余额/活动赠送等），超管审批</td></tr>
+<tr><td>余额流水查询</td><td>按用户、日期、类型（充值/消费/退款）筛选；字段：用户信息、金额、余额、关联订单号、时间</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 3. 内容审核 ======== -->
+<div class="section" id="s3">
+<div class="section-header"><div class="section-number">3</div><div class="section-title">内容审核</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span> | 角色：超级管理员、内容审核员</div>
+
+<div class="subsection">
+<div class="subsection-title">3.1 审核队列</div>
+<div class="subsubsection-title">Tabs</div>
+<table>
+<tr><th style="width:18%">Tab</th><th>说明</th></tr>
+<tr><td><strong>待审核</strong></td><td>新提交信息，按提交时间倒序（默认页）。等待超4小时标红。</td></tr>
+<tr><td><strong>已通过</strong></td><td>审核通过且当前上架的信息</td></tr>
+<tr><td><strong>已驳回</strong></td><td>驳回的信息，显示驳回原因</td></tr>
+<tr><td><strong>已下架</strong></td><td>被手动下架的信息</td></tr>
+<tr><td><strong>被举报</strong></td><td>收到用户举报的信息（详见3.4）</td></tr>
+</table>
+
+<div class="subsubsection-title">待审核列表字段</div>
+<table>
+<tr><th style="width:15%">字段</th><th>说明</th></tr>
+<tr><td>信息ID / 类型</td><td>供需信息 / 闲置信息</td></tr>
+<tr><td>分类 / 标题</td><td>发布类目 + 标题（可点击查看详情）</td></tr>
+<tr><td>发布者</td><td>昵称 + 脱敏手机号</td></tr>
+<tr><td>提交时间</td><td>发布时间</td></tr>
+<tr><td>是否付费</td><td>免费/付费发布/含置顶推广</td></tr>
+<tr><td>等待时长</td><td>超4小时标红</td></tr>
+<tr><td>操作</td><td><strong>【通过】【驳回】【查看详情】</strong></td></tr>
+</table>
+
+<div class="subsubsection-title">审核详情（弹窗或独立页）</div>
+<table class="field-table">
+<tr><td>标题 / 分类</td><td>一级+二级分类</td></tr>
+<tr><td>描述内容</td><td>完整文本</td></tr>
+<tr><td>图片/视频</td><td>网格展示，点击放大；视频在线播放</td></tr>
+<tr><td>标签 / 区域</td><td>帖子标签 + 城市区县</td></tr>
+<tr><td>联系电话</td><td>完整手机号（审核专用）</td></tr>
+<tr><td>置顶推广</td><td>是否购买置顶及周期</td></tr>
+<tr><td>发布者信息</td><td>用户ID、历史发布数、违规次数</td></tr>
+<tr><td>敏感词检测</td><td>系统自动高亮命中敏感词</td></tr>
+</table>
+
+<div class="subsubsection-title">审核操作</div>
+<table>
+<tr><th style="width:15%">操作</th><th>规则</th></tr>
+<tr><td><strong>审核通过</strong></td><td>信息立即上架，C端可见。若含置顶推广，按付费周期开始计算置顶时间</td></tr>
+<tr><td><strong>驳回</strong></td><td>弹出驳回原因对话框（必填）。原因内存预设：信息不实 / 图片不合规 / 分类错误 / 含有违规内容 / 联系方式无效 / 其他</td></tr>
+<tr><td><strong>批量操作</strong></td><td>支持勾选多条信息，批量通过或批量驳回（同一驳回原因）</td></tr>
+</table>
+<div class="callout callout-warning"><div class="callout-title">驳回后C端表现</div>用户在"我的发布"中看到状态为"已驳回"，显示驳回原因，可点击编辑修改后重新提交。重新提交后进入新审核流程。</div>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">3.2 内容管理（已通过列表）</div>
+<table>
+<tr><th style="width:15%">操作</th><th>规则</th></tr>
+<tr><td><strong>查看详情</strong></td><td>查看信息完整内容及发布者信息</td></tr>
+<tr><td><strong>下架</strong></td><td>将已上架信息下架（需填写下架原因）。下架后C端不可见，用户"我的发布"中显示"已下架"状态</td></tr>
+<tr><td><strong>重新上架</strong></td><td>对已下架信息恢复上架（如误操作或用户申诉通过）</td></tr>
+<tr><td><strong>强制删除</strong></td><td>对严重违规信息进行物理删除（不可恢复），需超管权限+二次确认</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">3.3 敏感词管理 <span class="badge badge-p2">P2</span></div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>敏感词库</td><td>列表展示所有敏感词；支持增删改；支持分类（政治/色情/暴力/广告/竞品/自定义）</td></tr>
+<tr><td>审核高亮</td><td>审核详情中自动检测并高亮命中敏感词</td></tr>
+<tr><td>发布拦截</td><td>C端用户发布时若文本命中敏感词，前端给出提示并阻止提交</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">3.4 举报管理</div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>举报列表</td><td>字段：举报ID、被举报信息ID/标题、举报人、举报原因、举报时间、处理状态</td></tr>
+<tr><td>处理操作</td><td>【查看被举报内容】【忽略举报】【确认违规→下架信息】【封禁发布者】</td></tr>
+<tr><td>处理结果通知</td><td>处理完成后系统自动给举报人发送通知</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 4. 内容运营 ======== -->
+<div class="section" id="s4">
+<div class="section-header"><div class="section-number">4</div><div class="section-title">内容运营</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span> | 角色：超管、审核员、运营编辑</div>
+
+<div class="subsection">
+<div class="subsection-title">4.1 置顶管理</div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>置顶列表</td><td>展示所有购买置顶的信息：信息ID/标题、发布者、置顶周期（7/15/30天）、开始时间、到期时间、剩余天数、状态（生效中/已到期）</td></tr>
+<tr><td>置顶排序</td><td>C端多信息置顶时按发布时间的先后顺序排列：最先发布的那条排最前</td></tr>
+<tr><td>取消置顶</td><td>管理员可手动取消置顶（需填原因），取消后信息恢复普通排序，已付费用不予退还</td></tr>
+<tr><td>到期处理</td><td>系统定时任务每天0点扫描到期置顶，自动将状态改为"已到期"，信息恢复普通排序</td></tr>
+<tr><td>置顶续费</td><td>用户在C端"我的发布"中可对置顶信息续费叠加周期，后台同步更新到期时间</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">4.2 标签库管理</div>
+<p>对C端发布页的帖子标签（tag-chip）进行增删改管理。</p>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>标签列表</td><td>展示当前全部可选标签：标签ID、标签名、关联分类（全部分类通用 / 指定分类）、启用状态、排序权重</td></tr>
+<tr><td>新增标签</td><td>名称（限8字）、关联分类（可多选，默认全部）、排序权重（数字越大越靠前）</td></tr>
+<tr><td>编辑/删除</td><td>编辑标签名、关联分类、排序；删除需确认</td></tr>
+<tr><td>启用/停用</td><td>停用的标签在C端发布页不显示，已关联的帖子保留标签不变</td></tr>
+</table>
+<div class="callout callout-info"><div class="callout-title">当前标签库（原型已有20个）</div>本科、专科、纯租金、倒扣抽点、设备齐全、含水电、含设备、人流量大、包吃住、低价转让、面食、饮品、快餐、小吃、管理岗、技术岗、品牌加盟、沿街旺铺、商业街、中央厨房</div>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">4.3 分类管理 <span class="badge badge-p2">P2</span></div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>发布分类管理</td><td>增删改发布类目（当前10个：校园食堂、校园商圈、医院餐厅、档口转让、企业园区、人才招聘、校外旺铺、生意转让、闲置物品、品牌信息）</td></tr>
+<tr><td>二级分类管理</td><td>为每个一级分类配置二级子类（如校园食堂→本科/专科），支持动态增减</td></tr>
+<tr><td>闲置分类管理</td><td>增删改闲置物品类目（当前4个：餐饮设备、物料耗材、经营资源、其他闲置）</td></tr>
+<tr><td>资讯分类管理</td><td>增删改资讯分类（当前2个：行业政策、创业干货）</td></tr>
+<tr><td>启用/停用</td><td>停用的分类在C端不展示，已关联信息不删除</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 5. 订单与财务 ======== -->
+<div class="section" id="s5">
+<div class="section-header"><div class="section-number">5</div><div class="section-title">订单与财务管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span> | 角色：超级管理员、财务人员</div>
+
+<div class="subsection">
+<div class="subsection-title">5.1 订单列表</div>
+<div class="subsubsection-title">筛选条件</div>
+<table>
+<tr><th style="width:18%">筛选项</th><th style="width:18%">控件</th><th>说明</th></tr>
+<tr><td>订单号</td><td>文本输入</td><td>精确搜索</td></tr>
+<tr><td>用户手机号</td><td>文本输入</td><td>关联用户</td></tr>
+<tr><td>订单类型</td><td>多选下拉</td><td>余额充值 / 置顶推广 / 手机号解锁 / 超额发布</td></tr>
+<tr><td>支付方式</td><td>多选下拉</td><td>微信支付 / 余额支付 / 积分支付 / 组合支付</td></tr>
+<tr><td>订单状态</td><td>多选下拉</td><td>待支付 / 已支付 / 已退款 / 已关闭</td></tr>
+<tr><td>时间范围</td><td>日期范围选择</td><td>下单时间起止</td></tr>
+<tr><td>金额区间</td><td>数字输入</td><td>最小~最大金额</td></tr>
+</table>
+
+<div class="subsubsection-title">列表字段</div>
+<table>
+<tr><th style="width:18%">字段</th><th>说明</th></tr>
+<tr><td>订单号</td><td>系统唯一订单号（可点击查看详情）</td></tr>
+<tr><td>用户信息</td><td>用户ID+昵称+手机号（脱敏）</td></tr>
+<tr><td>订单类型</td><td>余额充值 / 置顶推广 / 手机号解锁 / 超额发布</td></tr>
+<tr><td>关联信息</td><td>关联的信息ID/标题（置顶/解锁类订单）；充值类显示"-"</td></tr>
+<tr><td>金额</td><td>实付金额（元）</td></tr>
+<tr><td>支付方式</td><td>微信支付 / 余额支付 / 积分支付 / 积分+微信 / 积分+余额</td></tr>
+<tr><td>支付时间</td><td>完成支付的时间</td></tr>
+<tr><td>订单状态</td><td>待支付 / 已支付 / 已退款 / 已关闭</td></tr>
+<tr><td>操作</td><td>【详情】【退款】（仅超管）</td></tr>
+</table>
+
+<div class="subsubsection-title">订单详情</div>
+<table class="field-table">
+<tr><td>订单号 / 状态</td><td>订单基本信息</td></tr>
+<tr><td>用户信息</td><td>用户ID、昵称、手机号</td></tr>
+<tr><td>订单类型 / 金额</td><td>业务类型+实付金额</td></tr>
+<tr><td>支付方式</td><td>支付渠道</td></tr>
+<tr><td>积分抵扣</td><td>如有积分抵扣，显示抵扣积分数量和金额</td></tr>
+<tr><td>关联信息</td><td>信息ID+标题（可点击跳转）</td></tr>
+<tr><td>置顶周期</td><td>置顶推广类订单显示周期和到期时间</td></tr>
+<tr><td>微信支付单号</td><td>微信支付系统返回的transaction_id</td></tr>
+<tr><td>创建时间 / 支付时间</td><td>完整时间线</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">5.2 退款管理</div>
+<table>
+<tr><th style="width:18%">项目</th><th>规则</th></tr>
+<tr><td>退款发起</td><td>仅超级管理员可操作，在订单详情中点击【申请退款】</td></tr>
+<tr><td>退款金额</td><td>全额退款（默认）；支持输入部分退款金额</td></tr>
+<tr><td>退款原因</td><td>必填，如"用户投诉""误操作""平台补偿"</td></tr>
+<tr><td>退款方式</td><td>原路退回（微信支付→退回微信零钱；余额支付→退回余额账户；积分抵扣→退回积分）</td></tr>
+<tr><td>退款审批</td><td>可选：退款操作需另一位超管审批（双人确认），可在系统配置中开关</td></tr>
+<tr><td>退款效果</td><td>置顶推广退款→取消置顶，恢复普通排序；手机号解锁退款→收回查看权限</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">5.3 对账报表 <span class="badge badge-p1">P1</span></div>
+<table>
+<tr><th style="width:18%">功能</th><th>规则</th></tr>
+<tr><td>日/周/月报表</td><td>选择时间范围，生成对账报表：总订单数、总收入、各类型收入明细、支付方式分布、退款金额</td></tr>
+<tr><td>导出Excel</td><td>支持按筛选条件导出订单明细Excel（含全部字段）</td></tr>
+<tr><td>微信对账</td><td>对接微信支付账单下载API，可导入微信账单与平台订单自动对账</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 6. 价格与配置 ======== -->
+<div class="section" id="s6">
+<div class="section-header"><div class="section-number">6</div><div class="section-title">价格与配置管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span> | 角色：超级管理员（<strong>仅超管</strong>）</div>
+
+<div class="subsection">
+<div class="subsection-title">6.1 付费价格配置</div>
+<table>
+<tr><th style="width:22%">配置项</th><th style="width:12%">当前值（原型）</th><th>说明</th></tr>
+<tr><td>置顶推广-7天</td><td>¥9.90</td><td>7天置顶单价</td></tr>
+<tr><td>置顶推广-15天</td><td>¥18.80</td><td>15天置顶单价</td></tr>
+<tr><td>置顶推广-30天</td><td>¥29.90</td><td>30天置顶单价</td></tr>
+<tr><td>解锁完整手机号（供需）</td><td>¥2.00</td><td>查看供需帖发布者完整手机号</td></tr>
+<tr><td>解锁完整手机号（闲置）</td><td>¥1.00</td><td>查看闲置商品卖家完整手机号</td></tr>
+<tr><td>超额发布（每条）</td><td>¥2.00</td><td>超出每日免费发布额度后单条价格</td></tr>
+</table>
+<p style="margin-top:12px">每项价格点击编辑按钮，输入新价格后保存，<strong>即时生效</strong>。所有价格修改写入操作日志。</p>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">6.2 积分规则配置</div>
+<table>
+<tr><th style="width:22%">配置项</th><th style="width:12%">当前值</th><th>说明</th></tr>
+<tr><td>积分兑换比例</td><td>100积分 = ¥1.00</td><td>积分与现金的换算比例</td></tr>
+<tr><td>新用户注册赠送积分</td><td>500</td><td>注册成功后自动到账</td></tr>
+<tr><td>分享拉新奖励积分</td><td>50</td><td>邀请新用户注册成功后奖励</td></tr>
+<tr><td>每日签到积分</td><td>5</td><td>每日签到基础积分（连续签到递增可后续迭代）</td></tr>
+<tr><td>每日发布奖励积分</td><td>10</td><td>每日首次发布信息奖励</td></tr>
+<tr><td>被收藏奖励积分（发布者）</td><td>2</td><td>发布的信息每被收藏一次</td></tr>
+<tr><td>积分上限（单日获取）</td><td>200</td><td>防止刷积分，单日获取积分上限</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">6.3 功能开关</div>
+<table>
+<tr><th style="width:22%">功能</th><th style="width:12%">默认状态</th><th>说明</th></tr>
+<tr><td>置顶推广功能</td><td>开启</td><td>关停后C端发布页"置顶推广"区域隐藏，已购买的不受影响</td></tr>
+<tr><td>手机号解锁功能</td><td>开启</td><td>关停后C端详情页和解锁按钮不可用</td></tr>
+<tr><td>超额发布收费</td><td>开启</td><td>关停后不限制每日发布数量（全部免费发布）</td></tr>
+<tr><td>积分抵扣功能</td><td>开启</td><td>关停后支付页不显示积分抵扣选项</td></tr>
+<tr><td>新用户注册</td><td>开启</td><td>关停后不可注册新用户（用于特殊时期管控）</td></tr>
+<tr><td>用户评论功能</td><td>开启</td><td>关停后C端评论入口和评论列表隐藏</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">6.4 发布限制配置</div>
+<table>
+<tr><th style="width:22%">配置项</th><th style="width:12%">当前值</th><th>说明</th></tr>
+<tr><td>每日免费发布条数</td><td>1条</td><td>每个用户每个自然日免费发布额度</td></tr>
+<tr><td>照片上传上限</td><td>9张</td><td>单条信息最多上传照片数</td></tr>
+<tr><td>视频上传上限</td><td>1个</td><td>单条信息最多上传视频数</td></tr>
+<tr><td>视频时长上限</td><td>60秒</td><td>单视频最大时长</td></tr>
+<tr><td>信息标题字数限制</td><td>2~50字</td><td>标题最短和最长字数</td></tr>
+<tr><td>描述字数限制</td><td>10~2000字</td><td>描述内容最短和最长字数</td></tr>
+<tr><td>搜索历史保存条数</td><td>10条</td><td>每个用户最多保存的搜索历史</td></tr>
+<tr><td>锁定手机号查看时限</td><td>24小时</td><td>付费解锁后有效期</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 7. 资讯管理 ======== -->
+<div class="section" id="s7">
+<div class="section-header"><div class="section-number">7</div><div class="section-title">资讯内容管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p1">P1 重要</span> | 角色：超级管理员、运营编辑</div>
+
+<div class="subsection">
+<div class="subsection-title">7.1 资讯列表</div>
+<table>
+<tr><th style="width:15%">字段</th><th>说明</th></tr>
+<tr><td>资讯ID / 标题</td><td>可点击预览</td></tr>
+<tr><td>分类</td><td>行业政策 / 创业干货</td></tr>
+<tr><td>封面图</td><td>缩略图</td></tr>
+<tr><td>作者</td><td>发布管理员名称</td></tr>
+<tr><td>发布时间 / 阅读量</td><td>时间+浏览量统计</td></tr>
+<tr><td>状态</td><td>已发布 / 草稿 / 已下架</td></tr>
+<tr><td>操作</td><td>【编辑】【下架】【删除】</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">7.2 发布/编辑资讯</div>
+<table class="field-table">
+<tr><td>标题</td><td>文本输入，限2~50字</td></tr>
+<tr><td>分类</td><td>下拉选择（行业政策/创业干货）</td></tr>
+<tr><td>封面图</td><td>图片上传（建议750×400px）</td></tr>
+<tr><td>摘要</td><td>文本输入，限200字，作为列表卡片简介</td></tr>
+<tr><td>正文</td><td><strong>富文本编辑器（如Quill/TinyMCE）</strong>，支持图文混排、标题层级、加粗/颜色</td></tr>
+<tr><td>状态</td><td>发布（即时上线）/ 存为草稿</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 8. 客服管理 ======== -->
+<div class="section" id="s8">
+<div class="section-header"><div class="section-number">8</div><div class="section-title">客户服务管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p1">P1 重要</span> | 角色：超级管理员、运营编辑</div>
+
+<div class="subsection">
+<div class="subsection-title">8.1 用户反馈列表</div>
+<table>
+<tr><th style="width:15%">字段</th><th>说明</th></tr>
+<tr><td>反馈ID / 时间</td><td>反馈提交时间</td></tr>
+<tr><td>用户信息</td><td>用户ID、昵称、手机号</td></tr>
+<tr><td>反馈标题 / 内容</td><td>用户填写的反馈内容</td></tr>
+<tr><td>反馈图片</td><td>用户上传的截图，支持点击放大</td></tr>
+<tr><td>处理状态</td><td>待处理 / 处理中 / 已处理 / 已关闭</td></tr>
+<tr><td>处理人 / 回复</td><td>处理该反馈的管理员及回复内容</td></tr>
+<tr><td>操作</td><td>【查看】【回复】【标记已处理】【关闭】</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">8.2 客服配置</div>
+<table>
+<tr><th style="width:18%">配置项</th><th style="width:15%">当前值</th><th>说明</th></tr>
+<tr><td>客服电话</td><td>400-XXX-XXXX</td><td>显示在C端客服弹窗中</td></tr>
+<tr><td>客服微信号</td><td>wanyue_cs</td><td>显示在C端客服弹窗中</td></tr>
+<tr><td>在线客服链接</td><td>微信客服消息</td><td>对接微信小程序官方客服消息接口</td></tr>
+<tr><td>工作时间</td><td>9:00-18:00</td><td>在客服弹窗中展示工作时间</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ======== 9. 数据统计 ======== -->
+<div class="section" id="s9">
+<div class="section-header"><div class="section-number">9</div><div class="section-title">数据统计与分析</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p1">P1 重要</span> | 角色：超级管理员、财务人员</div>
+
+<div class="subsection">
+<div class="subsection-title">9.1 数据概览仪表盘</div>
+<p>进入后台首页即展示的核心数据看板：</p>
+<table>
+<tr><th style="width:20%">卡片</th><th>展示内容</th></tr>
+<tr><td>累计用户数</td><td>总数 + 今日新增 + 日增长趋势小图表（7天折线）</td></tr>
+<tr><td>今日发布量</td><td>供需N条 + 闲置N条 + 待审核N条</td></tr>
+<tr><td>今日浏览量</td><td>PV（页面浏览量）+ UV（独立访客）</td></tr>
+<tr><td>今日收入</td><td>总金额 + 充值/置顶/解锁/发布 分类金额</td></tr>
+<tr><td>待处理事项</td><td>待审核N条 + 待处理举报N条 + 待处理反馈N条</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">9.2 用户分析</div>
+<table>
+<tr><th style="width:18%">图表</th><th>说明</th></tr>
+<tr><td>用户增长趋势</td><td>日/周/月维度，折线图展示新增+累计</td></tr>
+<tr><td>用户活跃度</td><td>DAU/MAU 日活月活趋势</td></tr>
+<tr><td>用户区域分布</td><td>按省份/城市的用户分布地图或柱状图</td></tr>
+<tr><td>用户留存率</td><td>次日/7日/30日留存</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">9.3 内容分析</div>
+<table>
+<tr><th style="width:18%">图表</th><th>说明</th></tr>
+<tr><td>发布量趋势</td><td>按日/周/月的供需+闲置发布量，折线图</td></tr>
+<tr><td>分类发布分布</td><td>各发布类目的发布量占比（饼图/柱状图）</td></tr>
+<tr><td>浏览量排行</td><td>Top 20 浏览量最高的信息</td></tr>
+<tr><td>审核统计</td><td>审核通过率、驳回率、平均审核时长</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">9.4 收入分析</div>
+<table>
+<tr><th style="width:18%">图表</th><th>说明</th></tr>
+<tr><td>收入趋势</td><td>日/周/月收入折线图，含环比增长</td></tr>
+<tr><td>收入构成</td><td>充值/置顶/解锁/发布 各类型收入占比（饼图）</td></tr>
+<tr><td>支付方式分布</td><td>微信支付/余额支付/积分支付/组合支付 占比</td></tr>
+<tr><td>ARPU / 付费率</td><td>每用户平均收入 + 付费用户占比</td></tr>
+</table>
+<div class="callout callout-info"><div class="callout-title">数据时效性</div>建议核心指标（用户数、收入）实时更新；分析图表数据每小时更新一次；T+1日报每日凌晨自动生成。</div>
+</div>
+</div>
+
+<!-- ======== 10. 系统管理 ======== -->
+<div class="section" id="s10">
+<div class="section-header"><div class="section-number">10</div><div class="section-title">系统管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p0">P0 核心</span>（管理员管理）/ <span class="badge badge-p1">P1</span>（Banner/热搜） | 角色：超级管理员</div>
+
+<div class="subsection">
+<div class="subsection-title">10.1 管理员账号管理</div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>管理员列表</td><td>账号、姓名、角色、手机号、创建时间、最后登录、状态（启用/停用）</td></tr>
+<tr><td>新增管理员</td><td>手机号、姓名、角色（下拉选择）、初始密码</td></tr>
+<tr><td>编辑/停用</td><td>修改角色、姓名；停用后不可登录后台。不可删除超管账号</td></tr>
+<tr><td>修改密码</td><td>管理员自行在右上角菜单中修改</td></tr>
+<tr><td>强制下线</td><td>强制踢出指定管理员，下次需重新登录</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">10.2 Banner管理</div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>Banner列表</td><td>展示Banner图片、标题、跳转链接类型、排序、状态</td></tr>
+<tr><td>新增Banner</td><td>上传图片（建议750×350px）、标题、跳转类型（分类链接/详情页/资讯/外部链接）、跳转目标、排序</td></tr>
+<tr><td>编辑/删除/启用/停用</td><td>停用的Banner在C端首页不展示。最大数量建议≤5张</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">10.3 热搜词管理</div>
+<table>
+<tr><th style="width:15%">功能</th><th>规则</th></tr>
+<tr><td>热搜词列表</td><td>展示关键词、热度标记（热/新/升）、排序、状态</td></tr>
+<tr><td>新增/编辑/删除</td><td>关键词名称、热度标记（热/新/升）、排序权重</td></tr>
+<tr><td>最大数量</td><td>建议10条，C端搜索页展示</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<div class="subsection-title">10.4 操作日志 <span class="badge badge-p2">P2</span></div>
+<table>
+<tr><th style="width:18%">字段</th><th>说明</th></tr>
+<tr><td>日志ID / 操作时间</td><td>操作发生时间</td></tr>
+<tr><td>操作人</td><td>管理员账号+姓名</td></tr>
+<tr><td>操作模块</td><td>用户管理/内容审核/价格配置/系统管理等</td></tr>
+<tr><td>操作类型</td><td>新增/修改/删除/审核/封禁/退款等</td></tr>
+<tr><td>操作详情</td><td>具体操作内容的摘要（如"修改置顶7天价格：¥9.90→¥12.90"）</td></tr>
+<tr><td>IP地址</td><td>操作时的IP</td></tr>
+</table>
+<p>支持按操作人、模块、操作类型、时间范围筛选。日志不可手动删除，仅支持按时间归档（保留90天）。</p>
+</div>
+</div>
+
+<!-- ======== 11. 地区管理 ======== -->
+<div class="section" id="s11">
+<div class="section-header"><div class="section-number">11</div><div class="section-title">地区数据管理</div></div>
+<div class="section-subtitle">优先级：<span class="badge badge-p1">P1 重要</span> | 角色：超级管理员</div>
+
+<div class="subsection">
+<div class="subsection-title">11.1 地区配置</div>
+<table>
+<tr><th style="width:18%">功能</th><th>规则</th></tr>
+<tr><td>省份管理</td><td>当前聚焦湖南省，后续可新增其他省份</td></tr>
+<tr><td>城市管理</td><td>为每个省份管理下属城市列表：新增/编辑城市名、排序、启用/停用</td></tr>
+<tr><td>区县管理</td><td>为每个城市管理下属区县列表：新增/编辑区县名、排序、启用/停用</td></tr>
+<tr><td>热门城市</td><td>标记哪些城市为"热门城市"，在C端城市选择页置顶显示</td></tr>
+<tr><td>启用/停用</td><td>停用的地区在C端筛选器和发布表单中不出现</td></tr>
+</table>
+<div class="callout callout-info"><div class="callout-title">当前数据</div>原型中已覆盖湖南省14个地州市及主要区县数据，以及全国主要热门城市。可直接以此为基础导入。</div>
+</div>
+</div>
+
+<div class="footer">
+<p>万户山生态科技有限公司 · 餐饮供需平台 · 管理后台细化需求文档 V1.0</p>
+<p>本文档基于原型 v2.20.1 用户端全部功能反向梳理，与《项目需求文档 V2.0》配套使用</p>
+</div>
+
+</div>
+</body>
+</html>
