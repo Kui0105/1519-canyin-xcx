@@ -1024,30 +1024,67 @@ body {
 
 /* Platform Announcement */
 .announcement-bar {
-  margin: 0 24px 16px; padding: 20px 24px;
+  margin: 0 24px 16px; padding: 16px 20px;
   background: linear-gradient(135deg, #eff6ff, #f0f9ff);
   border-radius: 16px; border: 1px solid #bfdbfe;
-  display: flex; align-items: center; gap: 16px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
   overflow: hidden; user-select: none;
 }
 .announcement-bar:active { background: #dbeafe; }
-.announcement-icon {
-  width: 56px; height: 56px; border-radius: 14px;
-  background: var(--primary); display: flex;
-  align-items: center; justify-content: center;
-  font-size: 28px; flex-shrink: 0;
+.announcement-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--primary); flex-shrink: 0;
+  animation: dotPulse 1.5s ease-in-out infinite;
 }
-.announcement-content { flex: 1; min-width: 0; }
-.announcement-title {
-  font-size: var(--fs-body-sm); font-weight: 600; color: var(--primary-dark);
-  margin-bottom: 4px;
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
 }
-.announcement-text {
-  font-size: var(--fs-caption); color: var(--text-secondary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.announcement-marquee-wrap {
+  flex: 1; min-width: 0; overflow: hidden; position: relative;
+  height: 22px;
 }
-.announcement-arrow {
-  font-size: 24px; color: var(--text-muted); flex-shrink: 0;
+.announcement-marquee-text {
+  display: inline-block; white-space: nowrap;
+  font-size: var(--fs-body-sm); color: var(--primary-dark); font-weight: 500;
+  animation: marqueeLeft 12s linear infinite;
+  padding-left: 100%;
+}
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.announcement-more {
+  font-size: 14px; color: var(--primary); flex-shrink: 0;
+  font-weight: 500; white-space: nowrap;
+}
+
+/* Announce List */
+#page-announce-list { padding-bottom: 24px; }
+.announce-list-card {
+  margin: 0 24px 16px; padding: 20px;
+  background: #fff; border-radius: 16px; border: 1px solid #f0f0f0;
+  display: flex; gap: 16px; cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.announce-list-card:active { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.announce-list-cover {
+  width: 100px; height: 72px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; flex-shrink: 0;
+  background-size: cover; background-position: center;
+}
+.announce-list-cover.c1 { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.announce-list-cover.c2 { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+.announce-list-cover.c3 { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.announce-list-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.announce-list-title {
+  font-size: var(--fs-body); font-weight: 600; color: var(--text-primary);
+  line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px;
+}
+.announce-list-time {
+  font-size: var(--fs-caption); color: var(--text-muted);
 }
 
 /* Ad Placement Card */
@@ -1464,14 +1501,13 @@ body {
       </div>
       </div>
 
-      <!-- Platform Announcement -->
-      <div class="announcement-bar" id="announcementBar" onclick="showToast('查看平台公告详情')">
-        <div class="announcement-icon">📢</div>
-        <div class="announcement-content">
-          <div class="announcement-title" id="announcementTitle">平台公告</div>
-          <div class="announcement-text" id="announcementText">欢迎使用万铺优选，真实信息共建诚信平台</div>
+      <!-- Platform Announcement Bar -->
+      <div class="announcement-bar" id="announcementBar" onclick="openAnnounceList()">
+        <div class="announcement-dot"></div>
+        <div class="announcement-marquee-wrap">
+          <span class="announcement-marquee-text" id="announcementMarquee">欢迎使用万铺优选，真实信息共建诚信平台</span>
         </div>
-        <div class="announcement-arrow">›</div>
+        <span class="announcement-more">更多 ›</span>
       </div>
 
       <!-- Platform Stats Bar -->
@@ -1812,6 +1848,11 @@ body {
         <div class="cat-tab" data-cat="skill" onclick="switchNewsCat(this, 'skill')">创业干货</div>
       </div>
       <div id="newsCards"></div>
+    </div>
+
+    <!-- ==================== 公告列表 ==================== -->
+    <div class="page" id="page-announce-list">
+      <div id="announceListCards"></div>
     </div>
 
     <!-- ==================== 资讯详情 ==================== -->
@@ -2387,9 +2428,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'资讯详情', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -3068,7 +3109,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback', 'settings'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'announce-list', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback', 'settings'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -3775,6 +3816,39 @@ function switchNewsCat(el, cat) {
   document.querySelectorAll('#newsCats .cat-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderNewsCards();
+}
+
+// ============ Announcement List ============
+function openAnnounceList() {
+  renderAnnounceList();
+  var prev = currentTab;
+  if (!['news', 'news-detail', 'announce-list'].includes(prev)) previousTab = prev;
+  switchTab('announce-list');
+}
+function renderAnnounceList() {
+  // Sort by time descending (newest first)
+  var sorted = newsData.slice().sort(function(a, b) {
+    return b.time.localeCompare(a.time);
+  });
+  var html = '';
+  sorted.forEach(function(item) {
+    var icon = item.cat === 'policy' ? '📋' : '💡';
+    html += '<div class="announce-list-card" onclick="openAnnounceDetail(' + item.id + ')">' +
+      '<div class="announce-list-cover ' + item.cover + '">' + icon + '</div>' +
+      '<div class="announce-list-info">' +
+        '<div class="announce-list-title">' + item.title + '</div>' +
+        '<div class="announce-list-time">' + item.time + '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  document.getElementById('announceListCards').innerHTML = html;
+}
+function openAnnounceDetail(id) {
+  var item = newsData.find(function(d) { return d.id === id; });
+  if (!item) return;
+  currentNewsDetail = item;
+  renderNewsDetail();
+  switchTab('news-detail');
 }
 
 function renderNewsCards() {
@@ -4838,6 +4912,14 @@ renderHomeCards();
 renderIdleCards();
 renderNewsCards();
 renderInviteRecords();
+
+// Init announcement marquee with latest announcement title
+(function() {
+  var sorted = newsData.slice().sort(function(a, b) { return b.time.localeCompare(a.time); });
+  if (sorted.length > 0) {
+    document.getElementById('announcementMarquee').textContent = '🔔 ' + sorted[0].title;
+  }
+})();
 
 // ============ Search Page ============
 var hotSearchData = [
