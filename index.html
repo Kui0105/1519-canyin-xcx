@@ -1024,15 +1024,15 @@ body {
 
 /* Platform Announcement */
 .announcement-bar {
-  margin: 0 24px 16px; padding: 16px 20px;
+  margin: 20px 24px 20px; padding: 18px 20px;
   background: linear-gradient(135deg, #eff6ff, #f0f9ff);
   border-radius: 16px; border: 1px solid #bfdbfe;
-  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 14px; cursor: pointer;
   overflow: hidden; user-select: none;
 }
 .announcement-bar:active { background: #dbeafe; }
 .announcement-dot {
-  width: 10px; height: 10px; border-radius: 50%;
+  width: 12px; height: 12px; border-radius: 50%;
   background: var(--primary); flex-shrink: 0;
   animation: dotPulse 1.5s ease-in-out infinite;
 }
@@ -1042,20 +1042,19 @@ body {
 }
 .announcement-marquee-wrap {
   flex: 1; min-width: 0; overflow: hidden; position: relative;
-  height: 22px;
+  line-height: 28px;
 }
 .announcement-marquee-text {
   display: inline-block; white-space: nowrap;
   font-size: var(--fs-body-sm); color: var(--primary-dark); font-weight: 500;
-  animation: marqueeLeft 12s linear infinite;
-  padding-left: 100%;
+  animation: marqueeLeft 15s linear infinite;
 }
 @keyframes marqueeLeft {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 .announcement-more {
-  font-size: 14px; color: var(--primary); flex-shrink: 0;
+  font-size: 24px; color: var(--primary); flex-shrink: 0;
   font-weight: 500; white-space: nowrap;
 }
 
