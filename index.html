@@ -1007,9 +1007,9 @@ body {
 
 /* Platform Stats Bar */
 .stats-bar {
-  display: flex; align-items: center; gap: 8px;
-  margin: 16px 24px; padding: 16px 20px;
-  background: #fff; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 0; padding: 16px 24px;
+  background: #fff;
   font-size: var(--fs-body); color: var(--text-secondary);
 }
 .stats-divider {
@@ -1022,13 +1022,13 @@ body {
 
 /* Platform Announcement */
 .announcement-bar {
-  margin: 20px 24px 20px; padding: 18px 20px;
-  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
-  border-radius: 16px; border: 1px solid #bfdbfe;
+  margin: 20px 0 0; padding: 18px 24px;
+  background: #fff;
+  border-radius: 0; border: none; border-bottom: 1px solid #f3f4f6;
   display: flex; align-items: center; gap: 14px; cursor: pointer;
   overflow: hidden; user-select: none;
 }
-.announcement-bar:active { background: #dbeafe; }
+.announcement-bar:active { background: #f9fafb; }
 .announcement-dot {
   width: 12px; height: 12px; border-radius: 50%;
   background: var(--primary); flex-shrink: 0;
