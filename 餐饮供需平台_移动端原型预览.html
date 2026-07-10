@@ -1945,24 +1945,16 @@ body {
         </div>
       </div>
 
-      <div class="invite-section">
-        <div class="invite-header">
-          <div class="invite-count">已邀请 <b id="inviteCount">3</b> 位好友</div>
-          <div class="invite-reward">邀请1位得500积分</div>
-        </div>
-        <button class="invite-btn" onclick="inviteFriends()">📨 邀请好友加入</button>
-      </div>
-
-      <!-- Invite Records -->
-      <div class="invite-records" id="inviteRecordsSection">
-        <div class="invite-records-title">邀请记录</div>
-        <div id="inviteRecordsList"></div>
-      </div>
-
       <div class="menu-section" style="margin-top:40px">
         <div class="menu-item" onclick="openMyPosts()">
           <span class="menu-icon">📋</span>
           <span class="menu-text">我的发布</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="openInvitePage()">
+          <span class="menu-icon">🤝</span>
+          <span class="menu-text">邀请好友</span>
+          <span class="menu-right">已邀请 <b id="menuInviteCount">3</b> 人</span>
           <span class="menu-arrow">›</span>
         </div>
         <div class="menu-item" onclick="openNotifications()">
@@ -2164,6 +2156,21 @@ body {
     <!-- ==================== 意见反馈 ==================== -->
     <div class="page" id="page-feedback">
       <div class="feedback-form" id="feedbackForm"></div>
+    </div>
+
+    <!-- ==================== 邀请好友 ==================== -->
+    <div class="page" id="page-invite">
+      <div class="invite-section">
+        <div class="invite-header">
+          <div class="invite-count">已邀请 <b id="inviteCount">3</b> 位好友</div>
+          <div class="invite-reward">邀请1位得500积分</div>
+        </div>
+        <button class="invite-btn" onclick="inviteFriends()">📨 邀请好友加入</button>
+      </div>
+      <div class="invite-records" id="inviteRecordsSection">
+        <div class="invite-records-title">邀请记录</div>
+        <div id="inviteRecordsList"></div>
+      </div>
     </div>
 
     <!-- ==================== 个人设置 ==================== -->
@@ -2425,9 +2432,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录' };
+  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录', 'invite':'邀请好友' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts' || page === 'invite') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -2439,7 +2446,7 @@ function switchTab(page) {
   if (page === 'home') renderHomeCards();
   if (page === 'idle') renderIdleCards();
   if (page === 'news') renderNewsCards();
-  if (page === 'me') renderInviteRecords();
+  if (page === 'invite') renderInviteRecords();
   if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); }
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
@@ -3783,7 +3790,13 @@ function renderIdleDetailPage(item) {
 
   var html = `
     <div style="border-radius:16px;overflow:hidden;margin-bottom:24px;height:400px;display:flex;align-items:center;justify-content:center;font-size:100px;${idleStyle}">${idleIcon}</div>
-    <div style="font-size:40px;font-weight:700;color:var(--danger);margin-bottom:16px">¥${item.price}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:40px;font-weight:700;color:var(--danger)">¥${item.price}</div>
+      <button class="detail-share-btn" onclick="handleShare(${item.id})">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button>
+    </div>
     <h3 style="font-size:var(--fs-title);margin-bottom:12px;line-height:1.5">${item.title}</h3>
     <div class="card-tags" style="margin-bottom:20px">
       <span class="tag tag-orange">${item.catLabel}</span>
@@ -3934,10 +3947,12 @@ function renderDetailPage(item) {
           <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.publishDate} · ${item.catLabel}</div>
         </div>
       </div>
-      ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a;margin-top:6px">置顶</span>' : ''}
-      <button class="detail-share-btn" onclick="handleShare(${item.id})" style="margin-top:6px">📤 分享</button>
+      <button class="detail-share-btn" onclick="handleShare(${item.id})" style="margin-top:6px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button>
     </div>
-    <h3 style="font-size:var(--fs-title-lg);margin-bottom:20px;line-height:1.5">${item.title}</h3>
+    <h3 style="font-size:var(--fs-title-lg);margin-bottom:20px;line-height:1.5">${item.title}${item.pinned ? ' <span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a;vertical-align:middle;margin-left:8px">置顶</span>' : ''}</h3>
     <p style="color:var(--text-secondary);font-size:var(--fs-body);line-height:1.8;margin-bottom:24px">${item.desc}</p>
     <div class="card-tags">${item.tags.map(function(t){ return '<span class="tag tag-blue">'+t+'</span>'; }).join('')}</div>
     <div class="detail-field"><div class="field-label">所属区域</div><div class="field-value">${locIcon} ${item.location}</div></div>
@@ -4400,6 +4415,11 @@ function openFeedback() {
   switchTab('feedback');
 }
 
+function openInvitePage() {
+  previousTab = currentTab;
+  switchTab('invite');
+}
+
 function renderFeedback() {
   var html = `
     <div class="fb-form-group">
@@ -4468,6 +4488,8 @@ function renderInviteRecords() {
   });
   document.getElementById('inviteRecordsList').innerHTML = html || '<div class="empty-state" style="padding:32px"><div class="text" style="font-size:var(--fs-caption);color:var(--text-muted)">暂无邀请记录</div></div>';
   document.getElementById('inviteCount').textContent = inviteRecords.length;
+  var menuInvite = document.getElementById('menuInviteCount');
+  if (menuInvite) menuInvite.textContent = inviteRecords.length;
 }
 
 function inviteFriends() {
