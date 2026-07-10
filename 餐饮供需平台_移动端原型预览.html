@@ -1005,6 +1005,155 @@ body {
 
 .home-top-wrap { background: #fff; padding-bottom: 0; }
 
+/* Platform Stats Bar */
+.stats-bar {
+  display: flex; gap: 24px; margin: 16px 24px;
+  padding: 24px 32px; background: #fff; border-radius: 16px;
+}
+.stats-item {
+  flex: 1; text-align: center; padding: 8px 0;
+}
+.stats-item:first-child { border-right: 2px solid #f3f4f6; }
+.stats-val {
+  font-size: 44px; font-weight: 700; color: var(--primary);
+  line-height: 1.2;
+}
+.stats-label {
+  font-size: var(--fs-caption); color: var(--text-muted); margin-top: 4px;
+}
+
+/* Platform Announcement */
+.announcement-bar {
+  margin: 0 24px 16px; padding: 20px 24px;
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border-radius: 16px; border: 1px solid #bfdbfe;
+  display: flex; align-items: center; gap: 16px; cursor: pointer;
+  overflow: hidden; user-select: none;
+}
+.announcement-bar:active { background: #dbeafe; }
+.announcement-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: var(--primary); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 28px; flex-shrink: 0;
+}
+.announcement-content { flex: 1; min-width: 0; }
+.announcement-title {
+  font-size: var(--fs-body-sm); font-weight: 600; color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+.announcement-text {
+  font-size: var(--fs-caption); color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.announcement-arrow {
+  font-size: 24px; color: var(--text-muted); flex-shrink: 0;
+}
+
+/* Ad Placement Card */
+.ad-card {
+  margin: 16px 24px; padding: 24px;
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+  border-radius: 16px; border: 2px dashed #d1d5db;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; cursor: pointer;
+  min-height: 160px; user-select: none;
+}
+.ad-card:active { background: #e5e7eb; }
+.ad-card .ad-badge {
+  font-size: var(--fs-caption); color: #9ca3af;
+  background: #e5e7eb; padding: 4px 16px; border-radius: 20px;
+}
+.ad-card .ad-img {
+  width: 100%; height: 100px; background: #d1d5db;
+  border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 36px; color: #9ca3af;
+}
+.ad-card .ad-text {
+  font-size: var(--fs-caption); color: var(--text-muted);
+}
+
+/* Invite Section */
+.invite-section {
+  margin: 24px 32px; padding: 28px;
+  background: linear-gradient(135deg, #fef3c7, #fffbeb);
+  border-radius: 20px; border: 1px solid #fde68a;
+}
+.invite-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.invite-count {
+  font-size: var(--fs-caption); color: #92400e;
+}
+.invite-count b { font-size: 36px; color: #d97706; margin: 0 4px; }
+.invite-reward {
+  font-size: var(--fs-caption-sm); color: #92400e;
+  background: #fde68a; padding: 8px 20px; border-radius: 20px;
+  font-weight: 500;
+}
+.invite-btn {
+  width: 100%; padding: 22px; background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; border: none; border-radius: 16px;
+  font-size: var(--fs-body); font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+}
+.invite-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+/* Invite Records */
+.invite-records { margin: 0 32px; }
+.invite-records-title {
+  font-size: var(--fs-body-sm); font-weight: 600; color: var(--text);
+  margin-bottom: 16px;
+}
+.invite-record-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 0; border-bottom: 1px solid #f3f4f6;
+}
+.invite-record-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #e5e7eb; display: flex; align-items: center;
+  justify-content: center; font-size: 28px; flex-shrink: 0;
+}
+.invite-record-info { flex: 1; min-width: 0; }
+.invite-record-name {
+  font-size: var(--fs-body-sm); font-weight: 500; color: var(--text);
+}
+.invite-record-phone {
+  font-size: var(--fs-caption); color: var(--text-muted); margin-top: 2px;
+}
+.invite-record-time {
+  font-size: var(--fs-caption-sm); color: var(--text-muted);
+}
+
+/* Detail Page Share Button */
+.detail-share-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: #f3f4f6;
+  border: none; border-radius: 20px; font-size: var(--fs-caption);
+  color: var(--text-secondary); cursor: pointer; font-weight: 500;
+  transition: all 0.2s;
+}
+.detail-share-btn:active { background: #e5e7eb; transform: scale(0.96); }
+
+/* Detail Ad */
+.detail-ad {
+  margin: 24px 0; padding: 20px;
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+  border-radius: 16px; border: 2px dashed #d1d5db;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px; min-height: 120px;
+}
+.detail-ad .ad-badge {
+  font-size: var(--fs-caption-sm); color: #9ca3af;
+  background: #e5e7eb; padding: 4px 16px; border-radius: 20px;
+}
+.detail-ad .ad-img {
+  width: 100%; height: 80px; background: #d1d5db;
+  border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 32px; color: #9ca3af;
+}
+
 /* Category Nav Grid */
 .cat-nav-grid {
   display: grid; grid-template-columns: repeat(4, 1fr);
@@ -1313,6 +1462,28 @@ body {
           <button class="banner-dot" data-idx="2" onclick="goBanner(2)"></button>
         </div>
       </div>
+      </div>
+
+      <!-- Platform Announcement -->
+      <div class="announcement-bar" id="announcementBar" onclick="showToast('查看平台公告详情')">
+        <div class="announcement-icon">📢</div>
+        <div class="announcement-content">
+          <div class="announcement-title" id="announcementTitle">平台公告</div>
+          <div class="announcement-text" id="announcementText">欢迎使用万铺优选，真实信息共建诚信平台</div>
+        </div>
+        <div class="announcement-arrow">›</div>
+      </div>
+
+      <!-- Platform Stats Bar -->
+      <div class="stats-bar">
+        <div class="stats-item">
+          <div class="stats-val" id="statsTotalPosts">0</div>
+          <div class="stats-label">累计发帖</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-val" id="statsTotalViews">0</div>
+          <div class="stats-label">累计浏览</div>
+        </div>
       </div>
 
       <!-- Category Nav Grid -->
@@ -1736,6 +1907,20 @@ body {
         </div>
       </div>
 
+      <div class="invite-section">
+        <div class="invite-header">
+          <div class="invite-count">已邀请 <b id="inviteCount">3</b> 位好友</div>
+          <div class="invite-reward">邀请1位得500积分</div>
+        </div>
+        <button class="invite-btn" onclick="inviteFriends()">📨 邀请好友加入</button>
+      </div>
+
+      <!-- Invite Records -->
+      <div class="invite-records" id="inviteRecordsSection">
+        <div class="invite-records-title">邀请记录</div>
+        <div id="inviteRecordsList"></div>
+      </div>
+
       <div class="menu-section" style="margin-top:40px">
         <div class="menu-item" onclick="openMyPosts()">
           <span class="menu-icon">📋</span>
@@ -2112,7 +2297,7 @@ body {
 // ============ Data ============
 var locIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>';
 const mockData = [
-  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', publishDate:'2026-07-09', likes:128, favorites:56, views:2340,
+  { id:1, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:true, userFaved:false, title:'湖南大学学生食堂档口招商', desc:'在校生人数28000人，档口面积15-25㎡可选，经营品类：盖浇饭、面食、麻辣烫、饮品等，收费模式纯租金+水电网均摊，水电标准按商业用电收费，空余档位3个，进场要求有餐饮经验。', tags:['本科','纯租金','3个档位','人流量大'], location:'长沙 · 岳麓区', phone:'138****5678', images:['bg1','bg2','bg3'], avatar:'湖', username:'湖南大学餐饮部', time:'2小时前', publishDate:'2026-07-09', likes:128, favorites:56, views:2340, shares:45,
     comments: [
       { id:1, avatar:'张', nickname:'张老板', time:'30分钟前', content:'档口在几楼？面积最小的那个还在吗？我想看看面食类的。', liked:false, likes:5,
         replies: [
@@ -2122,22 +2307,22 @@ const mockData = [
       { id:2, avatar:'李', nickname:'李师傅', time:'1小时前', content:'请问进场费还要另外交吗？押金多少？', liked:true, likes:12 },
       { id:3, avatar:'王', nickname:'小王餐饮', time:'2小时前', content:'学生消费能力怎么样？客单价大概多少？', liked:false, likes:2 },
     ] },
-  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', publishDate:'2026-07-09', likes:96, favorites:42, views:1890 },
-  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', publishDate:'2026-07-09', likes:75, favorites:31, views:1560 },
-  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', publishDate:'2026-07-08', likes:203, favorites:89, views:4520,
+  { id:2, cat:'canteen', catLabel:'校园食堂', pinned:true, userLiked:false, userFaved:false, title:'长沙理工大学食堂档口整体招租', desc:'专科院校，在校生15000人，各档口面积12-20㎡，经营品类面食、快餐均可，收费倒扣抽点模式18%，含基础水电，进场即可营业。', tags:['专科','倒扣抽点','设备齐全','含水电'], location:'长沙 · 天心区', phone:'139****2345', images:['bg4','bg5'], avatar:'长', username:'长理食堂管理处', time:'3小时前', publishDate:'2026-07-09', likes:96, favorites:42, views:1890, shares:28 },
+  { id:3, cat:'canteen', catLabel:'校园食堂', pinned:false, userLiked:false, userFaved:false, title:'湖南科技大学档口招商（特色小吃）', desc:'本科院校在校生22000人，档口面积18㎡，经营品类特色小吃优先（炸鸡汉堡、奶茶、烘焙），收费模式纯租金2000/月+水电自理。', tags:['本科','纯租金','18㎡','特色小吃'], location:'湘潭 · 雨湖区', phone:'137****8901', images:['bg1','bg3'], avatar:'科', username:'科大后勤处', time:'5小时前', publishDate:'2026-07-09', likes:75, favorites:31, views:1560, shares:19 },
+  { id:4, cat:'transfer', catLabel:'档口转让', pinned:true, userLiked:true, userFaved:true, title:'中南大学校内商业街档口转让', desc:'本科院校，在校生35000人，商业街黄金位置档口转让，面积25㎡，目前经营奶茶店，月营业额8-10万，因个人原因转让，转让费面议。含设备齐全。', tags:['本科','商业街','25㎡','含设备'], location:'长沙 · 岳麓区', phone:'136****3456', images:['bg2','bg4'], avatar:'中', username:'小陈餐饮', time:'1天前', publishDate:'2026-07-08', likes:203, favorites:89, views:4520, shares:78,
     comments: [
       { id:1, avatar:'刘', nickname:'奶茶小哥', time:'3小时前', content:'转让费大概多少？设备都包哪些？', liked:false, likes:8 },
       { id:2, avatar:'赵', nickname:'赵姐', time:'5小时前', content:'请问租金一个月多少？合同还有几年？', liked:false, likes:3 },
     ] },
-  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', publishDate:'2026-07-07', likes:56, favorites:23, views:1230 },
-  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', publishDate:'2026-07-09', likes:45, favorites:18, views:890 },
-  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', publishDate:'2026-07-09', likes:32, favorites:12, views:670 },
-  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', publishDate:'2026-07-08', likes:89, favorites:36, views:2100 },
-  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', publishDate:'2026-07-09', likes:112, favorites:47, views:1890 },
-  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', publishDate:'2026-07-09', likes:67, favorites:29, views:1340 },
-  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', publishDate:'2026-07-09', likes:45, favorites:15, views:980 },
-  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', publishDate:'2026-07-09', likes:88, favorites:32, views:1670 },
-  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', publishDate:'2026-07-08', likes:56, favorites:24, views:1120 },
+  { id:5, cat:'transfer', catLabel:'档口转让', pinned:false, userLiked:false, userFaved:false, title:'湖南农大食堂档口低价转让', desc:'在校生20000人，档口面积15㎡，目前经营面食，月营业额稳定4万+，因回乡发展转让，转让费3.5万含设备，收费模式纯租金1000/月。', tags:['本科','15㎡','面食','低价'], location:'长沙 · 芙蓉区', phone:'152****7890', images:['bg3'], avatar:'农', username:'老张餐饮', time:'2天前', publishDate:'2026-07-07', likes:56, favorites:23, views:1230, shares:15 },
+  { id:6, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:true, title:'招聘高校食堂厨师长（管理岗）', desc:'招聘人数2人，工资待遇8000-12000/月，包吃住，要求5年以上团餐管理经验，负责食堂整体运营管理，工作地点长沙岳麓区。', tags:['管理岗','8000-12000','包吃住','5年经验'], location:'长沙 · 岳麓区', phone:'155****2345', images:[], avatar:'招', username:'湘味餐饮集团', time:'3小时前', publishDate:'2026-07-09', likes:45, favorites:18, views:890, shares:11 },
+  { id:7, cat:'recruit', catLabel:'人才招聘', pinned:false, userLiked:false, userFaved:false, title:'长沙高校食堂急招面点师傅（技术岗）', desc:'招聘2人，工资6000-8000/月包食宿，要求会制作各类中式面点，工作内容负责早餐供应，工作地点长沙望城区，需有健康证。', tags:['技术岗','6000-8000','包食宿','面点师傅'], location:'长沙 · 望城区', phone:'187****9012', images:[], avatar:'面', username:'湘食汇餐饮', time:'6小时前', publishDate:'2026-07-09', likes:32, favorites:12, views:670, shares:8 },
+  { id:8, cat:'biz', catLabel:'生意转让', pinned:false, userLiked:false, userFaved:false, title:'长沙河西大学城小吃街旺铺整体转让', desc:'位于大学城核心商圈，周边5所高校，面积40㎡，目前经营麻辣烫，日均营业额3000+，年利润20w+。因扩大经营规模转让，含全套设备、配方。转让费12万。', tags:['大学城商圈','40㎡','年利润20万+','含配方'], location:'长沙 · 岳麓区', phone:'158****6789', images:['bg1','bg2'], avatar:'旺', username:'李先生', time:'1天前', publishDate:'2026-07-08', likes:89, favorites:36, views:2100, shares:32 },
+  { id:9, cat:'shop', catLabel:'校外旺铺', pinned:true, userLiked:false, userFaved:false, title:'长沙岳麓区临街旺铺出租（适合餐饮）', desc:'沿街门店，面积60㎡，人流密集，周边有学校、写字楼。之前做早餐店，设施齐全，可做快餐/小吃/饮品等，租金8000/月，押二付三。', tags:['沿街门店','60㎡','人流密集','设施齐全'], location:'长沙 · 岳麓区', phone:'139****4567', images:['bg4','bg5'], avatar:'店', username:'王房东', time:'8小时前', publishDate:'2026-07-09', likes:112, favorites:47, views:1890, shares:41 },
+  { id:10, cat:'brand', catLabel:'品牌加盟', pinned:false, userLiked:false, userFaved:false, title:'「味湘来」湘式快餐品牌全省招商加盟', desc:'深耕湖南高校团餐10年品牌，标准化运营体系，提供选址评估、装修方案、技术培训、供应链支持。投资门槛8-15万，回本周期6-12个月，已有30+成功门店。', tags:['湘式快餐','10年品牌','8-15万','30+门店'], location:'长沙 · 覆盖全省', phone:'133****8901', images:['bg3'], avatar:'味', username:'味湘来品牌部', time:'12小时前', publishDate:'2026-07-09', likes:67, favorites:29, views:1340, shares:25 },
+  { id:11, cat:'street', catLabel:'校园商业街', pinned:false, userLiked:false, userFaved:false, title:'长沙大学城商业街饮品店整体转让', desc:'位于麓山南路商业街核心地段，面积20㎡，装修精美设备齐全，日均营业额2000+，因店主出国转让。含全套设备及库存，接手即可经营。', tags:['商业街','20㎡','饮品店','含设备'], location:'长沙 · 岳麓区', phone:'186****3456', images:['bg1'], avatar:'饮', username:'小莫茶饮', time:'6小时前', publishDate:'2026-07-09', likes:45, favorites:15, views:980, shares:17 },
+  { id:12, cat:'hospital', catLabel:'医院餐厅', pinned:true, userLiked:false, userFaved:false, title:'湘雅三医院食堂营养餐档口招商', desc:'日均门诊量8000+人次，食堂档口面积18-25㎡，经营品类营养餐、养生汤品优先，收费纯租金模式1500/月+水电网均摊，需持健康证及食品安全管理员证。', tags:['三甲医院','18-25㎡','营养餐','证照齐全'], location:'长沙 · 岳麓区', phone:'135****7890', images:['bg2','bg4'], avatar:'雅', username:'湘雅后勤管理', time:'4小时前', publishDate:'2026-07-09', likes:88, favorites:32, views:1670, shares:35 },
+  { id:13, cat:'park', catLabel:'企业园区', pinned:false, userLiked:false, userFaved:false, title:'长沙高新区企业园区食堂档口招租', desc:'园区入驻企业200+家，日均用餐人数5000+，档口面积15-30㎡可选，经营品类中餐、快餐、粉面均可，收费倒扣抽点15%含水电，有中央厨房配套。', tags:['200+企业','5000+用餐','倒扣15%','中央厨房'], location:'长沙 · 高新区', phone:'177****0123', images:['bg3','bg5'], avatar:'高', username:'高新区管委会', time:'1天前', publishDate:'2026-07-08', likes:56, favorites:24, views:1120, shares:22 },
 ];
 
 const idleData = [
@@ -2216,6 +2401,7 @@ function switchTab(page) {
   if (page === 'home') renderHomeCards();
   if (page === 'idle') renderIdleCards();
   if (page === 'news') renderNewsCards();
+  if (page === 'me') renderInviteRecords();
   if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); }
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
@@ -3254,8 +3440,35 @@ function renderHomeCards() {
   let html = '';
   data.forEach((item, idx) => {
     html += renderInfoCard(item, idx);
+    // Insert ad every 5 posts
+    if ((idx + 1) % 5 === 0 && idx + 1 < data.length) {
+      html += renderAdCard(idx + 1);
+    }
   });
   document.getElementById('homeCards').innerHTML = html;
+  updatePlatformStats(data);
+}
+
+function renderAdCard(position) {
+  return `
+    <div class="ad-card" onclick="showToast('广告位 #${position/5} — 点击跳转广告详情')">
+      <div class="ad-badge">广告</div>
+      <div class="ad-img">📢 广告占位</div>
+      <div class="ad-text">精选推荐 · 立即了解</div>
+    </div>`;
+}
+
+function updatePlatformStats(data) {
+  var totalPosts = data.length;
+  var totalViews = data.reduce(function(sum, item) { return sum + (item.views || 0); }, 0);
+  document.getElementById('statsTotalPosts').textContent = formatNumber(totalPosts);
+  document.getElementById('statsTotalViews').textContent = formatNumber(totalViews);
+}
+
+function formatNumber(num) {
+  if (num >= 10000) return (num / 10000).toFixed(1) + '万';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+  return num.toString();
 }
 
 function renderInfoCard(item, idx, forceFaved) {
@@ -3289,7 +3502,7 @@ function renderInfoCard(item, idx, forceFaved) {
         <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
         <span class="${faved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${faved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
-        <span onclick="event.stopPropagation();showToast('已复制分享链接')">↗ 转发</span>
+        <span onclick="event.stopPropagation();handleShare(${item.id})">↗ 转发 ${item.shares || 0}</span>
       </div>
     </div>`;
 }
@@ -3634,13 +3847,16 @@ function renderDetailPage(item) {
     </div>` : '<p style="color:var(--text-muted);font-size:var(--fs-body-sm)">暂无图片</p>';
 
   var html = `
-    <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
-      <div class="user-avatar" style="width:80px;height:80px;font-size:32px">${item.avatar}</div>
-      <div>
-        <div style="font-weight:600;font-size:var(--fs-section)">${item.username}</div>
-        <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.publishDate} · ${item.catLabel}</div>
+    <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:20px;flex:1">
+        <div class="user-avatar" style="width:80px;height:80px;font-size:32px">${item.avatar}</div>
+        <div>
+          <div style="font-weight:600;font-size:var(--fs-section)">${item.username}</div>
+          <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.publishDate} · ${item.catLabel}</div>
+        </div>
       </div>
-      ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a">置顶</span>' : ''}
+      ${item.pinned ? '<span style="display:inline-block;background:#fef3c7;color:#d97706;font-size:var(--fs-mini);padding:4px 12px;border-radius:6px;font-weight:600;border:2px solid #fde68a;margin-top:6px">置顶</span>' : ''}
+      <button class="detail-share-btn" onclick="handleShare(${item.id})" style="margin-top:6px">📤 分享</button>
     </div>
     <h3 style="font-size:var(--fs-title-lg);margin-bottom:20px;line-height:1.5">${item.title}</h3>
     <p style="color:var(--text-secondary);font-size:var(--fs-body);line-height:1.8;margin-bottom:24px">${item.desc}</p>
@@ -3653,6 +3869,10 @@ function renderDetailPage(item) {
       ${unlockedPhoneIds.has(item.id)
         ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
         : '<button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>'}
+    </div>
+    <div class="detail-ad" onclick="showToast('广告位 — 点击跳转广告详情')">
+      <div class="ad-badge">广告</div>
+      <div class="ad-img">📢 广告占位</div>
     </div>
     <div class="comment-section">
       <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
@@ -4146,6 +4366,49 @@ function showLogoutConfirm() {
   };
   showConfirm('确定要退出登录吗？', confirmFn);
 }
+
+// ============ Invite Friends ============
+var inviteRecords = [
+  { id:1, avatar:'刘', nickname:'刘老板', phone:'138****1234', time:'2026-07-08 14:30' },
+  { id:2, avatar:'陈', nickname:'小陈餐饮', phone:'155****5678', time:'2026-07-05 09:15' },
+  { id:3, avatar:'周', nickname:'周师傅', phone:'186****9012', time:'2026-06-28 16:42' },
+];
+
+function renderInviteRecords() {
+  var html = '';
+  inviteRecords.forEach(function(r) {
+    html += `
+      <div class="invite-record-item">
+        <div class="invite-record-avatar">${r.avatar}</div>
+        <div class="invite-record-info">
+          <div class="invite-record-name">${r.nickname}</div>
+          <div class="invite-record-phone">${r.phone}</div>
+        </div>
+        <div class="invite-record-time">${r.time}</div>
+      </div>`;
+  });
+  document.getElementById('inviteRecordsList').innerHTML = html || '<div class="empty-state" style="padding:32px"><div class="text" style="font-size:var(--fs-caption);color:var(--text-muted)">暂无邀请记录</div></div>';
+  document.getElementById('inviteCount').textContent = inviteRecords.length;
+}
+
+function inviteFriends() {
+  // Simulate generating a share link
+  var mockLink = 'https://wp.chinabest.app/invite?code=WP' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  showToast('邀请链接已复制，分享给好友即可');
+  // Simulate adding a new invite record
+  var names = ['赵老板','钱师傅','孙先生','李姐','周厨','吴总','郑老板','王哥'];
+  var phones = ['139****' + Math.floor(Math.random()*9000+1000), '158****' + Math.floor(Math.random()*9000+1000)];
+  var newInvite = {
+    id: inviteRecords.length + 1,
+    avatar: names[inviteRecords.length % names.length][0],
+    nickname: names[inviteRecords.length % names.length],
+    phone: phones[Math.floor(Math.random()*2)],
+    time: new Date().toISOString().replace('T',' ').substring(0, 16)
+  };
+  inviteRecords.unshift(newInvite);
+  renderInviteRecords();
+}
+
 function handleLogin(type) {
   var cb = document.getElementById('loginCheckbox');
   if (!cb.classList.contains('checked')) {
@@ -4191,6 +4454,16 @@ function toggleFav(el, id) {
     item.userFaved = true;
     el.innerHTML = '★ ' + (item.favorites + 1);
     showToast('已收藏');
+  }
+}
+
+function handleShare(id) {
+  event.stopPropagation();
+  var item = mockData.find(function(d) { return d.id === id; });
+  if (item) {
+    item.shares = (item.shares || 0) + 1;
+    showToast('已复制分享链接');
+    renderHomeCards(); // Refresh to update share count
   }
 }
 
@@ -4564,6 +4837,7 @@ startBanner();
 renderHomeCards();
 renderIdleCards();
 renderNewsCards();
+renderInviteRecords();
 
 // ============ Search Page ============
 var hotSearchData = [
