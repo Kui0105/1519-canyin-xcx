@@ -2425,6 +2425,7 @@ let currentPointsToUse = 0; // 当前选择使用的积分数量
 
 // ============ Navigation ============
 function switchTab(page) {
+  previousTab = currentTab;
   currentTab = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
