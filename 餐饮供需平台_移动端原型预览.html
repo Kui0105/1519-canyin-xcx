@@ -1007,19 +1007,22 @@ body {
 
 /* Platform Stats Bar */
 .stats-bar {
-  display: flex; gap: 24px; margin: 16px 24px;
-  padding: 24px 32px; background: #fff; border-radius: 16px;
+  display: flex; align-items: center; gap: 0;
+  margin: 16px 24px; padding: 20px 0;
+  background: #fff; border-radius: 16px;
 }
 .stats-item {
-  flex: 1; text-align: center; padding: 8px 0;
+  flex: 1; text-align: center;
 }
-.stats-item:first-child { border-right: 2px solid #f3f4f6; }
+.stats-divider {
+  width: 1px; height: 36px; background: #eef1f5; flex-shrink: 0;
+}
 .stats-val {
-  font-size: 44px; font-weight: 700; color: var(--primary);
-  line-height: 1.2;
+  font-size: 28px; font-weight: 700; color: var(--primary);
+  line-height: 1.3;
 }
 .stats-label {
-  font-size: var(--fs-caption); color: var(--text-muted); margin-top: 4px;
+  font-size: var(--fs-caption); color: var(--text-muted); margin-top: 2px;
 }
 
 /* Platform Announcement */
@@ -1514,18 +1517,6 @@ body {
         <span class="announcement-more">更多 ›</span>
       </div>
 
-      <!-- Platform Stats Bar -->
-      <div class="stats-bar">
-        <div class="stats-item">
-          <div class="stats-val" id="statsTotalPosts">0</div>
-          <div class="stats-label">累计发帖</div>
-        </div>
-        <div class="stats-item">
-          <div class="stats-val" id="statsTotalViews">0</div>
-          <div class="stats-label">累计浏览</div>
-        </div>
-      </div>
-
       <!-- Category Nav Grid -->
       <div class="cat-nav-grid">
         <div class="cat-nav-item" onclick="switchHomeCatByNav('canteen')">
@@ -1559,6 +1550,19 @@ body {
         <div class="cat-nav-item" onclick="switchHomeCatByNav('brand')">
           <div class="cat-nav-icon" style="background:#f0f9ff">🏷️</div>
           <div class="cat-nav-label">品牌加盟</div>
+        </div>
+      </div>
+
+      <!-- Platform Stats -->
+      <div class="stats-bar">
+        <div class="stats-item">
+          <div class="stats-val" id="statsTotalPosts">0</div>
+          <div class="stats-label">发布量</div>
+        </div>
+        <div class="stats-divider"></div>
+        <div class="stats-item">
+          <div class="stats-val" id="statsTotalViews">0</div>
+          <div class="stats-label">浏览量</div>
         </div>
       </div>
 
