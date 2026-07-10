@@ -3607,6 +3607,9 @@ function renderIdleCards() {
         </div>
       </div>
     </div>`;
+    if ((idx + 1) % 5 === 0 && idx + 1 < data.length) {
+      html += renderAdCard(idx + 1);
+    }
   });
   document.getElementById('idleCards').innerHTML = html;
 }
@@ -3796,6 +3799,10 @@ function renderIdleDetailPage(item) {
       ${unlockedPhoneIds.has(item.id)
         ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
         : '<button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>'}
+    </div>
+    <div class="detail-ad" onclick="showToast('广告位 — 点击跳转广告详情')">
+      <div class="ad-badge">广告</div>
+      <div class="ad-img">📢 广告占位</div>
     </div>
     <div class="comment-section">
       <div class="cs-title">帖子评论 (${(item.comments || []).length})</div>
