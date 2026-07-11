@@ -156,43 +156,43 @@ body {
 
 /* Follow Button */
 .follow-btn {
-  flex-shrink: 0; width: 80px; height: 80px;
+  flex-shrink: 0; padding: 0 24px; height: 80px; line-height: 80px;
   border-radius: 20px; border: 2px solid #2563eb;
   background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  color: #2563eb; font-size: 24px; font-weight: 700;
-  cursor: pointer; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2px;
+  color: #2563eb; font-size: 26px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
   transition: all 0.2s;
 }
 .follow-btn:active { transform: scale(0.95); background: #bfdbfe; }
-.follow-btn .follow-icon { font-size: 28px; line-height: 1; }
-.follow-btn .follow-text { font-size: 18px; line-height: 1; }
 
 /* QR Modal */
 .qr-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
   z-index: 999; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
 }
 .qr-modal {
-  background: #fff; border-radius: 24px; padding: 40px 32px 32px;
-  width: 560px; max-width: 90vw; text-align: center; position: relative;
+  background: #fff; border-radius: 24px; padding: 32px 20px 24px;
+  width: 560px; max-width: 100%; text-align: center; position: relative;
+  box-sizing: border-box;
 }
 .qr-modal .qr-close {
-  position: absolute; top: 16px; right: 20px;
-  width: 44px; height: 44px; border-radius: 50%;
-  border: none; background: #f3f4f6; font-size: 24px; color: #6b7280;
+  position: absolute; top: 12px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: #f3f4f6; font-size: 20px; color: #6b7280;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-.qr-modal .qr-title { font-size: 30px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.qr-modal .qr-sub { font-size: 22px; color: var(--text-muted); margin-bottom: 24px; }
+.qr-modal .qr-title { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.qr-modal .qr-sub { font-size: 20px; color: var(--text-muted); margin-bottom: 20px; }
 .qr-modal .qr-image {
-  width: 320px; height: 320px; margin: 0 auto 24px;
+  width: 260px; height: 260px; margin: 0 auto 20px;
   display: flex; align-items: center; justify-content: center;
 }
+.qr-modal .qr-image svg { width: 100%; height: 100%; }
 .qr-save-btn {
-  width: 100%; padding: 18px; border-radius: 16px; border: none;
+  width: 100%; padding: 16px; border-radius: 14px; border: none;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff; font-size: 26px; font-weight: 600; cursor: pointer;
+  color: #fff; font-size: 24px; font-weight: 600; cursor: pointer;
   transition: all 0.2s;
 }
 .qr-save-btn:active { transform: scale(0.97); opacity: 0.9; }
@@ -1535,10 +1535,7 @@ body {
           <span class="search-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <input type="text" placeholder="请输入关键词进行搜索" id="homeSearch" readonly onclick="openSearch()" style="cursor:pointer;pointer-events:none">
         </div>
-        <button class="follow-btn" onclick="openQrModal()">
-          <span class="follow-icon">➕</span>
-          <span class="follow-text">关注</span>
-        </button>
+        <button class="follow-btn" onclick="openQrModal()">关注</button>
       </div>
 
       <!-- Banner Carousel -->
@@ -2479,7 +2476,7 @@ body {
         <rect x="96" y="280" width="8" height="8" fill="#000"/><rect x="112" y="280" width="8" height="8" fill="#fff"/><rect x="128" y="280" width="8" height="8" fill="#000"/><rect x="144" y="280" width="8" height="8" fill="#fff"/><rect x="160" y="280" width="8" height="8" fill="#000"/><rect x="176" y="280" width="8" height="8" fill="#000"/><rect x="192" y="280" width="8" height="8" fill="#fff"/><rect x="208" y="280" width="8" height="8" fill="#000"/><rect x="224" y="280" width="8" height="8" fill="#000"/><rect x="240" y="280" width="8" height="8" fill="#fff"/><rect x="256" y="280" width="8" height="8" fill="#000"/><rect x="272" y="280" width="8" height="8" fill="#fff"/>
       </svg>
     </div>
-    <button class="qr-save-btn" onclick="saveQrCode()">💾 保存至本地</button>
+    <button class="qr-save-btn" onclick="saveQrCode()">保存至本地</button>
   </div>
 </div>
 
