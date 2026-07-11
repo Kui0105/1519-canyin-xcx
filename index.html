@@ -573,20 +573,20 @@ body {
 }
 .photo-upload .upload-box:hover { border-color: var(--primary); color: var(--primary); }
 .photo-upload .upload-box .icon { font-size: 48px; }
-/* 媒体类型选择器 */
-.media-type-toggle { display: flex; background: #f3f4f6; border-radius: 14px; padding: 4px; gap: 4px; }
-.media-type-btn {
-  flex: 1; text-align: center; padding: 16px 0; border-radius: 12px;
-  font-size: var(--fs-section); font-weight: 500; cursor: pointer;
-  color: var(--text-secondary); transition: all 0.2s;
-}
-.media-type-btn.active { background: #fff; color: var(--primary); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 .submit-btn {
   width: 100%; padding: 26px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: #fff; font-size: 32px; font-weight: 600; border: none;
   border-radius: 20px; cursor: pointer; margin-top: 16px;
 }
 .submit-btn:active { transform: scale(0.98); }
+.verify-btn {
+  flex-shrink: 0; padding: 0 24px; height: 80px; line-height: 80px;
+  border-radius: 14px; border: none; background: #2563eb;
+  color: #fff; font-size: var(--fs-body); font-weight: 600; cursor: pointer;
+  white-space: nowrap; transition: all 0.2s;
+}
+.verify-btn:active { opacity: 0.85; }
+.verify-btn:disabled { background: #9ca3af; cursor: not-allowed; }
 
 /* Idle Card */
 .idle-card {
@@ -1587,7 +1587,7 @@ body {
         </div>
         <div class="cat-nav-item" onclick="switchHomeCatByNav('biz')">
           <div class="cat-nav-icon" style="background:#ffe4e6">📋</div>
-          <div class="cat-nav-label">生意转让</div>
+          <div class="cat-nav-label">店铺转租</div>
         </div>
         <div class="cat-nav-item" onclick="switchHomeCatByNav('shop')">
           <div class="cat-nav-icon" style="background:#fff7ed">🏠</div>
@@ -1614,7 +1614,7 @@ body {
         <div class="cat-tab" data-cat="canteen" onclick="switchHomeCat(this, 'canteen')">校园食堂</div>
         <div class="cat-tab" data-cat="transfer" onclick="switchHomeCat(this, 'transfer')">档口转让</div>
         <div class="cat-tab" data-cat="recruit" onclick="switchHomeCat(this, 'recruit')">人才招聘</div>
-        <div class="cat-tab" data-cat="biz" onclick="switchHomeCat(this, 'biz')">生意转让</div>
+        <div class="cat-tab" data-cat="biz" onclick="switchHomeCat(this, 'biz')">店铺转租</div>
         <div class="cat-tab" data-cat="shop" onclick="switchHomeCat(this, 'shop')">校外旺铺</div>
         <div class="cat-tab" data-cat="brand" onclick="switchHomeCat(this, 'brand')">品牌加盟</div>
       </div>
@@ -1772,14 +1772,6 @@ body {
           <input class="form-input" type="text" placeholder="简要概括信息内容" id="pubTitle">
         </div>
 
-        <div class="form-group">
-          <div class="form-label"><span class="required">*</span>媒体类型</div>
-          <div class="media-type-toggle" id="mediaTypeToggle">
-            <div class="media-type-btn active" data-type="photo" onclick="switchMediaType('photo')">🖼️ 图片</div>
-            <div class="media-type-btn" data-type="video" onclick="switchMediaType('video')">🎬 视频</div>
-          </div>
-        </div>
-
         <div class="form-group" id="photoUploadArea">
           <div class="form-label"><span class="required">*</span>照片上传（最多9张）</div>
           <div class="photo-upload">
@@ -1787,17 +1779,6 @@ body {
             <div class="upload-box" onclick="addPhoto()">
               <span class="icon">📷</span>
               <span>添加照片</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group" id="videoUploadArea" style="display:none">
-          <div class="form-label"><span class="required">*</span>视频上传（限1个）</div>
-          <div class="photo-upload">
-            <div id="videoPreview"></div>
-            <div class="upload-box" id="videoUploadBox" onclick="addVideo()" style="width:100%;height:120px;border-radius:12px;background:#fafbfc">
-              <span class="icon">🎬</span>
-              <span>添加视频</span>
             </div>
           </div>
         </div>
@@ -1845,7 +1826,15 @@ body {
 
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>联系电话</div>
-          <input class="form-input" type="tel" placeholder="138****5678" value="138****5678" id="pubPhone">
+          <input class="form-input" type="tel" placeholder="请输入联系电话" value="13912345678" id="pubPhone">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span>验证码</div>
+          <div style="display:flex;gap:12px">
+            <input class="form-input" type="text" placeholder="请输入验证码" id="pubVerifyCode" style="flex:1">
+            <button class="verify-btn" id="sendVerifyBtn" onclick="sendVerifyCode()">获取验证码</button>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1894,7 +1883,7 @@ body {
         <div class="option-item" data-value="park" onclick="selectPubCategory(this, 'park')">企业园区招租</div>
         <div class="option-item" data-value="recruit" onclick="selectPubCategory(this, 'recruit')">人才招聘</div>
         <div class="option-item" data-value="shop" onclick="selectPubCategory(this, 'shop')">校外旺铺发布</div>
-        <div class="option-item" data-value="bizsell" onclick="selectPubCategory(this, 'bizsell')">生意转让</div>
+        <div class="option-item" data-value="bizsell" onclick="selectPubCategory(this, 'bizsell')">店铺转租</div>
         <div class="option-item" data-value="equipment" onclick="selectPubCategory(this, 'equipment')">闲置物品转让</div>
         <div class="option-item" data-value="brand" onclick="selectPubCategory(this, 'brand')">品牌信息发布</div>
       </div>
@@ -1915,6 +1904,7 @@ body {
         <div class="cat-tab active" data-cat="all" onclick="switchNewsCat(this, 'all')">全部</div>
         <div class="cat-tab" data-cat="policy" onclick="switchNewsCat(this, 'policy')">行业政策</div>
         <div class="cat-tab" data-cat="skill" onclick="switchNewsCat(this, 'skill')">创业干货</div>
+        <div class="cat-tab" data-cat="case" onclick="switchNewsCat(this, 'case')">成功案例</div>
       </div>
       <div id="newsCards"></div>
     </div>
@@ -2054,7 +2044,7 @@ body {
           <span class="menu-right">查看详情</span>
           <span class="menu-arrow">›</span>
         </div>
-        <div class="menu-item" onclick="openFeedback()">
+        <div class="menu-item" onclick="openQrModal()">
           <span class="menu-icon">💬</span>
           <span class="menu-text">意见反馈</span>
           <span class="menu-arrow">›</span>
@@ -2223,11 +2213,6 @@ body {
     <!-- ==================== 付费订单中心 ==================== -->
     <div class="page" id="page-orders">
       <div class="order-list" id="orderList"></div>
-    </div>
-
-    <!-- ==================== 意见反馈 ==================== -->
-    <div class="page" id="page-feedback">
-      <div class="feedback-form" id="feedbackForm"></div>
     </div>
 
     <!-- ==================== 邀请好友 ==================== -->
@@ -2563,7 +2548,11 @@ const newsData = [
   { id:5, cat:'policy', title:'医院食堂管理新规：食品安全等级评定标准', desc:'湖南省卫建委联合市场监管局发布医院食堂食品安全等级评定新标准...', views:1200, time:'2026-07-01', cover:'c2',
     content:'<p>湖南省卫生健康委员会联合省市场监督管理局日前印发《医院食堂食品安全等级评定管理办法》，将于2026年8月1日起正式实施。</p><p><strong>A/B/C/D四级评定</strong></p><p>新标准将医院食堂食品安全等级分为A（优秀）、B（良好）、C（合格）、D（不合格）四个等级。评定内容包括：许可管理、信息公示、人员管理、环境卫生、原料控制、加工制作过程、设施设备维护、餐饮具清洗消毒等8大项共32小项指标。</p><p><strong>评定结果应用</strong></p><p>评定结果将直接影响食堂的经营资质。A级食堂可优先承接大型会议用餐和特需供餐服务；B级为基本达标，需定期接受检查；C级将被约谈并要求限期整改；D级将被暂停经营资格，直至整改达标。</p><p><strong>患者膳食特殊管理</strong></p><p>新规特别强调了医院食堂在患者膳食管理方面的特殊要求，包括：营养膳食的配餐标准、特殊疾病饮食的制备规范、送餐保温及卫生要求等。医院食堂必须配备专职营养师，为住院患者提供个性化膳食方案。</p><p>据了解，首次评定将于2026年9月启动，届时全省各级医院食堂将统一接受等级评定。</p>' },
   { id:6, cat:'skill', title:'高校档口成本控制实战：食材采购的5个省钱技巧', desc:'如何在不降低品质的前提下有效控制食材成本？资深团餐采购经理分享秘笈...', views:4200, time:'2026-06-30', cover:'c3',
-    content:'<p>食材成本是高校档口最大的支出项，通常占总成本的40%-50%。如何在保证品质的前提下有效控制食材成本？我们邀请到湖南团餐协会采购专家王经理，分享5个实战省钱技巧。</p><p><strong>技巧一：集中采购，以量换价</strong></p><p>单个档口的采购量有限，议价能力弱。建议档口之间组建采购联盟，统一采购米面粮油、调味料等通用物资，采购量上去了，价格自然就下来了。据测算，集中采购可降低通用食材成本10%-15%。</p><p><strong>技巧二：锁定核心供应商</strong></p><p>对于使用量大、品质要求高的核心食材（如肉类、禽类），建议与1-2家优质供应商建立长期合作关系。不仅可以获得更优惠的价格，还能在节假日高峰期保证供货稳定。</p><p><strong>技巧三：应季采购，错峰囤货</strong></p><p>蔬菜水果等季节性食材，在上市高峰期价格最低。可以适当加大采购量，采用冷藏、腌制等方式延长保存期。例如，夏季辣椒便宜时可大量采购制作剁椒酱，全年使用。</p><p><strong>技巧四：半成品替代，减少损耗</strong></p><p>有些食材自己加工的损耗率很高，不如直接采购半成品。比如净菜加工、肉丝肉片等预制食材，虽然单价略高，但省去了人工和损耗成本，综合算下来反而更划算。</p><p><strong>技巧五：数据化管理，动态调整</strong></p><p>建立食材使用台账，定期分析各品种的使用量和损耗率。对损耗高的品种及时调整采购量或更换供应商。数据化管理是精细化运营的基础。</p><p>王经理建议：\"成本控制不是一味地节省，而是在保证品质的基础上做到最优性价比。品质降了，学生不来了，省再多钱也是亏本生意。\"</p>' },
+    content:'<p>食材成本是高校档口最大的支出项，通常占总成本的40%-50%。如何在保证品质的前提下有效控制食材成本？我们邀请到湖南团餐协会采购专家王经理，分享5个实战省钱技巧。</p><p><strong>技巧一：集中采购，以量换价</strong></p><p>单个档口的采购量有限，议价能力弱。建议档口之间组建采购联盟，统一采购米面粮油、调味料等通用物资，采购量上去了，价格自然就下来了。据测算，集中采购可降低通用食材成本10%-15%。</p><p><strong>技巧二：锁定核心供应商</strong></p><p>对于使用量大、品质要求高的核心食材（如肉类、禽类），建议与1-2家优质供应商建立长期合作关系。不仅可以获得更优惠的价格，还能在节假日高峰期保证供货稳定。</p><p><strong>技巧三：应季采购，错峰囤货</strong></p><p>蔬菜水果等季节性食材，在上市高峰期价格最低。可以适当加大采购量，采用冷藏、腌制等方式延长保存期。例如，夏季辣椒便宜时可大量采购制作剁椒酱，全年使用。</p><p><strong>技巧四：半成品替代，减少损耗</strong></p><p>有些食材自己加工的损耗率很高，不如直接采购半成品。比如净菜加工、肉丝肉片等预制食材，虽然单价略高，但省去了人工和损耗成本，综合算下来反而更划算。</p><p><strong>技巧五：数据化管理，动态调整</strong></p><p>建立食材使用台账，定期分析各品种的使用量和损耗率。对损耗高的品种及时调整采购量或更换供应商。数据化管理是精细化运营的基础。</p><p>王经理建议："成本控制不是一味地节省，而是在保证品质的基础上做到最优性价比。品质降了，学生不来了，省再多钱也是亏本生意。"</p>' },
+  { id:7, cat:'case', title:'从亏损到月入5万：一位90后档口老板的逆袭之路', desc:'中南大学食堂档口经营者分享从亏损边缘到实现稳定盈利的真实经历...', views:6500, time:'2026-07-06', cover:'c1',
+    content:'<p>2024年9月，90后小伙张明怀揣10万元启动资金，在中南大学铁道校区食堂租下一个档口，主营麻辣香锅。开业首月亏损近两万元。</p><p><strong>问题诊断</strong></p><p>三个核心问题：定价偏低毛利率不足40%；食材采购损耗率高达15%；备餐量严重失衡。</p><p><strong>调整策略</strong></p><p>重新定价毛利率提升至55%；联合采购降低食材成本12%；建立数据分析动态调整备餐量。</p><p><strong>成果</strong></p><p>半年后月营收从1.5万元提升至5万余元，净利润稳定在2.5万元以上。现正筹划第二家档口。</p>' },
+  { id:8, cat:'case', title:'长沙理工大学"智慧档口"改造：营业额提升40%', desc:'数字化赋能传统食堂档口，看长沙理工大学如何用科技手段实现降本增效...', views:3800, time:'2026-06-28', cover:'c2',
+    content:'<p>2026年初，长沙理工大学云塘校区食堂启动"智慧档口"改造试点，试点档口平均营业额提升40%，人力成本降低25%。</p><p><strong>在线点餐系统</strong></p><p>学生通过小程序提前下单，档口根据订单量精确备餐，日均订单从120单提升至180单。</p><p><strong>智能库存管理</strong></p><p>AI预测算法根据历史销售、天气、校历等因素自动预测需求量，食材损耗率从8%降至3%。</p><p><strong>数字化评价</strong></p><p>每单完成后学生可对餐品打分评价，数据实时汇总到后台，管理者可根据评价调整菜单。</p>' },
 ];
 
 // ============ State ============
@@ -2584,8 +2573,9 @@ let paymentContext = { amount:0, reason:'', source:'' }; // payment flow context
 let selectedPaymentMethod = 'balance'; // default payment method
 let unlockedPhoneIds = new Set(); // track posts with unlocked phone numbers
 let photoCount = 0;
-let videoCount = 0;
-let currentMediaType = 'photo';
+let verifyCode = '';
+let verifyCodeSent = false;
+let verifyTimer = null;
 // Points deduction state
 let userPoints = 800; // 用户当前积分
 let pointsDeductRatio = 100; // 100积分 = ¥1
@@ -2604,7 +2594,7 @@ function switchTab(page) {
 
   var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录', 'invite':'邀请好友' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'feedback' || page === 'settings' || page === 'login' || page === 'my-posts' || page === 'invite') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'settings' || page === 'login' || page === 'my-posts' || page === 'invite') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -2629,7 +2619,6 @@ function switchTab(page) {
   if (page === 'favorites') renderFavorites();
   if (page === 'browsing-history') renderBrowsingHistory();
   if (page === 'orders') renderOrders();
-  if (page === 'feedback') renderFeedback();
 }
 
 var previousTab = 'home';
@@ -3283,7 +3272,7 @@ function goBack() {
   }
   var target = previousTab;
   // Safety: never go back to search, detail or idle-detail itself
-  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'announce-list', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'feedback', 'settings'].indexOf(target) !== -1) target = 'home';
+  if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'announce-list', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'settings'].indexOf(target) !== -1) target = 'home';
   switchTab(target);
 }
 
@@ -3308,7 +3297,7 @@ function switchHomeCatByNav(cat) {
   resetFilterLabels();
   // pre-select category trigger text
   var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9' };
-  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'生意转让', shop:'校外旺铺', brand:'品牌加盟' };
+  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'店铺转租', shop:'校外旺铺', brand:'品牌加盟' };
   updateTriggerLabel('category', catLabels[cat] || cat);
   currentTab = 'cat-list';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -4018,7 +4007,7 @@ function renderAnnounceList() {
   });
   var html = '';
   sorted.forEach(function(item) {
-    var icon = item.cat === 'policy' ? '📋' : '💡';
+    var icon = item.cat === 'policy' ? '📋' : item.cat === 'case' ? '🏆' : '💡';
     html += '<div class="announce-list-card" onclick="openAnnounceDetail(' + item.id + ')">' +
       '<div class="announce-list-cover ' + item.cover + '">' + icon + '</div>' +
       '<div class="announce-list-info">' +
@@ -4046,7 +4035,7 @@ function renderNewsCards() {
   data.forEach(item => {
     html += `
     <div class="news-card" onclick="openNewsDetail(${item.id})">
-      <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':'💡'}</div>
+      <div class="news-cover ${item.cover}">${item.cat==='policy'?'📋':item.cat==='case'?'🏆':'💡'}</div>
       <div class="news-info">
         <div class="news-title">${item.title}</div>
         <div class="news-desc">${item.desc}</div>
@@ -4148,7 +4137,7 @@ function renderDetailPage(item) {
 }
 
 function closeDetail() {
-  // Legacy — kept for other overlays (myposts, feedback)
+  // Legacy — kept for other overlays (myposts)
   document.getElementById('detailOverlay').classList.remove('show');
 }
 
@@ -4296,32 +4285,11 @@ function onPubCatChange(val) {
   var sub = document.getElementById('pubSubCat');
   if (['canteen','transfer','recruit'].includes(val)) {
     subWrap.style.display = 'block';
-    if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>本科食堂</option><option>专科食堂</option>';
+    if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>食堂招商</option><option>食堂转租</option>';
     else if (val === 'transfer') sub.innerHTML = '<option value="">请选择</option><option>档口整体转让</option><option>设备转让</option>';
     else if (val === 'recruit') sub.innerHTML = '<option value="">请选择</option><option>管理岗位</option><option>技术岗位</option><option>服务岗位</option>';
   } else {
     subWrap.style.display = 'none';
-  }
-}
-
-function switchMediaType(type) {
-  if (currentMediaType === type) return;
-  currentMediaType = type;
-  // Update toggle buttons
-  document.querySelectorAll('#mediaTypeToggle .media-type-btn').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-type') === type);
-  });
-  // Show/hide upload areas
-  document.getElementById('photoUploadArea').style.display = (type === 'photo') ? 'block' : 'none';
-  document.getElementById('videoUploadArea').style.display = (type === 'video') ? 'block' : 'none';
-  // Clear the other type's data when switching
-  if (type === 'photo') {
-    document.getElementById('videoPreview').innerHTML = '';
-    videoCount = 0;
-    document.getElementById('videoUploadBox').style.display = 'flex';
-  } else {
-    document.getElementById('photoPreview').innerHTML = '';
-    photoCount = 0;
   }
 }
 
@@ -4340,26 +4308,34 @@ function removePhoto(el) {
   photoCount--;
 }
 
-function addVideo() {
-  if (videoCount >= 1) { showToast('最多上传1个视频'); return; }
-  videoCount++;
-  var preview = document.getElementById('videoPreview');
-  var div = document.createElement('div');
-  div.style.cssText = 'width:100%;height:120px;border-radius:12px;background:linear-gradient(135deg,#ede9fe,#fce7f3);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;gap:12px';
-  div.innerHTML = '🎬<span style="font-size:var(--fs-caption-sm);color:#7c3aed">视频预览占位</span><span style="position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer" onclick="removeVideo(this)">×</span>';
-  preview.appendChild(div);
-  document.getElementById('videoUploadBox').style.display = 'none';
-}
-
-function removeVideo(el) {
-  el.parentElement.remove();
-  videoCount--;
-  document.getElementById('videoUploadBox').style.display = 'flex';
-}
 
 
 function updatePublishRemain() {
   document.getElementById('pubRemain').textContent = Math.max(0, 1 - pubTodayCount);
+}
+
+function sendVerifyCode() {
+  if (verifyTimer) return;
+  var phone = document.getElementById('pubPhone').value;
+  if (!phone) { showToast('请先填写联系电话'); return; }
+  verifyCode = String(Math.floor(100000 + Math.random() * 900000));
+  verifyCodeSent = true;
+  showToast('验证码已发送至 ' + phone + '：' + verifyCode);
+  var btn = document.getElementById('sendVerifyBtn');
+  btn.disabled = true;
+  var sec = 60;
+  btn.textContent = sec + 's后重发';
+  verifyTimer = setInterval(function() {
+    sec--;
+    if (sec <= 0) {
+      clearInterval(verifyTimer);
+      verifyTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+    } else {
+      btn.textContent = sec + 's后重发';
+    }
+  }, 1000);
 }
 
 function submitPublish() {
@@ -4367,9 +4343,20 @@ function submitPublish() {
   const title = document.getElementById('pubTitle').value;
   const desc = document.getElementById('pubDesc').value;
   const region = document.getElementById('pubRegion1').value;
+  const phone = document.getElementById('pubPhone').value;
 
-  if (!cat || !title || !desc || !region) {
+  if (!cat || !title || !desc || !region || !phone) {
     showToast('请填写必填信息');
+    return;
+  }
+
+  // Verify code check
+  if (!verifyCodeSent) {
+    showToast('请先获取验证码');
+    return;
+  }
+  if (document.getElementById('pubVerifyCode').value !== verifyCode) {
+    showToast('验证码错误，请重新输入');
     return;
   }
 
@@ -4448,16 +4435,14 @@ function resetPublishForm() {
   document.querySelector('#pubCategoryPanel .option-item[data-value=""]').classList.add('selected');
   document.getElementById('photoPreview').innerHTML = '';
   photoCount = 0;
-  document.getElementById('videoPreview').innerHTML = '';
-  videoCount = 0;
-  document.getElementById('videoUploadBox').style.display = 'flex';
-  // Reset media type toggle to photo
-  currentMediaType = 'photo';
-  document.querySelectorAll('#mediaTypeToggle .media-type-btn').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-type') === 'photo');
-  });
-  document.getElementById('photoUploadArea').style.display = 'block';
-  document.getElementById('videoUploadArea').style.display = 'none';
+  // Reset verify code
+  document.getElementById('pubVerifyCode').value = '';
+  verifyCodeSent = false;
+  verifyCode = '';
+  if (verifyTimer) { clearInterval(verifyTimer); verifyTimer = null; }
+  var vbtn = document.getElementById('sendVerifyBtn');
+  vbtn.disabled = false;
+  vbtn.textContent = '获取验证码';
   document.getElementById('pubTags').value = '';
   document.querySelectorAll('#pubTagSelector .tag-chip').forEach(function(c) { c.classList.remove('selected'); });
   document.querySelector('#page-publish .submit-btn').textContent = '确认发布';
@@ -4627,41 +4612,9 @@ function closeConfirm() {
   document.getElementById('confirmOverlay').classList.remove('show');
 }
 
-// ============ Feedback ============
-function openFeedback() {
-  switchTab('feedback');
-}
-
 function openInvitePage() {
   previousTab = currentTab;
   switchTab('invite');
-}
-
-function renderFeedback() {
-  var html = `
-    <div class="fb-form-group">
-      <div class="form-label">反馈标题</div>
-      <input class="form-input" placeholder="请输入反馈标题" id="fbTitle">
-    </div>
-    <div class="fb-form-group">
-      <div class="form-label">反馈内容</div>
-      <textarea class="form-textarea" placeholder="请详细描述您的意见和建议..." id="fbContent"></textarea>
-    </div>
-    <div class="fb-form-group">
-      <div class="form-label">上传截图（选填）</div>
-      <div class="photo-upload">
-        <div class="upload-box" onclick="showToast('模拟上传图片')">
-          <span class="icon">📷</span><span>添加图片</span>
-        </div>
-      </div>
-    </div>
-    <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>`;
-  document.getElementById('feedbackForm').innerHTML = html;
-}
-
-function submitFeedback() {
-  showToast('感谢您的反馈！我们会尽快处理');
-  setTimeout(function() { goBack(); }, 800);
 }
 
 // ============ Settings ============
@@ -5436,7 +5389,7 @@ function outputResultsHTML(keyword, results, idleResults, newsResults) {
       html += '<div class="section-title" style="padding-top:32px">📰 行业资讯</div>';
       newsResults.forEach(function(item) {
         html += '<div class="news-card" onclick="openNewsDetail(' + item.id + ')">' +
-          '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : '💡') + '</div>' +
+          '<div class="news-cover ' + item.cover + '">' + (item.cat === 'policy' ? '📋' : item.cat === 'case' ? '🏆' : '💡') + '</div>' +
           '<div class="news-info"><div class="news-title">' + item.title + '</div>' +
           '<div class="news-desc">' + item.desc + '</div>' +
           '<div class="news-meta"><span>👁 ' + item.views + '次阅读</span><span>' + item.time + '</span></div></div></div>';
