@@ -1039,6 +1039,41 @@ body {
   font-weight: 500; text-align: center;
   line-height: 1.3;
 }
+/* Subcat Modal */
+.subcat-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.subcat-modal {
+  background: #fff; border-radius: 24px; padding: 32px 24px 24px;
+  width: 90%; max-width: 520px; text-align: center; position: relative;
+  box-sizing: border-box;
+}
+.subcat-modal .subcat-close {
+  position: absolute; top: 12px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: #f3f4f6; font-size: 20px; color: #6b7280;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.subcat-modal .subcat-title {
+  font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.subcat-modal .subcat-desc {
+  font-size: 20px; color: var(--text-muted); margin-bottom: 24px;
+}
+.subcat-modal .subcat-list {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.subcat-modal .subcat-option {
+  padding: 20px; border-radius: 14px; border: 2px solid #e5e7eb;
+  background: #f9fafb; font-size: 24px; color: var(--text);
+  cursor: pointer; transition: all 0.2s; font-weight: 500;
+}
+.subcat-modal .subcat-option:active {
+  background: #eff6ff; border-color: #2563eb; color: #2563eb;
+  transform: scale(0.98);
+}
 .floating-left {
   position: absolute; left: 32px; bottom: 200px; z-index: 50;
   display: flex; flex-direction: column; gap: 16px;
@@ -2585,6 +2620,16 @@ body {
   </div>
 </div>
 
+<!-- Subcat Modal -->
+<div class="subcat-overlay" id="subcatOverlay" style="display:none" onclick="if(event.target===this)closeSubCatModal()">
+  <div class="subcat-modal">
+    <button class="subcat-close" onclick="closeSubCatModal()">✕</button>
+    <div class="subcat-title">选择二级分类</div>
+    <div class="subcat-desc" id="subcatTypeName"></div>
+    <div class="subcat-list" id="subcatList"></div>
+  </div>
+</div>
+
 <script>
 // ============ Auto Scale ============
 (function() {
@@ -2729,7 +2774,7 @@ function switchTab(page) {
   if (page === 'idle') renderIdleCards();
   if (page === 'news') renderNewsCards();
   if (page === 'invite') renderInviteRecords();
-  if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); }
+  if (page === 'publish') { updatePublishRemain(); if (editingPostId) resetPublishForm(); applyCatFieldVisibility(); }
   if (page === 'search') initSearchPage();
   if (page === 'cat-list') renderCatListCards();
   if (page === 'city') renderCityPage();
@@ -2745,15 +2790,64 @@ function switchTab(page) {
 
 var previousTab = 'home';
 
+var publishSkipCatFields = false; // when true, hide category/subcat on publish form
+
 function goToPublishForm(catVal) {
   previousTab = currentTab;
-  // Pre-select the category
-  document.getElementById('pubCategory').value = catVal;
   var catLabels = { canteen:'校园食堂招租', bizstreet:'校园商圈招租', hospital:'医院餐厅招租', transfer:'档口转让', park:'企业园区招租', recruit:'人才招聘', shop:'校外旺铺发布', bizsell:'店铺转租', equipment:'闲置物品转让', brand:'品牌信息发布' };
+  document.getElementById('pubCategory').value = catVal;
   document.getElementById('pubCategoryText').textContent = catLabels[catVal] || '请选择分类';
   document.getElementById('pubCategoryText').classList.remove('placeholder');
-  onPubCatChange(catVal);
+
+  // Types that need subcategory selection
+  if (['canteen', 'transfer', 'recruit'].includes(catVal)) {
+    showSubCatModal(catVal, catLabels[catVal]);
+  } else {
+    // No subcategory needed — go directly to publish form
+    publishSkipCatFields = true;
+    document.getElementById('pubSubCatWrap').style.display = 'none';
+    document.getElementById('pubSubCat').value = '';
+    switchTab('publish');
+  }
+}
+
+function showSubCatModal(catVal, catName) {
+  document.getElementById('subcatTypeName').textContent = catName;
+  var list = document.getElementById('subcatList');
+  var options = [];
+  if (catVal === 'canteen') options = ['食堂招商', '食堂转租'];
+  else if (catVal === 'transfer') options = ['档口整体转让', '设备转让'];
+  else if (catVal === 'recruit') options = ['管理岗位', '技术岗位', '服务岗位'];
+  list.innerHTML = options.map(function(opt) {
+    return '<div class="subcat-option" onclick="selectSubCatAndPublish(\'' + catVal + '\', \'' + opt + '\')">' + opt + '</div>';
+  }).join('');
+  document.getElementById('subcatOverlay').style.display = 'flex';
+}
+
+function selectSubCatAndPublish(catVal, subCat) {
+  document.getElementById('subcatOverlay').style.display = 'none';
+  // Set subcategory
+  var sub = document.getElementById('pubSubCat');
+  onPubCatChange(catVal); // rebuild subcat options
+  sub.value = subCat;
+  publishSkipCatFields = true;
   switchTab('publish');
+}
+
+function closeSubCatModal() {
+  document.getElementById('subcatOverlay').style.display = 'none';
+}
+
+function applyCatFieldVisibility() {
+  // Hide/show category + subcat fields based on publishSkipCatFields flag
+  var catField = document.querySelector('#page-publish .form-group:has(#pubCategoryTrigger)') || document.getElementById('pubCategoryTrigger').parentElement;
+  var subWrap = document.getElementById('pubSubCatWrap');
+  if (publishSkipCatFields) {
+    catField.style.display = 'none';
+    subWrap.style.display = 'none';
+  } else {
+    catField.style.display = 'block';
+  }
 }
 
 // ============ Points Detail ============
@@ -4598,6 +4692,7 @@ function resetPublishForm() {
   document.querySelectorAll('#pubTagSelector .tag-chip').forEach(function(c) { c.classList.remove('selected'); });
   document.querySelector('#page-publish .submit-btn').textContent = '确认发布';
   editingPostId = null;
+  publishSkipCatFields = false;
 }
 
 // ============ Tag Multi-Select ============
@@ -4744,6 +4839,9 @@ function editMyPost(id) {
   document.getElementById('navTitle').textContent = '编辑发布';
   document.getElementById('navBack').style.display = 'block';
   document.getElementById('tabBar').style.display = 'none';
+  // Show category fields when editing
+  publishSkipCatFields = false;
+  applyCatFieldVisibility();
   document.getElementById('pageContainer').scrollTop = 0;
   updatePublishRemain();
 }
