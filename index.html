@@ -985,17 +985,41 @@ body {
 .confirm-btn { flex: 1; padding: 14px 0; border-radius: 32px; border: 2px solid var(--border); background: #fff; font-size: var(--fs-body-sm); cursor: pointer; }
 .confirm-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-/* Floating Button */
-.floating-cs {
-  position: absolute; right: 32px; bottom: 200px; z-index: 50;
+/* Safety Tips in Detail Pages */
+.detail-safety-tips {
+  margin: 20px 0 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.safety-tip {
+  padding: 16px 20px; border-radius: 14px;
+  font-size: var(--fs-caption); line-height: 1.6;
+}
+.safety-tip:first-child {
+  background: #eff6ff; color: #1e40af; border-left: 4px solid #2563eb;
+}
+.safety-tip:last-child {
+  background: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b;
+}
+
+/* Floating Buttons */
+.floating-left {
+  position: absolute; left: 32px; bottom: 200px; z-index: 50;
+  display: flex; flex-direction: column; gap: 16px;
 }
 .floating-btn {
   width: 84px; height: 84px; border-radius: 50%; background: #fff;
   box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: flex; align-items: center;
   justify-content: center; font-size: 40px; cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s; border: none; position: relative;
 }
 .floating-btn:active { transform: scale(0.92); }
+.floating-btn.follow { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; font-size: 20px; font-weight: 700; }
+.floating-btn.cs { background: #fff; }
+.floating-btn.phone { background: linear-gradient(135deg, #10b981, #059669); }
+.floating-btn .btn-label {
+  position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+  font-size: 18px; color: var(--text-secondary); white-space: nowrap;
+}
 
 /* CS Popup Overlay */
 .cs-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
@@ -1018,7 +1042,7 @@ body {
 
 /* Back to Top */
 .back-to-top {
-  position: absolute; right: 32px; bottom: 320px; z-index: 49;
+  position: absolute; right: 32px; bottom: 200px; z-index: 49;
   width: 84px; height: 84px; border-radius: 50%; background: #fff;
   box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: flex; align-items: center;
   justify-content: center; font-size: 36px; cursor: pointer;
@@ -1785,7 +1809,7 @@ body {
 
         <div class="form-group">
           <div class="form-label"><span class="required">*</span>描述信息</div>
-          <textarea class="form-textarea" placeholder="详细描述信息内容..." id="pubDesc"></textarea>
+          <textarea class="form-textarea" placeholder="请输入档口详细介绍，例：山东青岛大学，在校生18000人+，现食堂餐厅调整一个位置，特招特色小吃类项目，位置有限，先到先得。（如非必要，招商项目品种前请勿填写商标品牌名称，以免产生不必要的侵权风险）" id="pubDesc"></textarea>
         </div>
 
         <div class="form-group">
@@ -2305,9 +2329,17 @@ body {
     </div>
   </div>
 
-  <!-- Floating CS Button -->
-  <div class="floating-cs" id="floatingCs">
-    <div class="floating-btn" id="csToggle" onclick="openCsPopup()" style="font-size:32px">💬</div>
+  <!-- Floating Buttons - Left Side -->
+  <div class="floating-left" id="floatingLeft">
+    <button class="floating-btn follow" onclick="openQrModal()" title="关注">
+      关注
+    </button>
+    <button class="floating-btn cs" onclick="openOnlineCs()" title="客服">
+      💬
+    </button>
+    <button class="floating-btn phone" onclick="callPhone()" title="电话">
+      📞
+    </button>
   </div>
 
   <!-- Back to Top -->
@@ -2332,7 +2364,7 @@ body {
   </div>
 </div>
 
-<!-- Customer Service Popup -->
+<!-- Customer Service Popup (kept for external access) -->
 <div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCsPopup()">
   <div class="cs-popup">
     <div class="cs-popup-header">
@@ -3971,6 +4003,10 @@ function renderIdleDetailPage(item) {
         ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
         : '<button id="idleUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleIdleDetailUnlock(this)">解锁查看完整号码 ¥1.00</button>'}
     </div>
+    <div class="detail-safety-tips">
+      <div class="safety-tip">💡 联系我时，请说是在万铺优选上看到的，谢谢！</div>
+      <div class="safety-tip">⚠️ 本平台不参与现场洽谈及跟踪服务，请不要轻信先付款再带看场地的信息，以免上当受骗！</div>
+    </div>
     <div class="detail-ad" onclick="showToast('广告位 — 点击跳转广告详情')">
       <div class="ad-badge">广告</div>
       <div class="ad-img">📢 广告占位</div>
@@ -4121,6 +4157,10 @@ function renderDetailPage(item) {
       ${unlockedPhoneIds.has(item.id)
         ? '<button style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="showToast(\'正在拨打 13912345678\u2026\')">📞 一键拨号</button>'
         : '<button id="detailUnlockBtn" style="margin-top:16px;width:100%;padding:20px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-size:var(--fs-body);font-weight:600;cursor:pointer" onclick="handleDetailUnlock(this)">解锁查看完整号码 ¥2.00</button>'}
+    </div>
+    <div class="detail-safety-tips">
+      <div class="safety-tip">💡 联系我时，请说是在万铺优选上看到的，谢谢！</div>
+      <div class="safety-tip">⚠️ 本平台不参与现场洽谈及跟踪服务，请不要轻信先付款再带看场地的信息，以免上当受骗！</div>
     </div>
     <div class="detail-ad" onclick="showToast('广告位 — 点击跳转广告详情')">
       <div class="ad-badge">广告</div>
@@ -5030,6 +5070,14 @@ function handleCsOption(type) {
 
 function scrollToTop() {
   document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openOnlineCs() {
+  showToast('正在连接在线客服...');
+}
+
+function callPhone() {
+  showToast('正在拨打客服电话：400-XXX-XXXX');
 }
 
 // ============ Toast ============
