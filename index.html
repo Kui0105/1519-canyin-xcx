@@ -319,16 +319,6 @@ body {
 .tag-orange { background: #fff7ed; color: #c2410c; }
 .tag-purple { background: #f3e8ff; color: #7c3aed; }
 .info-card .card-location { font-size: var(--fs-caption); color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-.info-card .card-phone {
-  font-size: var(--fs-caption); color: var(--text-muted); display: flex; align-items: center; gap: 8px;
-  margin-bottom: 16px; background: #f9fafb; padding: 12px 20px; border-radius: 12px;
-}
-.info-card .card-phone .phone-num { letter-spacing: 2px; }
-.info-card .card-phone .unlock-btn {
-  font-size: var(--fs-caption-sm); color: var(--primary); font-weight: 500; cursor: pointer;
-  margin-left: auto; padding: 4px 16px; border-radius: 24px;
-  background: var(--primary-light);
-}
 .info-card .card-images {
   display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px;
 }
@@ -346,6 +336,13 @@ body {
 .info-card .card-actions span { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .info-card .card-actions span.liked { color: #ef4444; font-weight: 600; }
 .info-card .card-actions span.favorited { color: #f59e0b; font-weight: 600; }
+.info-card .card-detail-btn {
+  display: block; width: 100%; margin-top: 16px; padding: 16px; border: none;
+  border-radius: 14px; background: #eff6ff; color: #2563eb;
+  font-size: var(--fs-body); font-weight: 600; cursor: pointer;
+  text-align: center; transition: all 0.2s;
+}
+.info-card .card-detail-btn:active { background: #dbeafe; }
 
 /* Pinned Badge */
 .pin-badge {
@@ -3714,16 +3711,13 @@ function renderInfoCard(item, idx, forceFaved) {
       <div class="card-tags">${tagsHtml}</div>
       <div class="card-location">${locIcon} ${item.location}</div>
       ${imagesHtml}
-      <div class="card-phone" onclick="event.stopPropagation();handleUnlockPhone(${item.id}, this)">
-        <span class="phone-num">${item.phone}</span>
-        <span class="unlock-btn">查看完整号码 ¥2</span>
-      </div>
       <div class="card-actions">
         <span class="${item.userLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(this,${item.id})">${item.userLiked ? '❤' : '♡'} ${item.likes}</span>
         <span class="${faved ? 'favorited' : ''}" onclick="event.stopPropagation();toggleFav(this,${item.id})">${faved ? '★' : '☆'} ${item.favorites}</span>
         <span>👁 ${item.views}</span>
         <span onclick="event.stopPropagation();handleShare(${item.id})">↗ 转发 ${item.shares || 0}</span>
       </div>
+      <button class="card-detail-btn" onclick="event.stopPropagation();openDetail(${item.id})">查看详情</button>
     </div>`;
 }
 
