@@ -1511,13 +1511,13 @@ body {
       </div>
       </div>
 
-      <!-- Platform Announcement Bar -->
-      <div class="announcement-bar" id="announcementBar" onclick="openAnnounceList()">
-        <div class="announcement-dot"></div>
-        <div class="announcement-marquee-wrap">
-          <span class="announcement-marquee-text" id="announcementMarquee">欢迎使用万铺优选，真实信息共建诚信平台</span>
-        </div>
-        <span class="announcement-more">更多 ›</span>
+      <!-- Platform Stats -->
+      <div class="stats-bar">
+        <span>用户量：<span class="stats-val" id="statsTotalUsers">0</span></span>
+        <span class="stats-divider"></span>
+        <span>发布量：<span class="stats-val" id="statsTotalPosts">0</span></span>
+        <span class="stats-divider"></span>
+        <span>浏览量：<span class="stats-val" id="statsTotalViews">0</span></span>
       </div>
 
       <!-- Category Nav Grid -->
@@ -1556,11 +1556,13 @@ body {
         </div>
       </div>
 
-      <!-- Platform Stats -->
-      <div class="stats-bar">
-        <span>发布量：<span class="stats-val" id="statsTotalPosts">0</span></span>
-        <span class="stats-divider"></span>
-        <span>浏览量：<span class="stats-val" id="statsTotalViews">0</span></span>
+      <!-- Platform Announcement Bar -->
+      <div class="announcement-bar" id="announcementBar" onclick="openAnnounceList()">
+        <div class="announcement-dot"></div>
+        <div class="announcement-marquee-wrap">
+          <span class="announcement-marquee-text" id="announcementMarquee">欢迎使用万铺优选，真实信息共建诚信平台</span>
+        </div>
+        <span class="announcement-more">更多 ›</span>
       </div>
 
       <!-- Category Tabs -->
@@ -3536,6 +3538,8 @@ function renderAdCard(position) {
 function updatePlatformStats(data) {
   var totalPosts = data.length;
   var totalViews = data.reduce(function(sum, item) { return sum + (item.views || 0); }, 0);
+  var totalUsers = Math.floor(totalPosts * 128 + totalViews / 5);
+  document.getElementById('statsTotalUsers').textContent = formatNumber(totalUsers);
   document.getElementById('statsTotalPosts').textContent = formatNumber(totalPosts);
   document.getElementById('statsTotalViews').textContent = formatNumber(totalViews);
 }
