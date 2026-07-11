@@ -1001,7 +1001,44 @@ body {
   background: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b;
 }
 
-/* Floating Buttons */
+/* Pre-Publish Page */
+.pre-publish-wrap { padding: 0 24px 40px; }
+.pre-warning {
+  margin: 24px 0; padding: 24px; border-radius: 16px;
+  background: #fffbeb; border: 2px solid #fcd34d;
+}
+.pre-warning-title {
+  font-size: 28px; font-weight: 700; color: #92400e;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.pre-warning-text {
+  font-size: 22px; color: #a16207; line-height: 1.8;
+}
+.pre-type-title {
+  font-size: 28px; font-weight: 700; color: var(--text);
+  margin: 28px 0 20px; text-align: center;
+}
+.pre-type-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.pre-type-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 22px 8px; border-radius: 16px;
+  background: #f9fafb; cursor: pointer; transition: all 0.2s;
+  user-select: none; border: 2px solid transparent;
+}
+.pre-type-item:active { transform: scale(0.96); background: #eff6ff; border-color: #bfdbfe; }
+.pre-type-item .pre-type-icon {
+  width: 64px; height: 64px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+}
+.pre-type-item .pre-type-label {
+  font-size: 20px; color: var(--text-secondary);
+  font-weight: 500; text-align: center;
+  line-height: 1.3;
+}
 .floating-left {
   position: absolute; left: 32px; bottom: 200px; z-index: 50;
   display: flex; flex-direction: column; gap: 16px;
@@ -1764,6 +1801,59 @@ body {
       <div id="idleCards"></div>
     </div>
 
+    <!-- ==================== 发布前置页 ==================== -->
+    <div class="page" id="page-publish-pre">
+      <div class="pre-publish-wrap">
+        <div class="pre-warning">
+          <div class="pre-warning-title">⚠️ 发布提示</div>
+          <div class="pre-warning-text">严禁发布违法违规信息，切勿侵犯他人商标、专利、版权、著作权的文字、文章、图片等知识产权信息，否则一切后果自负，本站信息均为用户自行发布，请仔细辨别真假信息，用户在本站所获取的信息所导致的任何损失，本站均不承担任何责任。</div>
+        </div>
+        <div class="pre-type-title">选择发布类型</div>
+        <div class="pre-type-grid">
+          <div class="pre-type-item" onclick="goToPublishForm('canteen')">
+            <div class="pre-type-icon" style="background:#eff6ff">🍽️</div>
+            <div class="pre-type-label">校园食堂</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('bizstreet')">
+            <div class="pre-type-icon" style="background:#fef3c7">🏪</div>
+            <div class="pre-type-label">校园商圈</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('hospital')">
+            <div class="pre-type-icon" style="background:#fce7f3">🏥</div>
+            <div class="pre-type-label">医院餐厅</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('transfer')">
+            <div class="pre-type-icon" style="background:#ede9fe">🔄</div>
+            <div class="pre-type-label">档口转让</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('park')">
+            <div class="pre-type-icon" style="background:#dcfce7">🏢</div>
+            <div class="pre-type-label">园区招租</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('recruit')">
+            <div class="pre-type-icon" style="background:#f3e8ff">👥</div>
+            <div class="pre-type-label">人才招聘</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('bizsell')">
+            <div class="pre-type-icon" style="background:#ffe4e6">📋</div>
+            <div class="pre-type-label">店铺转租</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('shop')">
+            <div class="pre-type-icon" style="background:#fff7ed">🏠</div>
+            <div class="pre-type-label">校外旺铺</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('equipment')">
+            <div class="pre-type-icon" style="background:#e0f2fe">🛒</div>
+            <div class="pre-type-label">闲置转让</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('brand')">
+            <div class="pre-type-icon" style="background:#f0f9ff">🏷️</div>
+            <div class="pre-type-label">品牌加盟</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== 发布中心 ==================== -->
     <div class="page" id="page-publish">
       <div class="publish-form">
@@ -2314,7 +2404,7 @@ body {
       <span class="tab-icon">🔄</span>
       <span class="tab-label">闲置社区</span>
     </div>
-    <div class="tab-item tab-publish" data-page="publish" onclick="switchTab('publish')">
+    <div class="tab-item tab-publish" data-page="publish-pre" onclick="switchTab('publish-pre')">
       <div class="publish-circle"><span style="line-height:1;margin-top:-4px">+</span></div>
       <span class="tab-label">发布</span>
     </div>
@@ -2624,9 +2714,9 @@ function switchTab(page) {
   var tabEl = document.querySelector('.tab-item[data-page="' + page + '"]');
   if (tabEl) tabEl.classList.add('active');
 
-  var titles = { home:'万铺优选', idle:'闲置社区', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录', 'invite':'邀请好友' };
+  var titles = { home:'万铺优选', idle:'闲置社区', 'publish-pre':'发布信息', publish:'发布信息', news:'行业资讯', me:'个人中心', search:'搜索', detail:'信息详情', 'idle-detail':'闲置详情', 'cat-list':'分类列表', city:'选择城市', 'news-detail':'公告详情', 'announce-list':'平台公告', 'points-detail':'积分明细', 'balance-detail':'余额明细', 'recharge':'充值', 'payment':'支付', 'notifications':'消息通知', 'favorites':'我的收藏', 'browsing-history':'浏览足迹', 'orders':'付费订单中心', 'feedback':'意见反馈', 'settings':'个人设置', 'login':'登录', 'invite':'邀请好友' };
   document.getElementById('navTitle').textContent = titles[page] || '万铺优选';
-  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'settings' || page === 'login' || page === 'my-posts' || page === 'invite') {
+  if (page === 'search' || page === 'detail' || page === 'idle-detail' || page === 'cat-list' || page === 'city' || page === 'news-detail' || page === 'announce-list' || page === 'points-detail' || page === 'balance-detail' || page === 'recharge' || page === 'payment' || page === 'notifications' || page === 'favorites' || page === 'browsing-history' || page === 'orders' || page === 'publish' || page === 'settings' || page === 'login' || page === 'my-posts' || page === 'invite') {
     document.getElementById('navBack').style.display = 'block';
     document.getElementById('tabBar').style.display = 'none';
   } else {
@@ -2654,6 +2744,17 @@ function switchTab(page) {
 }
 
 var previousTab = 'home';
+
+function goToPublishForm(catVal) {
+  previousTab = currentTab;
+  // Pre-select the category
+  document.getElementById('pubCategory').value = catVal;
+  var catLabels = { canteen:'校园食堂招租', bizstreet:'校园商圈招租', hospital:'医院餐厅招租', transfer:'档口转让', park:'企业园区招租', recruit:'人才招聘', shop:'校外旺铺发布', bizsell:'店铺转租', equipment:'闲置物品转让', brand:'品牌信息发布' };
+  document.getElementById('pubCategoryText').textContent = catLabels[catVal] || '请选择分类';
+  document.getElementById('pubCategoryText').classList.remove('placeholder');
+  onPubCatChange(catVal);
+  switchTab('publish');
+}
 
 // ============ Points Detail ============
 var pointsData = [
@@ -3300,6 +3401,16 @@ function goBack() {
   if (editingPostId && currentTab === 'publish') {
     resetPublishForm();
     openMyPosts();
+    return;
+  }
+  // If on publish page (not editing), go back to publish-pre
+  if (currentTab === 'publish') {
+    var target = previousTab;
+    if (['search', 'detail', 'idle-detail', 'city', 'news-detail', 'announce-list', 'points-detail', 'balance-detail', 'recharge', 'payment', 'my-posts', 'notifications', 'favorites', 'browsing-history', 'orders', 'settings', 'publish-pre'].indexOf(target) !== -1) {
+      switchTab(target);
+    } else {
+      switchTab('home');
+    }
     return;
   }
   var target = previousTab;
@@ -4630,8 +4741,6 @@ function editMyPost(id) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('page-publish').classList.add('active');
   document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
-  var tabEl = document.querySelector('.tab-item[data-page="publish"]');
-  if (tabEl) tabEl.classList.add('active');
   document.getElementById('navTitle').textContent = '编辑发布';
   document.getElementById('navBack').style.display = 'block';
   document.getElementById('tabBar').style.display = 'none';
