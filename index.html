@@ -4069,7 +4069,7 @@ function renderInfoCard(item, idx, forceFaved) {
       <div class="card-header">
         <div class="user-avatar">${item.avatar}</div>
         <div class="user-info">
-          <div class="user-name">${item.username}${item.verified ? '<span class="verified-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>平台认证</span>' : ''}</div>
+          <div class="user-name">${item.username}${item.verified ? '<span class="verified-badge">平台认证</span>' : ''}</div>
           <div class="post-time">${item.publishDate}</div>
         </div>
         <span style="font-size:var(--fs-caption);color:var(--text-muted);background:#f3f4f6;padding:6px 16px;border-radius:8px">${item.catLabel}</span>
@@ -4484,7 +4484,7 @@ function renderDetailPage(item) {
       <div style="display:flex;align-items:center;gap:20px;flex:1">
         <div class="user-avatar" style="width:80px;height:80px;font-size:32px">${item.avatar}</div>
         <div>
-          <div style="font-weight:600;font-size:var(--fs-section);display:flex;align-items:center;gap:8px">${item.username}${item.verified ? '<span class="verified-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>平台认证</span>' : ''}</div>
+          <div style="font-weight:600;font-size:var(--fs-section);display:flex;align-items:center;gap:8px">${item.username}${item.verified ? '<span class="verified-badge">平台认证</span>' : ''}</div>
           <div style="font-size:var(--fs-caption);color:var(--text-muted)">${item.publishDate} · ${item.catLabel}</div>
         </div>
       </div>
