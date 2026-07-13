@@ -499,6 +499,18 @@ body {
   outline: none;
 }
 .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 6px rgba(37,99,235,0.1); }
+.form-input-wrap {
+  display: flex; gap: 12px; align-items: center;
+}
+.form-input-wrap .form-input { flex: 1; }
+.form-locate-btn {
+  width: 80px; height: 80px; border-radius: 16px; border: none;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff;
+  font-size: 32px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.form-locate-btn:active { transform: scale(0.94); opacity: 0.9; }
 .form-textarea {
   width: 100%; padding: 20px 24px; border: 2px solid var(--border);
   border-radius: 16px; font-size: var(--fs-body); resize: none; min-height: 200px;
@@ -1957,9 +1969,59 @@ body {
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="pubDescGroup">
           <div class="form-label"><span class="required">*</span>描述信息</div>
           <textarea class="form-textarea" placeholder="请输入档口详细介绍，例：山东青岛大学，在校生18000人+，现食堂餐厅调整一个位置，特招特色小吃类项目，位置有限，先到先得。（如非必要，招商项目品种前请勿填写商标品牌名称，以免产生不必要的侵权风险）" id="pubDesc"></textarea>
+        </div>
+
+        <!-- 技术培训专属字段 -->
+        <div id="pubTrainFields" style="display:none">
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>项目名称</div>
+            <input class="form-input" type="text" placeholder="请输入培训项目名称" id="pubTrainName">
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>培训时间</div>
+            <input class="form-input" type="text" placeholder="如：每周六 9:00-17:00（随到随学）" id="pubTrainTime">
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>培训费用</div>
+            <input class="form-input" type="text" placeholder="如：¥2800/人（含材料费）" id="pubTrainCost">
+          </div>
+          <div class="form-group">
+            <div class="form-label">详细地址</div>
+            <div class="form-input-wrap">
+              <input class="form-input" type="text" placeholder="请输入详细地址" id="pubTrainAddr">
+              <button class="form-locate-btn" onclick="getCurrentLocation('pubTrainAddr')" title="获取当前位置">📍</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>项目详情</div>
+            <textarea class="form-textarea" placeholder="请输入培训项目详细介绍，包括课程内容、师资力量、学习周期、适合人群等..." id="pubTrainDetail"></textarea>
+          </div>
+        </div>
+
+        <!-- 酱料供应专属字段 -->
+        <div id="pubSauceFields" style="display:none">
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>酱料名称</div>
+            <input class="form-input" type="text" placeholder="请输入酱料产品名称" id="pubSauceName">
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>产品价格</div>
+            <input class="form-input" type="text" placeholder="如：¥15/瓶（500ml）" id="pubSaucePrice">
+          </div>
+          <div class="form-group">
+            <div class="form-label">详细地址</div>
+            <div class="form-input-wrap">
+              <input class="form-input" type="text" placeholder="请输入详细地址" id="pubSauceAddr">
+              <button class="form-locate-btn" onclick="getCurrentLocation('pubSauceAddr')" title="获取当前位置">📍</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span>产品介绍</div>
+            <textarea class="form-textarea" placeholder="请输入酱料产品详细介绍，包括配方特点、适用菜品、包装规格、保质期等..." id="pubSauceIntro"></textarea>
+          </div>
         </div>
 
         <div class="form-group">
@@ -2827,7 +2889,7 @@ function goToPublishForm(catVal) {
   document.getElementById('pubCategoryText').classList.remove('placeholder');
 
   // Types that need subcategory selection
-  if (['canteen', 'transfer', 'recruit'].includes(catVal)) {
+  if (['canteen', 'transfer', 'recruit', 'training', 'sauce'].includes(catVal)) {
     showSubCatModal(catVal, catLabels[catVal]);
   } else {
     // No subcategory needed — go directly to publish form
@@ -2845,6 +2907,8 @@ function showSubCatModal(catVal, catName) {
   if (catVal === 'canteen') options = ['食堂招商', '食堂转租'];
   else if (catVal === 'transfer') options = ['档口整体转让', '设备转让'];
   else if (catVal === 'recruit') options = ['管理岗位', '技术岗位', '服务岗位'];
+  else if (catVal === 'training') options = ['面食项目培训', '饮品项目培训', '小吃项目培训', '米饭项目培训'];
+  else if (catVal === 'sauce') options = ['米饭酱料供应', '面食酱料供应', '小吃酱料供应', '饮品酱料供应'];
   list.innerHTML = options.map(function(opt) {
     return '<div class="subcat-option" onclick="selectSubCatAndPublish(\'' + catVal + '\', \'' + opt + '\')">' + opt + '</div>';
   }).join('');
@@ -2874,6 +2938,43 @@ function applyCatFieldVisibility() {
     subWrap.style.display = 'none';
   } else {
     catField.style.display = 'block';
+  }
+  // Show/hide category-specific form fields
+  updatePublishFormFields();
+}
+
+function updatePublishFormFields() {
+  var catVal = document.getElementById('pubCategory').value;
+  var descGroup = document.getElementById('pubDescGroup');
+  var trainFields = document.getElementById('pubTrainFields');
+  var sauceFields = document.getElementById('pubSauceFields');
+  // Hide all special fields first
+  trainFields.style.display = 'none';
+  sauceFields.style.display = 'none';
+  descGroup.style.display = 'block';
+  if (catVal === 'training') {
+    descGroup.style.display = 'none';
+    trainFields.style.display = 'block';
+  } else if (catVal === 'sauce') {
+    descGroup.style.display = 'none';
+    sauceFields.style.display = 'block';
+  }
+}
+
+function getCurrentLocation(fieldId) {
+  // Simulate getting current location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      document.getElementById(fieldId).value = '湖南省长沙市（自动定位：' + pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4) + '）';
+      showToast('已获取当前位置');
+    }, function() {
+      // Fallback if geolocation fails or is denied
+      document.getElementById(fieldId).value = '湖南省长沙市（请手动输入详细地址）';
+      showToast('定位失败，请手动输入地址');
+    });
+  } else {
+    document.getElementById(fieldId).value = '湖南省长沙市（请手动输入详细地址）';
+    showToast('浏览器不支持定位，请手动输入地址');
   }
 }
 
@@ -4449,6 +4550,8 @@ function selectPubCategory(el, val) {
   closePubPanels();
   // Trigger sub-category logic
   onPubCatChange(val);
+  // Update category-specific form fields
+  updatePublishFormFields();
 }
 
 // Region panel for publish
@@ -4555,11 +4658,13 @@ function closePubPanels() {
 function onPubCatChange(val) {
   var subWrap = document.getElementById('pubSubCatWrap');
   var sub = document.getElementById('pubSubCat');
-  if (['canteen','transfer','recruit'].includes(val)) {
+  if (['canteen','transfer','recruit','training','sauce'].includes(val)) {
     subWrap.style.display = 'block';
     if (val === 'canteen') sub.innerHTML = '<option value="">请选择</option><option>食堂招商</option><option>食堂转租</option>';
     else if (val === 'transfer') sub.innerHTML = '<option value="">请选择</option><option>档口整体转让</option><option>设备转让</option>';
     else if (val === 'recruit') sub.innerHTML = '<option value="">请选择</option><option>管理岗位</option><option>技术岗位</option><option>服务岗位</option>';
+    else if (val === 'training') sub.innerHTML = '<option value="">请选择</option><option>面食项目培训</option><option>饮品项目培训</option><option>小吃项目培训</option><option>米饭项目培训</option>';
+    else if (val === 'sauce') sub.innerHTML = '<option value="">请选择</option><option>米饭酱料供应</option><option>面食酱料供应</option><option>小吃酱料供应</option><option>饮品酱料供应</option>';
   } else {
     subWrap.style.display = 'none';
   }
@@ -4613,13 +4718,33 @@ function sendVerifyCode() {
 function submitPublish() {
   const cat = document.getElementById('pubCategory').value;
   const title = document.getElementById('pubTitle').value;
-  const desc = document.getElementById('pubDesc').value;
+  var desc = document.getElementById('pubDesc').value;
   const region = document.getElementById('pubRegion1').value;
   const phone = document.getElementById('pubPhone').value;
 
-  if (!cat || !title || !desc || !region || !phone) {
-    showToast('请填写必填信息');
-    return;
+  // Category-specific validation
+  if (cat === 'training') {
+    desc = document.getElementById('pubTrainDetail').value;
+    const tname = document.getElementById('pubTrainName').value;
+    const ttime = document.getElementById('pubTrainTime').value;
+    const tcost = document.getElementById('pubTrainCost').value;
+    if (!title || !tname || !ttime || !tcost || !desc || !region || !phone) {
+      showToast('请填写必填信息');
+      return;
+    }
+  } else if (cat === 'sauce') {
+    desc = document.getElementById('pubSauceIntro').value;
+    const sname = document.getElementById('pubSauceName').value;
+    const sprice = document.getElementById('pubSaucePrice').value;
+    if (!title || !sname || !sprice || !desc || !region || !phone) {
+      showToast('请填写必填信息');
+      return;
+    }
+  } else {
+    if (!cat || !title || !desc || !region || !phone) {
+      showToast('请填写必填信息');
+      return;
+    }
   }
 
   // Verify code check
@@ -4693,6 +4818,21 @@ function resetPublishForm() {
   document.getElementById('pubCategoryText').classList.add('placeholder');
   document.getElementById('pubTitle').value = '';
   document.getElementById('pubDesc').value = '';
+  // Reset training-specific fields
+  document.getElementById('pubTrainName').value = '';
+  document.getElementById('pubTrainTime').value = '';
+  document.getElementById('pubTrainCost').value = '';
+  document.getElementById('pubTrainAddr').value = '';
+  document.getElementById('pubTrainDetail').value = '';
+  document.getElementById('pubTrainFields').style.display = 'none';
+  // Reset sauce-specific fields
+  document.getElementById('pubSauceName').value = '';
+  document.getElementById('pubSaucePrice').value = '';
+  document.getElementById('pubSauceAddr').value = '';
+  document.getElementById('pubSauceIntro').value = '';
+  document.getElementById('pubSauceFields').style.display = 'none';
+  // Show generic desc group
+  document.getElementById('pubDescGroup').style.display = 'block';
   document.getElementById('pubRegion1').value = '';
   document.getElementById('pubRegionText').textContent = '选择城市';
   document.getElementById('pubRegionText').classList.add('placeholder');
