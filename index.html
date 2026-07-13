@@ -1698,6 +1698,14 @@ body {
           <div class="cat-nav-icon" style="background:#f0f9ff">🏷️</div>
           <div class="cat-nav-label">品牌加盟</div>
         </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('training')">
+          <div class="cat-nav-icon" style="background:#e0e7ff">📚</div>
+          <div class="cat-nav-label">技术培训</div>
+        </div>
+        <div class="cat-nav-item" onclick="switchHomeCatByNav('sauce')">
+          <div class="cat-nav-icon" style="background:#fef9c3">🧂</div>
+          <div class="cat-nav-label">酱料供应</div>
+        </div>
       </div>
 
       <!-- Platform Announcement Bar -->
@@ -1890,6 +1898,14 @@ body {
             <div class="pre-type-icon" style="background:#f0f9ff">🏷️</div>
             <div class="pre-type-label">品牌加盟</div>
           </div>
+          <div class="pre-type-item" onclick="goToPublishForm('training')">
+            <div class="pre-type-icon" style="background:#e0e7ff">📚</div>
+            <div class="pre-type-label">技术培训</div>
+          </div>
+          <div class="pre-type-item" onclick="goToPublishForm('sauce')">
+            <div class="pre-type-icon" style="background:#fef9c3">🧂</div>
+            <div class="pre-type-label">酱料供应</div>
+          </div>
         </div>
       </div>
     </div>
@@ -2040,6 +2056,8 @@ body {
         <div class="option-item" data-value="bizsell" onclick="selectPubCategory(this, 'bizsell')">店铺转租</div>
         <div class="option-item" data-value="equipment" onclick="selectPubCategory(this, 'equipment')">闲置物品转让</div>
         <div class="option-item" data-value="brand" onclick="selectPubCategory(this, 'brand')">品牌信息发布</div>
+        <div class="option-item" data-value="training" onclick="selectPubCategory(this, 'training')">技术培训</div>
+        <div class="option-item" data-value="sauce" onclick="selectPubCategory(this, 'sauce')">酱料供应</div>
       </div>
 
       <!-- Region picker panel -->
@@ -2799,7 +2817,7 @@ var publishSkipCatFields = false; // when true, hide category/subcat on publish 
 
 function goToPublishForm(catVal) {
   previousTab = currentTab;
-  var catLabels = { canteen:'校园食堂招租', bizstreet:'校园商圈招租', hospital:'医院餐厅招租', transfer:'档口转让', park:'企业园区招租', recruit:'人才招聘', shop:'校外旺铺发布', bizsell:'店铺转租', equipment:'闲置物品转让', brand:'品牌信息发布' };
+  var catLabels = { canteen:'校园食堂招租', bizstreet:'校园商圈招租', hospital:'医院餐厅招租', transfer:'档口转让', park:'企业园区招租', recruit:'人才招聘', shop:'校外旺铺发布', bizsell:'店铺转租', equipment:'闲置物品转让', brand:'品牌信息发布', training:'技术培训', sauce:'酱料供应' };
   document.getElementById('pubCategory').value = catVal;
   document.getElementById('pubCategoryText').textContent = catLabels[catVal] || '请选择分类';
   document.getElementById('pubCategoryText').classList.remove('placeholder');
@@ -3538,8 +3556,8 @@ function switchHomeCatByNav(cat) {
   // reset trigger labels
   resetFilterLabels();
   // pre-select category trigger text
-  var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9' };
-  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'店铺转租', shop:'校外旺铺', brand:'品牌加盟' };
+  var catLabels = { canteen:'类目1', street:'类目2', hospital:'类目3', park:'类目4', transfer:'类目5', recruit:'类目6', biz:'类目7', shop:'类目8', brand:'类目9', training:'类目10', sauce:'类目11' };
+  var catTitles = { canteen:'校园食堂', street:'校园商业街', hospital:'医院餐厅', park:'企业园区', transfer:'档口转让', recruit:'人才招聘', biz:'店铺转租', shop:'校外旺铺', brand:'品牌加盟', training:'技术培训', sauce:'酱料供应' };
   updateTriggerLabel('category', catLabels[cat] || cat);
   currentTab = 'cat-list';
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
